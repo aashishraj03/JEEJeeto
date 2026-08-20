@@ -1,0 +1,1123 @@
+/* ================================================================
+   JEE JEETO — MY ACCOUNT / PROFILE
+   =================================================================
+   Global variables, fonts, header and footer are inherited from
+   css/style.css.
+
+   This file contains only account/profile-page styling.
+   ================================================================= */
+
+
+/* ================================================================
+   1. ACCOUNT PAGE
+   ================================================================= */
+
+.account-page {
+  width: 100%;
+  flex: 1;
+
+  background: var(--bg-main);
+
+  padding: 38px 24px 70px;
+}
+
+
+/* ================================================================
+   2. MAIN ACCOUNT LAYOUT
+   ================================================================= */
+
+.account-layout {
+  max-width: 1160px;
+  margin: 0 auto;
+
+  display: grid;
+  grid-template-columns: 245px minmax(0, 1fr);
+
+  gap: 28px;
+
+  align-items: start;
+}
+
+
+/* ================================================================
+   3. SIDEBAR
+   ================================================================= */
+
+.account-sidebar {
+  position: sticky;
+  top: 90px;
+
+  background: var(--bg-surface);
+
+  border: 1px solid var(--line-color);
+  border-radius: var(--radius-lg);
+
+  padding: 18px 12px;
+
+  box-shadow: var(--shadow-sm);
+}
+
+
+/* ================================================================
+   4. SIDEBAR USER PROFILE
+   ================================================================= */
+
+.sidebar-profile {
+  display: flex;
+  align-items: center;
+
+  gap: 11px;
+
+  padding: 8px 8px 18px;
+
+  border-bottom: 1px solid var(--line-color);
+
+  margin-bottom: 18px;
+}
+
+
+.profile-avatar {
+  width: 42px;
+  height: 42px;
+
+  flex-shrink: 0;
+
+  border-radius: 50%;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  background: var(--bg-hero);
+
+  color: var(--primary-gold);
+
+  font-family: var(--font-heading);
+  font-size: 16px;
+  font-weight: 800;
+}
+
+
+.sidebar-user-info {
+  min-width: 0;
+}
+
+
+.sidebar-user-info h3 {
+  font-size: 13px;
+  font-weight: 800;
+
+  color: var(--text-main);
+
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+
+.sidebar-user-info span {
+  display: block;
+
+  font-size: 10.5px;
+
+  color: var(--text-muted);
+
+  margin-top: 2px;
+}
+
+
+/* ================================================================
+   5. SIDEBAR SECTIONS
+   ================================================================= */
+
+.sidebar-section {
+  margin-bottom: 20px;
+}
+
+
+.sidebar-section-title {
+  display: block;
+
+  padding: 0 10px 7px;
+
+  font-family: var(--font-mono);
+
+  font-size: 9px;
+  font-weight: 600;
+
+  letter-spacing: 0.08em;
+
+  color: #94A3B8;
+}
+
+
+/* ================================================================
+   6. ACCOUNT NAVIGATION
+   ================================================================= */
+
+.account-nav {
+  display: flex;
+  flex-direction: column;
+
+  gap: 3px;
+}
+
+
+.account-nav-item {
+  position: relative;
+
+  display: flex;
+  align-items: center;
+
+  gap: 10px;
+
+  width: 100%;
+
+  padding: 9px 10px;
+
+  border-radius: var(--radius-sm);
+
+  color: var(--text-muted);
+
+  font-family: var(--font-body);
+
+  font-size: 12.5px;
+  font-weight: 500;
+
+  transition: var(--transition);
+}
+
+
+.account-nav-item:hover {
+  background: #F8FAFC;
+  color: var(--text-main);
+}
+
+
+.account-nav-item.active {
+  background: #FFF7E6;
+  color: #B45309;
+
+  font-weight: 700;
+}
+
+
+.account-nav-item.active::before {
+  content: "";
+
+  position: absolute;
+
+  left: -12px;
+
+  top: 7px;
+  bottom: 7px;
+
+  width: 3px;
+
+  border-radius: 0 4px 4px 0;
+
+  background: var(--primary-gold);
+}
+
+
+.nav-icon {
+  width: 20px;
+  height: 20px;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  flex-shrink: 0;
+}
+
+
+.account-nav-item.active .nav-icon {
+  color: var(--primary-gold);
+}
+
+
+/* ================================================================
+   7. LOGOUT
+   ================================================================= */
+
+.logout-btn {
+  display: flex;
+  align-items: center;
+
+  gap: 9px;
+
+  margin-top: 6px;
+
+  padding: 10px;
+
+  border-top: 1px solid var(--line-color);
+
+  padding-top: 17px;
+
+  color: #DC2626;
+
+  font-size: 12.5px;
+  font-weight: 600;
+
+  transition: var(--transition);
+}
+
+
+.logout-btn:hover {
+  color: #B91C1C;
+}
+
+
+/* ================================================================
+   8. ACCOUNT CONTENT
+   ================================================================= */
+
+.account-content {
+  min-width: 0;
+}
+
+
+.content-section {
+  scroll-margin-top: 100px;
+
+  margin-bottom: 34px;
+}
+
+
+.content-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-end;
+
+  margin-bottom: 18px;
+}
+
+
+.content-header.compact {
+  margin-bottom: 14px;
+}
+
+
+.content-label {
+  display: block;
+
+  font-family: var(--font-mono);
+
+  font-size: 9px;
+  font-weight: 600;
+
+  letter-spacing: 0.08em;
+
+  color: var(--primary-gold);
+
+  margin-bottom: 5px;
+}
+
+
+.content-header h1 {
+  font-size: 27px;
+  font-weight: 800;
+
+  color: var(--text-main);
+
+  margin-bottom: 4px;
+}
+
+
+.content-header h2 {
+  font-size: 18px;
+  font-weight: 800;
+
+  color: var(--text-main);
+}
+
+
+.content-header p {
+  color: var(--text-muted);
+
+  font-size: 12.5px;
+
+  margin-top: 4px;
+}
+
+
+/* ================================================================
+   9. PROFILE CARD
+   ================================================================= */
+
+.profile-card {
+  background: var(--bg-surface);
+
+  border: 1px solid var(--line-color);
+
+  border-radius: var(--radius-lg);
+
+  box-shadow: var(--shadow-sm);
+
+  overflow: hidden;
+}
+
+
+.profile-card-top {
+  display: flex;
+  align-items: center;
+
+  gap: 17px;
+
+  padding: 25px 27px;
+
+  border-bottom: 1px solid var(--line-color);
+}
+
+
+.large-avatar {
+  width: 66px;
+  height: 66px;
+
+  flex-shrink: 0;
+
+  border-radius: 50%;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  background: var(--bg-hero);
+
+  color: var(--primary-gold);
+
+  font-family: var(--font-heading);
+
+  font-size: 25px;
+  font-weight: 800;
+}
+
+
+.profile-main-info {
+  flex: 1;
+}
+
+
+.profile-main-info h2 {
+  font-size: 19px;
+  font-weight: 800;
+
+  color: var(--text-main);
+
+  margin-bottom: 2px;
+}
+
+
+.profile-main-info p {
+  font-size: 12px;
+
+  color: var(--text-muted);
+
+  margin-bottom: 7px;
+}
+
+
+.member-badge {
+  display: inline-block;
+
+  padding: 4px 8px;
+
+  border-radius: 999px;
+
+  background: #F1F5F9;
+
+  border: 1px solid var(--line-color);
+
+  color: var(--text-muted);
+
+  font-family: var(--font-mono);
+
+  font-size: 9px;
+  font-weight: 600;
+}
+
+
+.edit-profile-btn {
+  border: 1px solid var(--line-color);
+
+  background: var(--bg-surface);
+
+  color: var(--text-main);
+
+  padding: 8px 13px;
+
+  border-radius: var(--radius-sm);
+
+  font-family: var(--font-heading);
+
+  font-size: 11.5px;
+  font-weight: 700;
+
+  cursor: pointer;
+
+  transition: var(--transition);
+}
+
+
+.edit-profile-btn:hover {
+  border-color: var(--primary-gold);
+
+  color: var(--primary-hover);
+
+  background: #FFFBEB;
+}
+
+
+/* ================================================================
+   10. PROFILE DETAILS
+   ================================================================= */
+
+.profile-details {
+  display: grid;
+
+  grid-template-columns: repeat(2, 1fr);
+
+  gap: 0;
+}
+
+
+.detail-item {
+  padding: 19px 27px;
+
+  border-bottom: 1px solid var(--line-color);
+}
+
+
+.detail-item:nth-child(odd) {
+  border-right: 1px solid var(--line-color);
+}
+
+
+.detail-item:nth-child(3),
+.detail-item:nth-child(4) {
+  border-bottom: none;
+}
+
+
+.detail-label {
+  display: block;
+
+  font-family: var(--font-mono);
+
+  font-size: 9px;
+
+  letter-spacing: 0.06em;
+
+  color: #94A3B8;
+
+  margin-bottom: 5px;
+}
+
+
+.detail-item strong {
+  font-size: 12.5px;
+
+  font-weight: 600;
+
+  color: var(--text-main);
+}
+
+
+.status-text {
+  color: var(--teal-free) !important;
+}
+
+
+/* ================================================================
+   11. STATISTICS
+   ================================================================= */
+
+.stats-grid {
+  display: grid;
+
+  grid-template-columns: repeat(4, 1fr);
+
+  gap: 12px;
+}
+
+
+.stat-card {
+  background: var(--bg-surface);
+
+  border: 1px solid var(--line-color);
+
+  border-radius: var(--radius-md);
+
+  padding: 17px;
+
+  box-shadow: var(--shadow-sm);
+
+  transition: var(--transition);
+}
+
+
+.stat-card:hover {
+  box-shadow: var(--shadow-md);
+
+  transform: translateY(-1px);
+}
+
+
+.stat-label {
+  display: block;
+
+  font-family: var(--font-mono);
+
+  font-size: 8.5px;
+  font-weight: 600;
+
+  letter-spacing: 0.05em;
+
+  color: #94A3B8;
+
+  margin-bottom: 9px;
+}
+
+
+.stat-card strong {
+  display: block;
+
+  font-family: var(--font-heading);
+
+  font-size: 25px;
+  font-weight: 800;
+
+  color: var(--text-main);
+
+  margin-bottom: 2px;
+}
+
+
+.stat-card .plan-stat {
+  font-size: 18px;
+
+  color: var(--primary-hover);
+}
+
+
+.stat-sub {
+  font-size: 10px;
+
+  color: var(--text-muted);
+}
+
+
+/* ================================================================
+   12. EMPTY CONTENT
+   ================================================================= */
+
+.empty-content {
+  min-height: 260px;
+
+  display: flex;
+  flex-direction: column;
+
+  align-items: center;
+  justify-content: center;
+
+  text-align: center;
+
+  background: var(--bg-surface);
+
+  border: 1px solid var(--line-color);
+
+  border-radius: var(--radius-lg);
+
+  padding: 35px 25px;
+
+  box-shadow: var(--shadow-sm);
+}
+
+
+.empty-content-icon {
+  width: 54px;
+  height: 54px;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  border-radius: 50%;
+
+  background: #F8FAFC;
+
+  border: 1px solid var(--line-color);
+
+  color: var(--text-muted);
+
+  margin-bottom: 14px;
+}
+
+
+.empty-content h3 {
+  font-size: 14px;
+
+  font-weight: 800;
+
+  color: var(--text-main);
+
+  margin-bottom: 5px;
+}
+
+
+.empty-content p {
+  max-width: 330px;
+
+  font-size: 12px;
+
+  color: var(--text-muted);
+
+  line-height: 1.6;
+
+  margin-bottom: 13px;
+}
+
+
+.content-action {
+  color: var(--primary-hover);
+
+  font-family: var(--font-heading);
+
+  font-size: 12px;
+
+  font-weight: 800;
+
+  transition: var(--transition);
+}
+
+
+.content-action:hover {
+  color: var(--primary-gold);
+}
+
+
+/* ================================================================
+   13. PERFORMANCE
+   ================================================================= */
+
+.performance-placeholder {
+  background: var(--bg-surface);
+
+  border: 1px solid var(--line-color);
+
+  border-radius: var(--radius-lg);
+
+  padding: 25px;
+
+  box-shadow: var(--shadow-sm);
+}
+
+
+.performance-item {
+  display: grid;
+
+  grid-template-columns: 100px 1fr 35px;
+
+  align-items: center;
+
+  gap: 14px;
+
+  margin-bottom: 20px;
+}
+
+
+.performance-item > span {
+  font-size: 12px;
+
+  color: var(--text-main);
+
+  font-weight: 600;
+}
+
+
+.performance-item strong {
+  text-align: right;
+
+  font-size: 11px;
+
+  color: var(--text-muted);
+}
+
+
+.progress-track {
+  height: 7px;
+
+  background: #F1F5F9;
+
+  border-radius: 999px;
+
+  overflow: hidden;
+}
+
+
+.progress-bar {
+  height: 100%;
+
+  background: var(--primary-gold);
+
+  border-radius: inherit;
+}
+
+
+.performance-note {
+  border-top: 1px solid var(--line-color);
+
+  padding-top: 16px;
+
+  text-align: center;
+
+  color: var(--text-muted);
+
+  font-size: 11px;
+}
+
+
+/* ================================================================
+   14. SETTINGS
+   ================================================================= */
+
+.settings-list {
+  background: var(--bg-surface);
+
+  border: 1px solid var(--line-color);
+
+  border-radius: var(--radius-lg);
+
+  box-shadow: var(--shadow-sm);
+
+  overflow: hidden;
+}
+
+
+.setting-row {
+  display: flex;
+
+  justify-content: space-between;
+  align-items: center;
+
+  gap: 20px;
+
+  padding: 19px 23px;
+
+  border-bottom: 1px solid var(--line-color);
+}
+
+
+.setting-row:last-child {
+  border-bottom: none;
+}
+
+
+.setting-row h3 {
+  font-size: 13px;
+
+  font-weight: 700;
+
+  color: var(--text-main);
+
+  margin-bottom: 3px;
+}
+
+
+.setting-row p {
+  font-size: 11px;
+
+  color: var(--text-muted);
+}
+
+
+/* ================================================================
+   15. TOGGLE SWITCH
+   ================================================================= */
+
+.switch {
+  position: relative;
+
+  width: 40px;
+  height: 22px;
+
+  flex-shrink: 0;
+}
+
+
+.switch input {
+  opacity: 0;
+
+  width: 0;
+  height: 0;
+}
+
+
+.slider {
+  position: absolute;
+
+  inset: 0;
+
+  cursor: pointer;
+
+  background: #CBD5E1;
+
+  border-radius: 999px;
+
+  transition: 0.2s;
+}
+
+
+.slider::before {
+  content: "";
+
+  position: absolute;
+
+  width: 16px;
+  height: 16px;
+
+  left: 3px;
+  top: 3px;
+
+  background: white;
+
+  border-radius: 50%;
+
+  transition: 0.2s;
+
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.15);
+}
+
+
+.switch input:checked + .slider {
+  background: var(--primary-gold);
+}
+
+
+.switch input:checked + .slider::before {
+  transform: translateX(18px);
+}
+
+
+/* ================================================================
+   16. ACTIVE ACCOUNT BUTTON
+   ================================================================= */
+
+.active-account {
+  background: var(--primary-gold);
+
+  border-color: var(--primary-gold);
+
+  color: var(--bg-hero);
+}
+
+
+/* ================================================================
+   17. TABLET
+   ================================================================= */
+
+@media (max-width: 1000px) {
+
+  .account-layout {
+    grid-template-columns: 215px minmax(0, 1fr);
+
+    gap: 20px;
+  }
+
+  .stats-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+}
+
+
+/* ================================================================
+   18. MOBILE
+   ================================================================= */
+
+@media (max-width: 750px) {
+
+  .account-page {
+    padding: 25px 16px 50px;
+  }
+
+
+  .account-layout {
+    display: block;
+  }
+
+
+  /* Sidebar becomes horizontal-scroll navigation */
+
+  .account-sidebar {
+    position: relative;
+
+    top: auto;
+
+    margin-bottom: 22px;
+
+    padding: 14px;
+
+    overflow: hidden;
+  }
+
+
+  .sidebar-profile {
+    padding-bottom: 14px;
+
+    margin-bottom: 14px;
+  }
+
+
+  .sidebar-section {
+    margin-bottom: 13px;
+  }
+
+
+  .sidebar-section-title {
+    display: none;
+  }
+
+
+  .account-nav {
+    flex-direction: row;
+
+    overflow-x: auto;
+
+    padding-bottom: 3px;
+
+    scrollbar-width: none;
+  }
+
+
+  .account-nav::-webkit-scrollbar {
+    display: none;
+  }
+
+
+  .account-nav-item {
+    flex: 0 0 auto;
+
+    white-space: nowrap;
+
+    width: auto;
+  }
+
+
+  .account-nav-item.active::before {
+    display: none;
+  }
+
+
+  .sidebar-bottom {
+    margin-bottom: 0;
+  }
+
+
+  .logout-btn {
+    display: none;
+  }
+
+
+  .content-header h1 {
+    font-size: 24px;
+  }
+
+
+  .profile-card-top {
+    flex-wrap: wrap;
+
+    padding: 21px;
+  }
+
+
+  .edit-profile-btn {
+    width: 100%;
+
+    margin-top: 5px;
+  }
+
+
+  .profile-details {
+    grid-template-columns: 1fr;
+  }
+
+
+  .detail-item:nth-child(odd) {
+    border-right: none;
+  }
+
+
+  .detail-item:nth-child(3) {
+    border-bottom: 1px solid var(--line-color);
+  }
+
+
+  .stats-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+}
+
+
+/* ================================================================
+   19. SMALL MOBILE
+   ================================================================= */
+
+@media (max-width: 480px) {
+
+  .stats-grid {
+    grid-template-columns: 1fr 1fr;
+
+    gap: 8px;
+  }
+
+
+  .stat-card {
+    padding: 14px;
+  }
+
+
+  .stat-card strong {
+    font-size: 21px;
+  }
+
+
+  .stat-label {
+    font-size: 8px;
+  }
+
+
+  .profile-card-top {
+    align-items: flex-start;
+  }
+
+
+  .large-avatar {
+    width: 55px;
+    height: 55px;
+
+    font-size: 21px;
+  }
+
+
+  .profile-main-info h2 {
+    font-size: 17px;
+  }
+
+
+  .performance-item {
+    grid-template-columns: 75px 1fr 25px;
+
+    gap: 8px;
+  }
+
+
+  .empty-content {
+    min-height: 230px;
+
+    padding: 25px 15px;
+  }
+
+}

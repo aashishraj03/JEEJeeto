@@ -1,0 +1,647 @@
+@import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@500;600;700;800&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@500;600&display=swap');
+
+/* ===================================================================
+   1. DESIGN SYSTEM & TOKENS
+   =================================================================== */
+:root {
+  /* Brand Palette */
+  --bg-main:       #F8FAFC;
+  --bg-surface:    #FFFFFF;
+  --bg-hero:       #0F172A; /* Deep Slate Blue */
+  --bg-hero-alt:   #1E293B;
+  
+  --primary-gold:  #F59E0B; /* Vibrant Gold Accent */
+  --primary-hover: #D97706;
+  --teal-free:     #0D9488;
+  --coral-premium: #E11D48;
+
+  --text-main:     #0F172A;
+  --text-muted:    #64748B;
+  --text-light:    #F8FAFC;
+  --line-color:    #E2E8F0;
+
+  /* Typography */
+  --font-heading:  'Plus Jakarta Sans', sans-serif;
+  --font-body:     'Inter', sans-serif;
+  --font-mono:     'JetBrains Mono', monospace;
+
+  /* Radii & Shadows */
+  --radius-sm:     6px;
+  --radius-md:     12px;
+  --radius-lg:     18px;
+
+  --shadow-sm:     0 1px 3px rgba(0, 0, 0, 0.05);
+  --shadow-md:     0 4px 12px rgba(15, 23, 42, 0.08);
+  --shadow-lg:     0 12px 28px rgba(15, 23, 42, 0.12);
+  --shadow-glow:   0 0 20px rgba(245, 158, 11, 0.25);
+
+  --transition:    all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+/* ===================================================================
+   2. GLOBAL RESETS
+   =================================================================== */
+*, *::before, *::after {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+html {
+  -webkit-font-smoothing: antialiased;
+  scroll-behavior: smooth;
+}
+
+body {
+  font-family: var(--font-body);
+  background: var(--bg-main);
+  color: var(--text-main);
+  line-height: 1.6;
+}
+
+a {
+  text-decoration: none;
+  color: inherit;
+}
+
+h1, h2, h3, h4 {
+  font-family: var(--font-heading);
+  letter-spacing: -0.02em;
+}
+
+/* ===================================================================
+   3. NAVIGATION BAR (.topbar)
+   =================================================================== */
+.topbar {
+  background: var(--bg-hero);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+  padding: 14px 32px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  position: sticky;
+  top: 0;
+  z-index: 1000;
+  backdrop-filter: blur(10px);
+}
+
+.topbar .logo {
+  font-family: var(--font-heading);
+  font-weight: 800;
+  font-size: 22px;
+  color: var(--text-light);
+}
+
+.topbar .logo span {
+  color: var(--primary-gold);
+}
+
+.topbar .nav-group {
+  display: flex;
+  align-items: center;
+}
+
+.topbar nav {
+  display: flex;
+  align-items: center;
+  gap: 28px;
+}
+
+.topbar nav a {
+  color: #94A3B8;
+  font-size: 14px;
+  font-weight: 600;
+  transition: var(--transition);
+}
+
+.topbar nav a:hover {
+  color: var(--text-light);
+}
+
+.account-btn {
+  width: 38px;
+  height: 38px;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.06);
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  color: var(--text-light);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-left: 24px;
+  transition: var(--transition);
+}
+
+.account-btn:hover {
+  background: var(--primary-gold);
+  border-color: var(--primary-gold);
+  color: var(--bg-hero);
+  transform: translateY(-2px);
+}
+
+/* ===================================================================
+   4. HERO SECTION (.hero)
+   =================================================================== */
+.hero {
+  background: var(--bg-hero);
+  background-image: 
+    radial-gradient(circle at 50% 0%, rgba(245, 158, 11, 0.12) 0%, transparent 60%),
+    radial-gradient(circle at 85% 80%, rgba(13, 148, 136, 0.08) 0%, transparent 50%);
+  color: var(--text-light);
+  padding: 80px 24px 110px;
+  text-align: center;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+/* Fading image styling */
+.hero-right-image {
+  position: absolute;
+  right: 0;
+  top: 105px;
+  height: 60%;
+  width: 42%; /* Adjust width depending on how much space you want it to cover */
+  object-fit: cover;
+  pointer-events: none; /* Ensures mouse clicks pass right through the image */
+  opacity: 0.7; /* Lowers overall intensity so it doesn't distract from text */
+  
+  /* The fading effect: fades transparent on the far left, solid towards the right */
+  mask-image: linear-gradient(to right, rgba(0, 0, 0, 0) 8%, rgba(0, 0, 0, 1) 90%);
+  -webkit-mask-image: linear-gradient(to right, rgba(0, 0, 0, 0) 8%, rgba(0, 0, 0, 1) 90%);
+}
+
+.hero h1 {
+  font-size: 44px;
+  font-weight: 800;
+  line-height: 1.15;
+  max-width: 760px;
+  margin: 0 0 16px 0;
+  text-align: left;
+  background: linear-gradient(180deg, #FFFFFF 0%, #CBD5E1 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+.hero p {
+  font-size: 17px;
+  color: #94A3B8;
+  max-width: 420px;
+  margin: 0 0 32px 0;
+  text-align: left;
+}
+
+.hero-actions {
+  display: flex;
+  flex-direction : column;
+  justify-content: left;
+  gap: 24px;
+  /* top : 60px; */
+  align-items: flex-start;
+  position: relative;
+  top: 32px;
+}
+
+/* Hero CTA Buttons */
+.btn-secondary {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--primary-gold);
+  color: var(--bg-hero);
+  padding: 18px 34px;
+  border-radius: 35px;
+  font-family: var(--font-heading);
+  font-weight: 1000;
+  font-size: 25px;
+  transition: var(--transition);
+  box-shadow: var(--shadow-glow);
+  margin-right: auto;
+}
+
+.btn-secondary:hover {
+  background: var(--primary-hover);
+  transform: translateY(-2px);
+  box-shadow: 0 0 25px rgba(245, 158, 11, 0.4);
+}
+
+
+/* ===================================================================
+   KEY FEATURES SECTION
+   =================================================================== */
+.key-features-section {
+  background-color: var(--paper, #f8fafc);
+  padding: 40px 0;
+  border-top: 1px solid var(--line, #e2e8f0);
+}
+
+.features-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(230px, 1fr));
+  gap: 20px;
+}
+
+.feature-card {
+  background: var(--surface, #ffffff);
+  border: 1px solid var(--line, #e2e8f0);
+  border-radius: 12px;
+  padding: 24px;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.feature-card:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 8px 20px rgba(18, 20, 58, 0.08);
+}
+
+.feature-icon-box {
+  width: 42px;
+  height: 42px;
+  border-radius: 10px;
+  background: rgba(242, 169, 59, 0.15);
+  color: var(--gold-dark, #d98f1f);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 14px;
+}
+
+.feature-card h3 {
+  font-size: 16px;
+  font-weight: 700;
+  margin-bottom: 6px;
+  color: var(--text-900, #1b1d2a);
+}
+
+.feature-card p {
+  font-size: 13.5px;
+  color: var(--text-600, #5a5e76);
+  line-height: 1.5;
+}
+
+
+/* ===================================================================
+   KEY FEATURES SECTION (Image-Matched Styling)
+   =================================================================== */
+.key-features-section {
+  padding: 60px 0;
+  background-color: var(--paper, #F5F6FA);
+}
+
+.features-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+  gap: 20px;
+}
+
+.feature-card {
+  background: #FFFFFF;
+  border: 1px solid #E3E4EE;
+  border-radius: 12px;
+  padding: 24px;
+  box-shadow: 0 2px 4px rgba(18, 20, 58, 0.03);
+  transition: transform 0.2s ease, box-shadow 0.2s ease, border-color 0.2s ease;
+  display: flex;
+  flex-direction: column;
+}
+
+.feature-card:hover {
+  transform: translateY(-4px);
+  border-color: #CBD5E1;
+  box-shadow: 0 12px 24px rgba(18, 20, 58, 0.08);
+}
+
+.feature-icon-box {
+  width: 44px;
+  height: 44px;
+  border-radius: 10px;
+  background: rgba(242, 169, 59, 0.12); /* Matching achievement gold accent */
+  color: #D98F1F;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 16px;
+}
+
+.feature-card h3 {
+  font-family: var(--font-display, 'Manrope', sans-serif);
+  font-size: 17px;
+  font-weight: 700;
+  color: #12143A;
+  margin-bottom: 8px;
+}
+
+.feature-card p {
+  font-family: var(--font-body, 'Inter', sans-serif);
+  font-size: 14px;
+  color: #5A5E76;
+  line-height: 1.5;
+}
+
+/* ===================================================================
+   5. LAYOUT & CONTENT CARDS (.grid & .card)
+   =================================================================== */
+.container {
+  max-width: 1120px;
+  margin: 0 auto;
+  padding: 0 24px 60px;
+}
+
+.grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  gap: 24px;
+  margin-top: 60px; /* Modern card overlap onto dark hero */
+  position: relative;
+  z-index: 20;
+}
+
+.card {
+  background: var(--bg-surface);
+  border: 1px solid var(--line-color);
+  border-radius: var(--radius-lg);
+  padding: 28px;
+  position: relative;
+  box-shadow: var(--shadow-md);
+  transition: var(--transition);
+  display: flex;
+  flex-direction: column;
+}
+
+.card:hover {
+  transform: translateY(-5px);
+  box-shadow: var(--shadow-lg);
+  border-color: #CBD5E1;
+}
+
+/* Accent Bar on Left Edge */
+.card::before {
+  content: "";
+  position: absolute;
+  left: 0;
+  top: 18px;
+  bottom: 18px;
+  width: 4px;
+  background: var(--primary-gold);
+  border-radius: 0 4px 4px 0;
+}
+
+.feature-icon {
+  width: 44px;
+  height: 44px;
+  border-radius: var(--radius-md);
+  background: #FEF3C7;
+  color: var(--primary-hover);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 16px;
+}
+
+.card h3 {
+  font-size: 19px;
+  font-weight: 700;
+  color: var(--text-main);
+  margin-bottom: 8px;
+}
+
+.card p {
+  color: var(--text-muted);
+  font-size: 14.5px;
+  margin-bottom: 24px;
+  flex-grow: 1;
+}
+
+.card .btn {
+  align-self: flex-start;
+}
+
+/* General Button inside Cards */
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--bg-hero);
+  color: var(--text-light);
+  padding: 10px 20px;
+  border-radius: var(--radius-sm);
+  font-weight: 600;
+  font-size: 14px;
+  transition: var(--transition);
+}
+
+.btn:hover {
+  background: var(--primary-gold);
+  color: var(--bg-hero);
+  transform: translateY(-1px);
+}
+
+/* Tags (Free / Premium) */
+.tag {
+  position: absolute;
+  top: 24px;
+  right: 24px;
+  font-family: var(--font-mono);
+  font-size: 11px;
+  font-weight: 600;
+  padding: 4px 10px;
+  border-radius: 20px;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+}
+
+.tag-free {
+  background: #CCFBF1;
+  color: var(--teal-free);
+}
+
+.tag-premium {
+  background: #FFE4E6;
+  color: var(--coral-premium);
+}
+
+/* ===================================================================
+   6. SECTION HEADINGS & STEPS (.steps-section)
+   =================================================================== */
+.section-title {
+  font-size: 26px;
+  font-weight: 800;
+  text-align: center;
+  color: var(--text-main);
+  margin-top: 60px;
+  margin-bottom: 6px;
+}
+
+.section-sub {
+  text-align: center;
+  color: var(--text-muted);
+  font-size: 15px;
+  margin-bottom: 36px;
+}
+
+.steps-section {
+  background: var(--bg-surface);
+  border-top: 1px solid var(--line-color);
+  border-bottom: 1px solid var(--line-color);
+  padding: 60px 0;
+}
+
+.steps-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+  gap: 24px;
+}
+
+.step {
+  background: var(--bg-main);
+  border: 1px solid var(--line-color);
+  border-radius: var(--radius-md);
+  padding: 24px;
+  transition: var(--transition);
+}
+
+.step:hover {
+  border-color: #CBD5E1;
+  transform: translateY(-2px);
+}
+
+.step-num {
+  font-family: var(--font-mono);
+  font-size: 14px;
+  font-weight: 700;
+  color: var(--bg-hero);
+  background: #FEF3C7;
+  width: 34px;
+  height: 34px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 16px;
+}
+
+.step h3 {
+  font-size: 17px;
+  margin-bottom: 6px;
+}
+
+.step p {
+  color: var(--text-muted);
+  font-size: 14px;
+}
+
+/* ===================================================================
+   7. SITE FOOTER
+   =================================================================== */
+.site-footer {
+  background: var(--bg-hero);
+  color: #94A3B8;
+  padding-top: 50px;
+}
+
+.footer-inner {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding-bottom: 36px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.footer-brand .logo {
+  font-size: 20px;
+  color: var(--text-light);
+  margin-bottom: 6px;
+}
+
+.footer-brand p {
+  font-size: 13.5px;
+  max-width: 340px;
+}
+
+.footer-bottom {
+  background: #090E1A;
+  padding: 20px 0;
+}
+
+.footer-bottom-inner {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 13px;
+  margin-bottom: 10px;
+}
+
+.footer-legal a {
+  margin-left: 20px;
+  transition: var(--transition);
+}
+
+.footer-legal a:hover {
+  color: var(--text-light);
+}
+
+.footer-disclaimer {
+  font-size: 11.5px;
+  color: #64748B;
+  text-align: center;
+  line-height: 1.5;
+}
+
+/* ===================================================================
+   8. FORMS, PRICING, EXAM INTERFACE, NOTES READER
+   =================================================================== */
+/* Login Form Box */
+.form-box {
+  max-width: 400px;
+  margin: 60px auto;
+  background: var(--bg-surface);
+  border: 1px solid var(--line-color);
+  padding: 36px;
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-lg);
+}
+
+.form-box h2 {
+  text-align: center;
+  margin-bottom: 6px;
+}
+
+.form-box label {
+  display: block;
+  margin-top: 16px;
+  margin-bottom: 6px;
+  font-size: 13px;
+  font-weight: 600;
+}
+
+.form-box input {
+  width: 100%;
+  padding: 10px 14px;
+  border: 1px solid var(--line-color);
+  border-radius: var(--radius-sm);
+  font-size: 14px;
+}
+
+/* Exam Interface Keep-Alive */
+.exam-header { background: #003366; color: #fff; padding: 10px 16px; display: flex; justify-content: space-between; }
+.exam-body { display: flex; height: calc(100vh - 45px); }
+.exam-main { flex: 1; padding: 20px; overflow-y: auto; background: #fff; }
+.exam-side { width: 260px; background: #F1F5F9; padding: 16px; }
+
+/* Notes Reader Paper Effect */
+.notes-reader {
+  max-width: 880px;
+  margin: 40px auto;
+  padding: 60px;
+  background-color: #F8FAF9;
+  border: 1px solid var(--line-color);
+  border-radius: 4px;
+  box-shadow: var(--shadow-md);
+  font-family: Georgia, serif;
+  line-height: 1.7;
+}
+
+/* Responsive Overrides */
+@media (max-width: 768px) {
+  .hero h1 { font-size: 30px; }
+  .grid { margin-top: -20px; }
+  .footer-inner, .footer-bottom-inner { flex-direction: column; gap: 16px; text-align: center; }
+}

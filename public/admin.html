@@ -1,0 +1,246 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Admin - Add Questions - JEE Jeeto</title>
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+
+  <div class="topbar">
+    <div class="logo">JEE<span>Jeeto</span></div>
+    <div class="nav-group">
+      <nav>
+        <a href="index.html">Home</a>
+        <a href="subscription.html">Subscription</a>
+        <a href="login.html" id="navLoginBtn">Login</a>
+      </nav>
+      <a href="profile.html" id="navAccountBtn" class="account-btn" title="My Account" style="display: none;">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="8" r="4"/><path d="M4 20c0-4.4 3.6-7 8-7s8 2.6 8 7"/></svg>
+      </a>
+    </div>
+  </div>
+
+  <div class="container" style="max-width:720px;">
+    <div class="section-title">Add a Question</div>
+    <div class="section-sub">
+      Saved to this browser's local storage for now &mdash; swap for a real database once the backend is built.
+      Math: wrap LaTeX in <code>$...$</code>, e.g. <code>$x^2 + 1$</code>.
+    </div>
+
+    <div class="card" style="margin-bottom:24px;">
+      <h3>1. Which paper does this belong to?</h3>
+
+      <label style="display:block; margin:10px 0 4px; font-size:13px; font-weight:600;">Exam</label>
+      <select id="examSelect">
+        <option value="main">JEE Main</option>
+        <option value="advanced">JEE Advanced</option>
+      </select>
+
+      <label style="display:block; margin:10px 0 4px; font-size:13px; font-weight:600;">Year</label>
+      <select id="yearSelect"></select>
+
+      <div id="mainFields">
+        <label style="display:block; margin:10px 0 4px; font-size:13px; font-weight:600;">Session</label>
+        <select id="sessionSelect"></select>
+
+        <label style="display:block; margin:10px 0 4px; font-size:13px; font-weight:600;">Shift</label>
+        <select id="shiftSelect"></select>
+      </div>
+
+      <div id="advancedFields" style="display:none;">
+        <label style="display:block; margin:10px 0 4px; font-size:13px; font-weight:600;">Paper</label>
+        <select id="paperSelect"></select>
+      </div>
+
+      <p style="margin-top:14px; font-size:12.5px; color:var(--text-600);">
+        Saving to key: <code id="keyPreview" style="font-family:var(--font-mono);"></code>
+      </p>
+    </div>
+
+    <div class="card" style="margin-bottom:24px;">
+      <h3>2. Question details</h3>
+
+      <label style="display:block; margin:10px 0 4px; font-size:13px; font-weight:600;">Subject</label>
+      <select id="subjectSelect">
+        <option>Physics</option>
+        <option>Chemistry</option>
+        <option>Mathematics</option>
+      </select>
+
+      <label style="display:block; margin:10px 0 4px; font-size:13px; font-weight:600;">Question text</label>
+      <textarea id="questionText" rows="3" style="width:100%; padding:10px; border:1px solid var(--line); border-radius:6px; font-family:var(--font-body);" placeholder="e.g. Evaluate $\int_0^1 x^2\,dx$"></textarea>
+
+      <label style="display:block; margin:10px 0 4px; font-size:13px; font-weight:600;">Figure image path (optional)</label>
+      <input type="text" id="imagePath" placeholder="images/questions/q1.png">
+
+      <label style="display:block; margin:14px 0 4px; font-size:13px; font-weight:600;">Options</label>
+      <div id="optionInputs"></div>
+
+      <label style="display:block; margin:14px 0 4px; font-size:13px; font-weight:600;">Correct answer</label>
+      <select id="correctSelect">
+        <option value="0">Option A</option>
+        <option value="1">Option B</option>
+        <option value="2">Option C</option>
+        <option value="3">Option D</option>
+      </select>
+
+      <button class="btn" id="addBtn" style="margin-top:18px;">Add Question</button>
+      <span id="addConfirm" style="margin-left:12px; font-size:13px; color:var(--teal); display:none;">Added &#10003;</span>
+    </div>
+
+    <div class="card">
+      <h3>Questions already in this set (<span id="countLabel">0</span>)</h3>
+      <div id="questionList"></div>
+    </div>
+  </div>
+
+  <script src="js/test-key.js"></script>
+  <script>
+    // ===== Populate dropdowns from the shared hierarchy data =====
+    const yearSelect = document.getElementById("yearSelect");
+    EXAM_YEARS.forEach(y => {
+      const opt = document.createElement("option");
+      opt.value = y; opt.textContent = y;
+      yearSelect.appendChild(opt);
+    });
+
+    const sessionSelect = document.getElementById("sessionSelect");
+    MAIN_SESSIONS.forEach(s => {
+      const opt = document.createElement("option");
+      opt.value = s.value; opt.textContent = s.label;
+      sessionSelect.appendChild(opt);
+    });
+
+    const shiftSelect = document.getElementById("shiftSelect");
+    MAIN_SHIFTS.forEach(s => {
+      const opt = document.createElement("option");
+      opt.value = s.value; opt.textContent = s.label;
+      shiftSelect.appendChild(opt);
+    });
+
+    const paperSelect = document.getElementById("paperSelect");
+    ADVANCED_PAPERS.forEach(p => {
+      const opt = document.createElement("option");
+      opt.value = p.value; opt.textContent = p.label;
+      paperSelect.appendChild(opt);
+    });
+
+    const examSelect = document.getElementById("examSelect");
+    examSelect.onchange = () => {
+      const isMain = examSelect.value === "main";
+      document.getElementById("mainFields").style.display = isMain ? "block" : "none";
+      document.getElementById("advancedFields").style.display = isMain ? "none" : "block";
+      updateKeyPreview();
+    };
+
+    function currentSelection() {
+      return {
+        exam: examSelect.value,
+        year: yearSelect.value,
+        session: sessionSelect.value,
+        shift: shiftSelect.value,
+        paper: paperSelect.value
+      };
+    }
+
+    function updateKeyPreview() {
+      document.getElementById("keyPreview").textContent = buildTestKey(currentSelection());
+      renderQuestionList();
+    }
+
+    [yearSelect, sessionSelect, shiftSelect, paperSelect].forEach(el => {
+      el.onchange = updateKeyPreview;
+    });
+
+    // ===== Option inputs (4 text fields) =====
+    const optionInputs = document.getElementById("optionInputs");
+    ["A", "B", "C", "D"].forEach((letter, i) => {
+      const input = document.createElement("input");
+      input.type = "text";
+      input.placeholder = "Option " + letter;
+      input.style.cssText = "width:100%; padding:9px; border:1px solid var(--line); border-radius:6px; margin-bottom:8px; font-family:var(--font-body);";
+      input.id = "option" + i;
+      optionInputs.appendChild(input);
+    });
+
+    // ===== Storage helpers =====
+    function getStore() {
+      return JSON.parse(localStorage.getItem("jeeprep_questions") || "{}");
+    }
+
+    function saveStore(store) {
+      localStorage.setItem("jeeprep_questions", JSON.stringify(store));
+    }
+
+    function renderQuestionList() {
+      const key = buildTestKey(currentSelection());
+      const store = getStore();
+      const list = store[key] || [];
+      document.getElementById("countLabel").textContent = list.length;
+
+      const listDiv = document.getElementById("questionList");
+      listDiv.innerHTML = "";
+      if (list.length === 0) {
+        listDiv.innerHTML = '<p style="color:var(--text-600); font-size:13px;">No questions added to this set yet.</p>';
+        return;
+      }
+      list.forEach((q, i) => {
+        const row = document.createElement("div");
+        row.style.cssText = "display:flex; justify-content:space-between; align-items:center; padding:8px 0; border-bottom:1px solid var(--line); font-size:13px;";
+        row.innerHTML = `<span>${i + 1}. [${q.subject}] ${q.text.slice(0, 60)}${q.text.length > 60 ? "..." : ""}</span>`;
+        const delBtn = document.createElement("button");
+        delBtn.textContent = "Delete";
+        delBtn.className = "btn btn-secondary";
+        delBtn.style.cssText = "padding:4px 10px; font-size:12px;";
+        delBtn.onclick = () => {
+          list.splice(i, 1);
+          store[key] = list;
+          saveStore(store);
+          renderQuestionList();
+        };
+        row.appendChild(delBtn);
+        listDiv.appendChild(row);
+      });
+    }
+
+    // ===== Add question =====
+    document.getElementById("addBtn").onclick = () => {
+      const text = document.getElementById("questionText").value.trim();
+      const options = [0, 1, 2, 3].map(i => document.getElementById("option" + i).value.trim());
+      const correctIndex = parseInt(document.getElementById("correctSelect").value);
+      const subject = document.getElementById("subjectSelect").value;
+      const image = document.getElementById("imagePath").value.trim();
+
+      if (!text || options.some(o => !o)) {
+        alert("Please fill in the question text and all four options.");
+        return;
+      }
+
+      const key = buildTestKey(currentSelection());
+      const store = getStore();
+      if (!store[key]) store[key] = [];
+
+      const question = { subject, text, options, correctIndex };
+      if (image) question.image = image;
+      store[key].push(question);
+      saveStore(store);
+
+      // Reset the question fields (keep the paper selection as-is for quick batch entry)
+      document.getElementById("questionText").value = "";
+      document.getElementById("imagePath").value = "";
+      [0, 1, 2, 3].forEach(i => document.getElementById("option" + i).value = "");
+      document.getElementById("correctSelect").value = "0";
+
+      const confirm = document.getElementById("addConfirm");
+      confirm.style.display = "inline";
+      setTimeout(() => confirm.style.display = "none", 1500);
+
+      renderQuestionList();
+    };
+
+    updateKeyPreview();
+  </script>
+  <script src="js/navbar.js"></script>
+</body>
+</html>

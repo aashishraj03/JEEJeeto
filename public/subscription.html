@@ -1,0 +1,555 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Subscription - JEE Jeeto</title>
+  <link rel="stylesheet" href="css/subscription.css">
+  <!-- Razorpay Checkout SDK -->
+  <script src="https://checkout.razorpay.com/v1/checkout.js"></script>
+</head>
+<body>
+
+  <!-- Topbar -->
+  <div class="topbar">
+    <div class="logo">JEE<span>Jeeto</span></div>
+    <div class="nav-group">
+      <nav>
+        <a href="index.html">Home</a>
+        <a href="subscription.html">Subscription</a>
+        <a href="login.html" id="navLoginBtn">Login</a>
+      </nav>
+      <a href="profile.html" id="navAccountBtn" class="account-btn" title="My Account" style="display: none;">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="8" r="4"/><path d="M4 20c0-4.4 3.6-7 8-7s8 2.6 8 7"/></svg>
+      </a>
+    </div>
+  </div>
+
+  <!-- Subscription Builder Container -->
+  <main class="container">
+    <div class="pricing-header">
+      <div class="section-title">Build Your Preparation Plan</div>
+      <div class="section-sub">Choose test series access or select topic notes with subject multi-buy discounts.</div>
+    </div>
+
+    <div class="builder-layout">
+      <!-- Main Selection Column -->
+      <div class="builder-main">
+        
+        <!-- Module 1: Test Series Selection -->
+        <div class="builder-box">
+          <div class="builder-box-header">
+            <div class="builder-box-title">
+              <input type="checkbox" id="testSeriesToggle" class="custom-checkbox" checked>
+              Test Series & Exam Simulator
+            </div>
+            <span style="font-size: 13px; color: var(--text-muted);">Real NTA Interface</span>
+          </div>
+
+          <div class="test-options-grid" id="testPlansContainer">
+            <label class="test-option-card" id="cardTest30">
+              <input type="radio" name="testPlan" value="20" data-days="30" data-label="30-Day Access">
+              <div class="test-plan-info">
+                <span class="test-plan-name">30 Days Access</span>
+                <span class="test-plan-sub">All PYQs & mock papers</span>
+              </div>
+              <span class="test-plan-price">&#8377;20</span>
+            </label>
+
+            <label class="test-option-card active" id="cardTest365">
+              <input type="radio" name="testPlan" value="100" data-days="365" data-label="1-Year Full Access" checked>
+              <div class="test-plan-info">
+                <span class="test-plan-name">1 Year Full Access</span>
+                <span class="test-plan-sub">Unlimited attempts & analysis</span>
+              </div>
+              <span class="test-plan-price">&#8377;100</span>
+            </label>
+          </div>
+        </div>
+
+        <!-- Module 2: Chapter Notes Selection -->
+        <div class="builder-box">
+          <div class="builder-box-header">
+            <div class="builder-box-title">
+              <input type="checkbox" id="notesToggle" class="custom-checkbox" checked>
+              IITians Chapter-Wise Notes
+            </div>
+            <span style="font-size: 13px; color: var(--text-muted);">&#8377;20 base / decreasing</span>
+          </div>
+
+          <div id="notesSelectionArea">
+            <!-- Class Selection Tabs -->
+            <div class="class-tabs">
+              <button class="class-tab-btn active" data-target="class11">Class 11</button>
+              <button class="class-tab-btn" data-target="class12">Class 12</button>
+            </div>
+
+            <!-- Class 11 Panels -->
+            <div class="class-content-panel active" id="class11">
+              <!-- Chemistry 11 -->
+              <div class="subject-block" data-subject-container="chem11">
+                <div class="subject-header">
+                  <div class="subject-title-group">
+                    <span class="subject-heading">Chemistry (Class 11)</span>
+                    <button type="button" class="circle-select-all" data-target="chem11" title="Select / Deselect all in Chemistry 11">
+                      <svg viewBox="0 0 24 24" fill="none" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
+                    </button>
+                  </div>
+                  <span class="subject-badge" id="badge-chem11">0 selected</span>
+                </div>
+                <div class="chapter-grid">
+                  <label class="chapter-item"><input type="checkbox" class="chap-check" data-subject="chem" data-key="chemical-bonding"> <span>Chemical Bonding</span></label>
+                  <label class="chapter-item"><input type="checkbox" class="chap-check" data-subject="chem" data-key="classification-of-elements"> <span>Classification of Elements</span></label>
+                  <label class="chapter-item"><input type="checkbox" class="chap-check" data-subject="chem" data-key="equilibrium"> <span>Equilibrium</span></label>
+                  <label class="chapter-item"><input type="checkbox" class="chap-check" data-subject="chem" data-key="hydrocarbons"> <span>Hydrocarbons</span></label>
+                  <label class="chapter-item"><input type="checkbox" class="chap-check" data-subject="chem" data-key="organic-chemistry"> <span>Organic Chemistry</span></label>
+                  <label class="chapter-item"><input type="checkbox" class="chap-check" data-subject="chem" data-key="redox-reactions"> <span>Redox Reactions</span></label>
+                  <label class="chapter-item"><input type="checkbox" class="chap-check" data-subject="chem" data-key="structure-of-atom"> <span>Structure of Atom</span></label>
+                  <label class="chapter-item"><input type="checkbox" class="chap-check" data-subject="chem" data-key="thermodynamics"> <span>Thermodynamics</span></label>
+                  <label class="chapter-item"><input type="checkbox" class="chap-check" data-subject="chem" data-key="some-basic-concepts-of-chemistry"> <span>Some Basic Concepts of Chemistry</span></label>
+                </div>
+              </div>
+
+              <!-- Mathematics 11 -->
+              <div class="subject-block" data-subject-container="math11">
+                <div class="subject-header">
+                  <div class="subject-title-group">
+                    <span class="subject-heading">Mathematics (Class 11)</span>
+                    <button type="button" class="circle-select-all" data-target="math11" title="Select / Deselect all in Mathematics 11">
+                      <svg viewBox="0 0 24 24" fill="none" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
+                    </button>
+                  </div>
+                  <span class="subject-badge" id="badge-math11">0 selected</span>
+                </div>
+                <div class="chapter-grid">
+                  <label class="chapter-item"><input type="checkbox" class="chap-check" data-subject="math" data-key="bionomial-theorem"> <span>Binomial Theorem</span></label>
+                  <label class="chapter-item"><input type="checkbox" class="chap-check" data-subject="math" data-key="complex-numbers"> <span>Complex Numbers</span></label>
+                  <label class="chapter-item"><input type="checkbox" class="chap-check" data-subject="math" data-key="coordinate-geometry"> <span>Coordinate Geometry</span></label>
+                  <label class="chapter-item"><input type="checkbox" class="chap-check" data-subject="math" data-key="differentiation"> <span>Differentiation</span></label>
+                  <label class="chapter-item"><input type="checkbox" class="chap-check" data-subject="math" data-key="permutations-and-combinations"> <span>Permutations and Combinations</span></label>
+                  <label class="chapter-item"><input type="checkbox" class="chap-check" data-subject="math" data-key="quadratic-equations"> <span>Quadratic Equations</span></label>
+                  <label class="chapter-item"><input type="checkbox" class="chap-check" data-subject="math" data-key="sequence-and-series"> <span>Sequence and Series</span></label>
+                  <label class="chapter-item"><input type="checkbox" class="chap-check" data-subject="math" data-key="sets"> <span>Sets</span></label>
+                  <label class="chapter-item"><input type="checkbox" class="chap-check" data-subject="math" data-key="statistics"> <span>Statistics</span></label>
+                  <label class="chapter-item"><input type="checkbox" class="chap-check" data-subject="math" data-key="trigonometry"> <span>Trigonometry</span></label>
+                </div>
+              </div>
+
+              <!-- Physics 11 -->
+              <div class="subject-block" data-subject-container="phy11">
+                <div class="subject-header">
+                  <div class="subject-title-group">
+                    <span class="subject-heading">Physics (Class 11)</span>
+                    <button type="button" class="circle-select-all" data-target="phy11" title="Select / Deselect all in Physics 11">
+                      <svg viewBox="0 0 24 24" fill="none" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
+                    </button>
+                  </div>
+                  <span class="subject-badge" id="badge-phy11">0 selected</span>
+                </div>
+                <div class="chapter-grid">
+                  <label class="chapter-item"><input type="checkbox" class="chap-check" data-subject="physics" data-key="gravitation"> <span>Gravitation</span></label>
+                  <label class="chapter-item"><input type="checkbox" class="chap-check" data-subject="physics" data-key="kinematics"> <span>Kinematics</span></label>
+                  <label class="chapter-item"><input type="checkbox" class="chap-check" data-subject="physics" data-key="kinetic-theory-of-gases"> <span>Kinetic Theory of Gases</span></label>
+                  <label class="chapter-item"><input type="checkbox" class="chap-check" data-subject="physics" data-key="oscillations-and-waves"> <span>Oscillations and Waves</span></label>
+                  <label class="chapter-item"><input type="checkbox" class="chap-check" data-subject="physics" data-key="properties-of-solids-and-liquids"> <span>Properties of Solids and Liquids</span></label>
+                  <label class="chapter-item"><input type="checkbox" class="chap-check" data-subject="physics" data-key="rotational-motion"> <span>Rotational Motion</span></label>
+                  <label class="chapter-item"><input type="checkbox" class="chap-check" data-subject="physics" data-key="thermodynamics-physics"> <span>Thermodynamics</span></label>
+                  <label class="chapter-item"><input type="checkbox" class="chap-check" data-subject="physics" data-key="units-and-measurements"> <span>Units and Measurements</span></label>
+                  <label class="chapter-item"><input type="checkbox" class="chap-check" data-subject="physics" data-key="work-energy-and-power"> <span>Work, Energy and Power</span></label>
+                </div>
+              </div>
+            </div>
+
+            <!-- Class 12 Panels -->
+            <div class="class-content-panel" id="class12">
+              <!-- Chemistry 12 -->
+              <div class="subject-block" data-subject-container="chem12">
+                <div class="subject-header">
+                  <div class="subject-title-group">
+                    <span class="subject-heading">Chemistry (Class 12)</span>
+                    <button type="button" class="circle-select-all" data-target="chem12" title="Select / Deselect all in Chemistry 12">
+                      <svg viewBox="0 0 24 24" fill="none" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
+                    </button>
+                  </div>
+                  <span class="subject-badge" id="badge-chem12">0 selected</span>
+                </div>
+                <div class="chapter-grid">
+                  <label class="chapter-item"><input type="checkbox" class="chap-check" data-subject="chem" data-key="alcohols-phenols-and-ethers"> <span>Alcohols, Phenols and Ethers</span></label>
+                  <label class="chapter-item"><input type="checkbox" class="chap-check" data-subject="chem" data-key="aldehydes-ketones-and-carboxylic-acids"> <span>Aldehydes, Ketones and Carboxylic Acids</span></label>
+                  <label class="chapter-item"><input type="checkbox" class="chap-check" data-subject="chem" data-key="amines"> <span>Amines</span></label>
+                  <label class="chapter-item"><input type="checkbox" class="chap-check" data-subject="chem" data-key="biomolecules"> <span>Biomolecules</span></label>
+                  <label class="chapter-item"><input type="checkbox" class="chap-check" data-subject="chem" data-key="chemical-kinetics"> <span>Chemical Kinetics</span></label>
+                  <label class="chapter-item"><input type="checkbox" class="chap-check" data-subject="chem" data-key="coordination-compounds"> <span>Coordination Compounds</span></label>
+                  <label class="chapter-item"><input type="checkbox" class="chap-check" data-subject="chem" data-key="d-and-f-block-elements"> <span>d- and f-Block Elements</span></label>
+                  <label class="chapter-item"><input type="checkbox" class="chap-check" data-subject="chem" data-key="electrochemistry"> <span>Electrochemistry</span></label>
+                  <label class="chapter-item"><input type="checkbox" class="chap-check" data-subject="chem" data-key="haloalkanes-and-haloarenes"> <span>Haloalkanes and Haloarenes</span></label>
+                  <label class="chapter-item"><input type="checkbox" class="chap-check" data-subject="chem" data-key="solutions"> <span>Solutions</span></label>
+                </div>
+              </div>
+
+              <!-- Mathematics 12 -->
+              <div class="subject-block" data-subject-container="math12">
+                <div class="subject-header">
+                  <div class="subject-title-group">
+                    <span class="subject-heading">Mathematics (Class 12)</span>
+                    <button type="button" class="circle-select-all" data-target="math12" title="Select / Deselect all in Mathematics 12">
+                      <svg viewBox="0 0 24 24" fill="none" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
+                    </button>
+                  </div>
+                  <span class="subject-badge" id="badge-math12">0 selected</span>
+                </div>
+                <div class="chapter-grid">
+                  <label class="chapter-item"><input type="checkbox" class="chap-check" data-subject="math" data-key="3d-geometry"> <span>3D Geometry</span></label>
+                  <label class="chapter-item"><input type="checkbox" class="chap-check" data-subject="math" data-key="application-of-derivatives"> <span>Application of Derivatives</span></label>
+                  <label class="chapter-item"><input type="checkbox" class="chap-check" data-subject="math" data-key="differential-equations"> <span>Differential Equations</span></label>
+                  <label class="chapter-item"><input type="checkbox" class="chap-check" data-subject="math" data-key="integral-calculas"> <span>Integral Calculus</span></label>
+                  <label class="chapter-item"><input type="checkbox" class="chap-check" data-subject="math" data-key="limits-continuity-and-differentiability"> <span>Limits, Continuity and Differentiability</span></label>
+                  <label class="chapter-item"><input type="checkbox" class="chap-check" data-subject="math" data-key="matrices-and-determinant"> <span>Matrices and Determinants</span></label>
+                  <label class="chapter-item"><input type="checkbox" class="chap-check" data-subject="math" data-key="probability"> <span>Probability</span></label>
+                  <label class="chapter-item"><input type="checkbox" class="chap-check" data-subject="math" data-key="relations-and-functions"> <span>Relations and Functions</span></label>
+                  <label class="chapter-item"><input type="checkbox" class="chap-check" data-subject="math" data-key="vector-algebra"> <span>Vector Algebra</span></label>
+                </div>
+              </div>
+
+              <!-- Physics 12 -->
+              <div class="subject-block" data-subject-container="phy12">
+                <div class="subject-header">
+                  <div class="subject-title-group">
+                    <span class="subject-heading">Physics (Class 12)</span>
+                    <button type="button" class="circle-select-all" data-target="phy12" title="Select / Deselect all in Physics 12">
+                      <svg viewBox="0 0 24 24" fill="none" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
+                    </button>
+                  </div>
+                  <span class="subject-badge" id="badge-phy12">0 selected</span>
+                </div>
+                <div class="chapter-grid">
+                  <label class="chapter-item"><input type="checkbox" class="chap-check" data-subject="physics" data-key="atoms-and-nuclei"> <span>Atoms and Nuclei</span></label>
+                  <label class="chapter-item"><input type="checkbox" class="chap-check" data-subject="physics" data-key="current-electricity"> <span>Current Electricity</span></label>
+                  <label class="chapter-item"><input type="checkbox" class="chap-check" data-subject="physics" data-key="dual-nature-of-matter"> <span>Dual Nature of Matter</span></label>
+                  <label class="chapter-item"><input type="checkbox" class="chap-check" data-subject="physics" data-key="electromagnetic-waves"> <span>Electromagnetic Waves</span></label>
+                  <label class="chapter-item"><input type="checkbox" class="chap-check" data-subject="physics" data-key="electronic-devices"> <span>Electronic Devices</span></label>
+                  <label class="chapter-item"><input type="checkbox" class="chap-check" data-subject="physics" data-key="electrostatics"> <span>Electrostatics</span></label>
+                  <label class="chapter-item"><input type="checkbox" class="chap-check" data-subject="physics" data-key="emi-and-ac"> <span>EMI and AC</span></label>
+                  <label class="chapter-item"><input type="checkbox" class="chap-check" data-subject="physics" data-key="magnetic-effects-of-current"> <span>Magnetic Effects of Current</span></label>
+                  <label class="chapter-item"><input type="checkbox" class="chap-check" data-subject="physics" data-key="optics"> <span>Optics</span></label>
+                </div>
+              </div>
+            </div>
+
+          </div>
+        </div>
+
+      </div>
+
+      <!-- Sticky Order Summary -->
+      <aside class="order-summary-card">
+        <div class="summary-title">Order Summary</div>
+        <div class="summary-row">
+          <span id="summaryTestLabel">Test Series (1-Year)</span>
+          <span id="summaryTestPrice">&#8377;100.00</span>
+        </div>
+        <div class="summary-row">
+          <span>Selected Notes (<span id="totalChapCount">0</span>)</span>
+          <span id="summaryNotesPrice">&#8377;0.00</span>
+        </div>
+        
+        <div class="summary-row total">
+          <span>Grand Total</span>
+          <span id="grandTotal">&#8377;100.00</span>
+        </div>
+        <div class="summary-savings" id="savingsText"></div>
+
+        <button class="btn-checkout" id="proceedBtn">
+          Proceed to Checkout
+        </button>
+      </aside>
+    </div>
+
+    <p class="payment-notice">
+      By subscribing, you're paying for access to our practice engine, analytics, and hosting &mdash;
+      not official NTA material. See our <a href="terms.html">Terms &amp; Disclaimer</a> for details.
+    </p>
+  </main>
+
+  <!-- Site Footer -->
+  <footer class="site-footer">
+    <div class="container footer-inner">
+      <div class="footer-brand">
+        <div class="logo">JEE<span>Jeeto</span></div>
+        <p>Previous year JEE Main questions and class-wise notes, in one place.</p>
+      </div>
+      <a href="contact.html" class="btn">Contact Us</a>
+    </div>
+    <div class="footer-bottom">
+      <div class="container footer-bottom-inner">
+        <span>&copy; 2026 JEEJeeto. All rights reserved.</span>
+        <div class="footer-legal">
+          <a href="privacy.html">Privacy Policy</a>
+          <a href="terms.html">Terms &amp; Disclaimer</a>
+        </div>
+      </div>
+      <div class="container footer-disclaimer">
+        JEEJeeto is an independent practice simulator and is not affiliated with, authorized by, or endorsed by the National Testing Agency (NTA), the Ministry of Education, or any IIT.
+      </div>
+    </div>
+  </footer>
+
+  <!-- Interactive State, Pricing Logic & Razorpay Trigger -->
+  <script>
+    const BASE_CHAPTER_PRICE = 20.0;
+    const STEP_DISCOUNT = 0.20;
+
+    const testToggle = document.getElementById('testSeriesToggle');
+    const notesToggle = document.getElementById('notesToggle');
+    const testPlansContainer = document.getElementById('testPlansContainer');
+    const notesArea = document.getElementById('notesSelectionArea');
+    const testRadios = document.querySelectorAll('input[name="testPlan"]');
+    const testCards = document.querySelectorAll('.test-option-card');
+    const chapCheckboxes = document.querySelectorAll('.chap-check');
+    const circleSelectAllBtns = document.querySelectorAll('.circle-select-all');
+    const proceedBtn = document.getElementById('proceedBtn');
+
+    // Tab switching for Class 11 / Class 12
+    document.querySelectorAll('.class-tab-btn').forEach(btn => {
+      btn.addEventListener('click', () => {
+        document.querySelectorAll('.class-tab-btn').forEach(b => b.classList.remove('active'));
+        document.querySelectorAll('.class-content-panel').forEach(p => p.classList.remove('active'));
+        btn.classList.add('active');
+        document.getElementById(btn.dataset.target).classList.add('active');
+      });
+    });
+
+    // Test series radio styling
+    testRadios.forEach(radio => {
+      radio.addEventListener('change', () => {
+        testCards.forEach(c => c.classList.remove('active'));
+        radio.closest('.test-option-card').classList.add('active');
+        updateCart();
+      });
+    });
+
+    // Circular Select All Toggle
+    circleSelectAllBtns.forEach(btn => {
+      btn.addEventListener('click', () => {
+        const targetContainer = document.querySelector(`[data-subject-container="${btn.dataset.target}"]`);
+        const checkboxes = targetContainer.querySelectorAll('.chap-check');
+        const allChecked = Array.from(checkboxes).every(cb => cb.checked);
+        
+        checkboxes.forEach(cb => {
+          cb.checked = !allChecked;
+        });
+        
+        btn.classList.toggle('active', !allChecked);
+        updateCart();
+      });
+    });
+
+    function calculateSubjectCost(count) {
+      let total = 0;
+      for (let i = 0; i < count; i++) {
+        total += Math.max(0, BASE_CHAPTER_PRICE - (i * STEP_DISCOUNT));
+      }
+      return total;
+    }
+
+    function updateCart() {
+      // 1. Test Series Section State
+      testPlansContainer.style.opacity = testToggle.checked ? '1' : '0.4';
+      testPlansContainer.style.pointerEvents = testToggle.checked ? 'auto' : 'none';
+
+      let testCost = 0;
+      let testLabel = 'Test Series (None)';
+      if (testToggle.checked) {
+        const activeRadio = document.querySelector('input[name="testPlan"]:checked');
+        if (activeRadio) {
+          testCost = parseFloat(activeRadio.value);
+          testLabel = `Test Series (${activeRadio.dataset.label})`;
+        }
+      }
+      document.getElementById('summaryTestLabel').textContent = testLabel;
+      document.getElementById('summaryTestPrice').textContent = `₹${testCost.toFixed(2)}`;
+
+      // 2. Chapter Notes Section State
+      notesArea.style.opacity = notesToggle.checked ? '1' : '0.4';
+      notesArea.style.pointerEvents = notesToggle.checked ? 'auto' : 'none';
+
+      const counts = { physics: 0, chem: 0, math: 0 };
+      const class11Counts = { physics: 0, chem: 0, math: 0 };
+      const class12Counts = { physics: 0, chem: 0, math: 0 };
+
+      if (notesToggle.checked) {
+        chapCheckboxes.forEach(cb => {
+          if (cb.checked) {
+            const subj = cb.dataset.subject;
+            counts[subj]++;
+            const isC11 = cb.closest('#class11') !== null;
+            if (isC11) class11Counts[subj]++;
+            else class12Counts[subj]++;
+          }
+        });
+      }
+
+      // Update badges
+      document.getElementById('badge-chem11').textContent = `${class11Counts.chem} selected`;
+      document.getElementById('badge-math11').textContent = `${class11Counts.math} selected`;
+      document.getElementById('badge-phy11').textContent = `${class11Counts.physics} selected`;
+      document.getElementById('badge-chem12').textContent = `${class12Counts.chem} selected`;
+      document.getElementById('badge-math12').textContent = `${class12Counts.math} selected`;
+      document.getElementById('badge-phy12').textContent = `${class12Counts.physics} selected`;
+
+      // Synchronize circular select-all buttons
+      circleSelectAllBtns.forEach(btn => {
+        const targetContainer = document.querySelector(`[data-subject-container="${btn.dataset.target}"]`);
+        const checkboxes = targetContainer.querySelectorAll('.chap-check');
+        const allChecked = Array.from(checkboxes).length > 0 && Array.from(checkboxes).every(cb => cb.checked);
+        btn.classList.toggle('active', allChecked);
+      });
+
+      // Calculate subject-wise tiered costs
+      const notesCost = calculateSubjectCost(counts.physics) + 
+                        calculateSubjectCost(counts.chem) + 
+                        calculateSubjectCost(counts.math);
+
+      const totalChapters = counts.physics + counts.chem + counts.math;
+      document.getElementById('totalChapCount').textContent = totalChapters;
+      document.getElementById('summaryNotesPrice').textContent = `₹${notesCost.toFixed(2)}`;
+
+      // 3. Totals & Savings
+      const grandTotal = testCost + notesCost;
+      document.getElementById('grandTotal').textContent = `₹${grandTotal.toFixed(2)}`;
+
+      const standardCost = totalChapters * BASE_CHAPTER_PRICE;
+      const saved = standardCost - notesCost;
+      const savingsEl = document.getElementById('savingsText');
+      if (saved > 0 && notesToggle.checked) {
+        savingsEl.textContent = `You saved ₹${saved.toFixed(2)} with subject multi-buy!`;
+      } else {
+        savingsEl.textContent = '';
+      }
+    }
+
+    testToggle.addEventListener('change', updateCart);
+    notesToggle.addEventListener('change', updateCart);
+    chapCheckboxes.forEach(cb => cb.addEventListener('change', updateCart));
+
+    // Razorpay Dynamic Checkout Trigger
+    proceedBtn.addEventListener('click', async () => {
+      const includeTest = testToggle.checked;
+      const selectedTestRadio = document.querySelector('input[name="testPlan"]:checked');
+      const testDays = (includeTest && selectedTestRadio) ? parseInt(selectedTestRadio.dataset.days) : 0;
+
+      const counts = { physics: 0, chem: 0, math: 0 };
+      const selectedChapters = [];
+
+      if (notesToggle.checked) {
+        chapCheckboxes.forEach(cb => {
+          if (cb.checked) {
+            const subj = cb.dataset.subject;
+            if (counts[subj] !== undefined) counts[subj]++;
+            
+            // Use the exact data-key attribute
+            if (cb.dataset.key) {
+              selectedChapters.push(cb.dataset.key.trim().toLowerCase());
+            }
+          }
+        });
+      }
+
+      const totalChapters = counts.physics + counts.chem + counts.math;
+      if (!includeTest && totalChapters === 0) {
+        alert('Please select at least one Test Series plan or chapter note.');
+        return;
+      }
+
+      proceedBtn.disabled = true;
+      proceedBtn.textContent = 'Preparing Order...';
+
+      try {
+        const orderRes = await fetch('/api/payment/create-order', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          credentials: 'include',
+          body: JSON.stringify({
+            includeTest,
+            testDays,
+            counts,
+            chapters: selectedChapters
+          })
+        });
+
+        const orderData = await orderRes.json();
+
+        if (!orderRes.ok || !orderData.success) {
+          if (orderRes.status === 401) {
+            alert('Please login to proceed with checkout.');
+            window.location.href = 'login.html';
+            return;
+          }
+          alert(orderData.error || 'Failed to create payment order.');
+          proceedBtn.disabled = false;
+          proceedBtn.textContent = 'Proceed to Checkout';
+          return;
+        }
+
+        const options = {
+          key: orderData.keyId,
+          amount: orderData.amount,
+          currency: orderData.currency,
+          name: 'JEE Jeeto',
+          description: orderData.planName || 'Custom Prep Pack',
+          order_id: orderData.orderId,
+          handler: async function (response) {
+            proceedBtn.textContent = 'Verifying Payment...';
+            const verifyRes = await fetch('/api/payment/verify-payment', {
+              method: 'POST',
+              headers: { 'Content-Type': 'application/json' },
+              credentials: 'include',
+              body: JSON.stringify({
+                razorpay_order_id: response.razorpay_order_id,
+                razorpay_payment_id: response.razorpay_payment_id,
+                razorpay_signature: response.razorpay_signature,
+                includeTest,
+                testDays,
+                counts,
+                chapters: selectedChapters
+              })
+            });
+
+            const verifyData = await verifyRes.json();
+            if (verifyData.success) {
+              alert('🎉 Payment successful! Your custom package is now active.');
+              window.location.href = 'notes.html';
+            } else {
+              alert(verifyData.error || 'Payment verification failed. Please contact support.');
+              proceedBtn.disabled = false;
+              proceedBtn.textContent = 'Proceed to Checkout';
+            }
+          },
+          modal: {
+            ondismiss: function() {
+              proceedBtn.disabled = false;
+              proceedBtn.textContent = 'Proceed to Checkout';
+            }
+          },
+          theme: {
+            color: '#0f388a'
+          }
+        };
+
+        const rzp = new Razorpay(options);
+        rzp.open();
+
+      } catch (err) {
+        console.error('Checkout error:', err);
+        alert('Network error while connecting to payment gateway.');
+        proceedBtn.disabled = false;
+        proceedBtn.textContent = 'Proceed to Checkout';
+      }
+    });
+
+    
+    updateCart();
+  </script>
+  <script src="js/navbar.js"></script>
+</body>
+</html>

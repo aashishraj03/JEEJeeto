@@ -1,0 +1,515 @@
+@import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@500;600;700;800&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@500;600&display=swap');
+
+/* ===================================================================
+   1. DESIGN SYSTEM & TOKENS (Synced with subscription.css)
+   =================================================================== */
+:root {
+  --bg-main:       #F8FAFC;
+  --bg-surface:    #FFFFFF;
+  --bg-hero:       #0F172A;
+  --bg-hero-alt:   #1E293B;
+  
+  --primary-gold:  #F59E0B;
+  --primary-hover: #D97706;
+  --teal-free:     #0D9488;
+  --coral-premium: #E11D48;
+
+  --text-main:     #0F172A;
+  --text-muted:    #64748B;
+  --text-light:    #F8FAFC;
+  --line-color:    #E2E8F0;
+
+  --font-heading:  'Plus Jakarta Sans', sans-serif;
+  --font-body:     'Inter', sans-serif;
+  --font-mono:     'JetBrains Mono', monospace;
+
+  --radius-sm:     6px;
+  --radius-md:     12px;
+  --radius-lg:     18px;
+  --radius-box:    32px;
+  --radius-panel:  150px;
+
+  --shadow-sm:     0 1px 3px rgba(0, 0, 0, 0.05);
+  --shadow-md:     0 4px 12px rgba(15, 23, 42, 0.08);
+  --shadow-lg:     0 12px 28px rgba(15, 23, 42, 0.12);
+  --shadow-glow:   0 0 20px rgba(245, 158, 11, 0.25);
+
+  --transition:    all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+/* ===================================================================
+   2. GLOBAL RESETS
+   =================================================================== */
+*, *::before, *::after {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+html {
+  -webkit-font-smoothing: antialiased;
+  scroll-behavior: smooth;
+}
+
+body {
+  font-family: var(--font-body);
+  background: var(--bg-main);
+  color: var(--text-main);
+  line-height: 1.6;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+
+a {
+  text-decoration: none;
+  color: inherit;
+}
+
+h1, h2, h3, h4 {
+  font-family: var(--font-heading);
+  letter-spacing: -0.02em;
+}
+
+/* ===================================================================
+   3. NAVIGATION BAR (.topbar)
+   =================================================================== */
+.topbar {
+  background: var(--bg-hero);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+  padding: 14px 32px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  position: sticky;
+  top: 0;
+  z-index: 1000;
+  backdrop-filter: blur(10px);
+}
+
+.topbar .logo {
+  font-family: var(--font-heading);
+  font-weight: 800;
+  font-size: 22px;
+  color: var(--text-light);
+}
+
+.topbar .logo span {
+  color: var(--primary-gold);
+}
+
+.topbar .nav-group {
+  display: flex;
+  align-items: center;
+}
+
+.topbar nav {
+  display: flex;
+  align-items: center;
+  gap: 28px;
+}
+
+.topbar nav a {
+  color: #94A3B8;
+  font-size: 14px;
+  font-weight: 600;
+  transition: var(--transition);
+}
+
+.topbar nav a:hover {
+  color: var(--text-light);
+}
+
+.account-btn {
+  width: 38px;
+  height: 38px;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.06);
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  color: var(--text-light);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-left: 24px;
+  transition: var(--transition);
+}
+
+.account-btn:hover {
+  background: var(--primary-gold);
+  border-color: var(--primary-gold);
+  color: var(--bg-hero);
+  transform: translateY(-2px);
+}
+
+/* ===================================================================
+   4. SLIDING AUTHENTICATION SECTION
+   =================================================================== */
+.auth-wrapper {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 60px 24px;
+}
+
+.auth-container {
+  background: var(--bg-surface);
+  border-radius: var(--radius-box);
+  box-shadow: var(--shadow-lg);
+  position: relative;
+  overflow: hidden;
+  width: 850px;
+  max-width: 100%;
+  min-height: 500px;
+  border: 1px solid var(--line-color);
+}
+
+.form-box {
+  position: absolute;
+  top: 0;
+  width: 50%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  padding: 0 45px;
+  background: var(--bg-surface);
+  transition: .6s ease-in-out 1.2s, visibility 0s 1.0s;
+  z-index: 1;
+}
+
+.form-box.register {
+  left: 0;
+  visibility: hidden;
+  transform: translateX(-100%);
+}
+
+.auth-container.active .form-box.register {
+  visibility: visible;
+  transform: translateX(0);
+}
+
+.form-box.login {
+  right: 0;
+  visibility: visible;
+  transform: translateX(0);
+}
+
+.auth-container.active .form-box.login {
+  visibility: hidden;
+  transform: translateX(100%);
+}
+
+.form-box form {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.form-box h2 {
+  font-size: 28px;
+  font-weight: 800;
+  color: var(--text-main);
+  margin-bottom: 6px;
+}
+
+.form-subtitle {
+  font-size: 13.5px;
+  color: var(--text-muted);
+  margin-bottom: 24px;
+}
+
+.input-field {
+  position: relative;
+  width: 100%;
+  margin-bottom: 14px;
+}
+
+.input-field input {
+  background: #F1F5F9;
+  border: 1.5px solid transparent;
+  padding: 12px 14px 12px 42px;
+  font-size: 14px;
+  font-family: var(--font-body);
+  border-radius: var(--radius-sm);
+  width: 100%;
+  outline: none;
+  transition: border-color 0.2s ease, background-color 0.2s ease;
+}
+
+.input-field input:focus {
+  background: #FFFFFF;
+  border-color: var(--primary-gold);
+}
+
+.input-field svg {
+  position: absolute;
+  left: 14px;
+  top: 50%;
+  transform: translateY(-50%);
+  color: var(--text-muted);
+  pointer-events: none;
+}
+
+.forgot-link {
+  font-size: 13px;
+  color: var(--text-muted);
+  margin: 4px 0 18px;
+  align-self: flex-end;
+  transition: color 0.2s ease;
+}
+
+.forgot-link:hover {
+  color: var(--primary-hover);
+  text-decoration: underline;
+}
+
+.auth-btn {
+  border-radius: var(--radius-sm);
+  border: none;
+  background: var(--primary-gold);
+  color: var(--bg-hero);
+  font-family: var(--font-heading);
+  font-size: 14.5px;
+  font-weight: 800;
+  padding: 12px 48px;
+  cursor: pointer;
+  box-shadow: 0 4px 12px rgba(245, 158, 11, 0.25);
+  transition: all 0.2s ease;
+}
+
+.auth-btn:hover {
+  background: var(--primary-hover);
+  transform: translateY(-1px);
+  box-shadow: 0 6px 16px rgba(245, 158, 11, 0.35);
+}
+
+.auth-btn:active {
+  transform: scale(0.98);
+}
+
+/* Sliding Pill Overlay */
+.toggle-box {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  top: 0;
+  left: 0;
+  pointer-events: none;
+  z-index: 2;
+}
+
+.toggle-box::before {
+  content: '';
+  position: absolute;
+  left: -250%;
+  width: 300%;
+  height: 100%;
+  background: var(--bg-hero);
+  background-image: 
+    radial-gradient(circle at 10% 20%, rgba(245, 158, 11, 0.18) 0%, transparent 50%),
+    radial-gradient(circle at 90% 80%, rgba(13, 148, 136, 0.15) 0%, transparent 50%);
+  border-radius: var(--radius-panel);
+  z-index: 2;
+  transition: 0.9s ease-in-out;
+}
+
+.auth-container.active .toggle-box::before {
+  left: 50%;
+}
+
+.toggle-panel {
+  position: absolute;
+  width: 50%;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  color: var(--text-light);
+  z-index: 3;
+  padding: 0 45px;
+  text-align: center;
+  transition: .6s ease-in-out;
+  pointer-events: auto;
+}
+
+.toggle-panel h2 {
+  font-size: 28px;
+  font-weight: 800;
+  color: var(--text-light);
+  margin-bottom: 12px;
+}
+
+.toggle-panel p {
+  font-size: 14px;
+  color: #94A3B8;
+  line-height: 1.6;
+  margin-bottom: 24px;
+}
+
+.overlay-btn {
+  background: transparent;
+  border: 1.5px solid var(--primary-gold);
+  color: var(--primary-gold);
+  font-family: var(--font-heading);
+  font-size: 14px;
+  font-weight: 700;
+  padding: 10px 36px;
+  border-radius: var(--radius-sm);
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.overlay-btn:hover {
+  background: var(--primary-gold);
+  color: var(--bg-hero);
+}
+
+.toggle-panel.toggle-left {
+  left: 0;
+  transition-delay: 0.9s;
+}
+
+.auth-container.active .toggle-panel.toggle-left {
+  left: -50%;
+  transition-delay: 0s;
+}
+
+.toggle-panel.toggle-right {
+  right: -50%;
+  transition-delay: 0s;
+}
+
+.auth-container.active .toggle-panel.toggle-right {
+  right: 0;
+  transition-delay: 0.9s;
+}
+
+/* ===================================================================
+   5. SITE FOOTER (.site-footer) - EXACT 1:1 FROM SUBSCRIPTION.CSS
+   =================================================================== */
+.container {
+  max-width: 1160px;
+  margin: 0 auto;
+  padding: 0 24px 60px;
+  flex: 1;
+  width: 100%;
+}
+
+.site-footer {
+  background: var(--bg-hero);
+  color: #94A3B8;
+  padding-top: 50px;
+  margin-top: auto;
+}
+
+.footer-inner {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding-bottom: 36px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.footer-brand .logo {
+  font-family: var(--font-heading);
+  font-size: 20px;
+  font-weight: 800;
+  color: var(--text-light);
+  margin-bottom: 6px;
+}
+
+.footer-brand .logo span {
+  color: var(--primary-gold);
+}
+
+.footer-brand p {
+  font-size: 13.5px;
+  max-width: 340px;
+}
+
+.footer-inner .btn {
+  width: auto;
+  background: transparent;
+  border: 1px solid transparent;
+  color: #94A3B8;
+  padding: 8px 18px;
+  border-radius: var(--radius-sm);
+  font-family: var(--font-heading);
+  font-weight: 600;
+  font-size: 14px;
+  transition: var(--transition);
+}
+
+.footer-inner .btn:hover {
+  background: var(--primary-gold);
+  color: var(--bg-hero);
+  border-color: var(--primary-gold);
+  transform: translateY(-1px);
+}
+
+.footer-bottom {
+  background: #090E1A;
+  padding: 20px 0;
+}
+
+.footer-bottom-inner {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 13px;
+  margin-bottom: 10px;
+}
+
+.footer-legal a {
+  margin-left: 20px;
+  transition: var(--transition);
+}
+
+.footer-legal a:hover {
+  color: var(--text-light);
+}
+
+.footer-disclaimer {
+  font-size: 11.5px;
+  color: #64748B;
+  text-align: center;
+  line-height: 1.5;
+}
+
+/* ===================================================================
+   6. RESPONSIVE
+   =================================================================== */
+@media (max-width: 768px) {
+  .topbar { padding: 14px 20px; }
+  .auth-container { min-height: 560px; }
+  .form-box { padding: 0 24px; }
+  .toggle-panel { padding: 0 24px; }
+  .footer-inner, .footer-bottom-inner { flex-direction: column; gap: 16px; text-align: center; }
+  .footer-legal a { margin: 0 10px; }
+}
+
+@media (max-width: 650px) {
+  .auth-container {
+    min-height: 520px;
+    border-radius: 20px;
+  }
+  .form-box {
+    width: 100%;
+  }
+  .toggle-box {
+    display: none;
+  }
+  .form-box.register {
+    display: none;
+  }
+  .auth-container.active .form-box.register {
+    display: flex;
+  }
+  .auth-container.active .form-box.login {
+    display: none;
+  }
+}

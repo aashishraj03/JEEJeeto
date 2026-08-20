@@ -1,0 +1,179 @@
+/* ==========================================================================
+   1. LATEX / ACADEMIC TYPOGRAPHY & LAYOUT
+   ========================================================================== */
+@import url('https://fonts.googleapis.com/css2?family=Latin+Modern+Roman&family=Lora:ital,wght@0,400;0,600;1,400&family=Source+Code+Pro&display=swap');
+
+body {
+  background-color: #f4f4f6;
+  color: #111111;
+  font-family: 'Lora', 'Latin Modern Roman', Georgia, serif;
+  line-height: 1.7;
+  margin: 0;
+  padding: 40px 20px;
+  display: flex;
+  justify-content: center;
+}
+
+/* Document Container */
+.secure-notes {
+  background: #ffffff;
+  max-width: 800px;
+  width: 100%;
+  padding: 60px 80px;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
+  border: 1px solid #e1e1e1;
+  position: relative;
+  box-sizing: border-box;
+  
+  /* SECURITY: Prevent text selection */
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
+}
+
+/* Header Styling */
+.doc-header {
+  text-align: center;
+  margin-bottom: 40px;
+}
+
+.doc-meta {
+  font-size: 0.85rem;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  color: #666;
+  margin-bottom: 5px;
+}
+
+.doc-title {
+  font-size: 2.2rem;
+  font-weight: 600;
+  margin: 10px 0;
+}
+
+.doc-divider {
+  height: 2px;
+  background-color: #111;
+  width: 100%;
+  margin-top: 20px;
+}
+
+/* Notes Content & Sections */
+.note-section {
+  margin-bottom: 35px;
+}
+
+h2 {
+  font-size: 1.4rem;
+  border-bottom: 1px solid #ddd;
+  padding-bottom: 5px;
+  margin-top: 30px;
+  color: #000;
+}
+
+h3 {
+  font-size: 1.15rem;
+  margin-top: 20px;
+}
+
+p, li {
+  font-size: 1.05rem;
+  color: #222;
+}
+
+.formula-box {
+  background-color: #fdfdfd;
+  border: 1px solid #e5e5e5;
+  border-radius: 4px;
+  padding: 10px;
+  margin: 15px 0;
+  text-align: center;
+  overflow-x: auto;
+}
+
+/* ==========================================================================
+   2. LATEX-STYLE INTERNAL CROSS-REFERENCE LINKS (\hyperref)
+   ========================================================================== */
+a.latex-internal-link {
+  color: #004b87; /* Classic LaTeX hyperref blue */
+  text-decoration: none;
+  border-bottom: 1px dotted #004b87;
+  padding: 0 2px;
+  transition: background-color 0.15s ease, color 0.15s ease;
+  cursor: pointer;
+}
+
+a.latex-internal-link:hover {
+  background-color: rgba(0, 75, 135, 0.1);
+  border-bottom: 1px solid #004b87;
+}
+
+/* Target highlight flash effect upon navigating */
+.note-section:target {
+  animation: highlightTarget 1.5s ease-out;
+}
+
+@keyframes highlightTarget {
+  0% { background-color: rgba(255, 235, 59, 0.4); }
+  100% { background-color: transparent; }
+}
+
+/* ==========================================================================
+   3. SECURITY & ANTI-SCREENSHOT / PRINTING MEASURES
+   ========================================================================== */
+
+/* Dynamic Watermark Overlay */
+.watermark-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  pointer-events: none;
+  z-index: 9999;
+  opacity: 0.06;
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-around;
+  align-content: space-around;
+  overflow: hidden;
+}
+
+.watermark-text {
+  font-size: 1.2rem;
+  transform: rotate(-30deg);
+  font-weight: bold;
+  color: #000;
+  white-space: nowrap;
+}
+
+/* Window Blur Blur Protection (Anti-Screenshot/Snipping Tool) */
+body.blurred-content .secure-notes {
+  filter: blur(20px);
+  pointer-events: none;
+}
+
+/* Anti-Print Rule */
+@media print {
+  body {
+    display: none !important;
+  }
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  animation: fadeIn 0.4s ease-in-out;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}

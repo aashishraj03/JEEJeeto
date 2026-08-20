@@ -1,0 +1,1054 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <title>My Account - JEE Jeeto</title>
+
+  <!-- Common site styles -->
+  <link rel="stylesheet" href="css/index.css">
+
+  <!-- Profile / Account styles -->
+  <link rel="stylesheet" href="css/profile.css">
+</head>
+
+<body>
+
+  <!-- =========================================================
+       TOP NAVIGATION
+       ========================================================= -->
+
+  <div class="topbar">
+
+    <div class="logo">
+      JEE<span>Jeeto</span>
+    </div>
+
+    <div class="nav-group">
+      <nav>
+        <a href="index.html">Home</a>
+        <a href="subscription.html">Subscription</a>
+        <a href="login.html" id="navLoginBtn">Login</a>
+      </nav>
+      <a href="profile.html" id="navAccountBtn" class="account-btn" title="My Account" style="display: none;">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="8" r="4"/><path d="M4 20c0-4.4 3.6-7 8-7s8 2.6 8 7"/></svg>
+      </a>
+    </div>
+
+  </div>
+
+
+  <!-- =========================================================
+       ACCOUNT AREA
+       ========================================================= -->
+
+  <main class="account-page">
+
+    <div class="account-layout">
+
+
+      <!-- =====================================================
+           LEFT SIDEBAR
+           ===================================================== -->
+
+      <aside class="account-sidebar">
+
+        <!-- User Mini Profile -->
+
+        <div class="sidebar-profile">
+
+          <div class="profile-avatar">
+            A
+          </div>
+
+          <div class="sidebar-user-info">
+            <h3>Aashish</h3>
+            <span>JEE Aspirant</span>
+          </div>
+
+        </div>
+
+
+        <!-- Main Navigation -->
+
+        <div class="sidebar-section">
+
+          <span class="sidebar-section-title">
+            MY ACCOUNT
+          </span>
+
+          <nav class="account-nav">
+
+            <a href="#profile" class="account-nav-item active">
+
+              <span class="nav-icon">
+                <svg
+                  width="18"
+                  height="18"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-width="2"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                >
+                  <circle cx="12" cy="8" r="4"/>
+                  <path d="M4 20c0-4.4 3.6-7 8-7s8 2.6 8 7"/>
+                </svg>
+              </span>
+
+              <span>Profile</span>
+
+            </a>
+
+
+            <a href="#overview" class="account-nav-item">
+
+              <span class="nav-icon">
+                <svg
+                  width="18"
+                  height="18"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-width="2"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                >
+                  <rect x="3" y="3" width="7" height="7"/>
+                  <rect x="14" y="3" width="7" height="7"/>
+                  <rect x="3" y="14" width="7" height="7"/>
+                  <rect x="14" y="14" width="7" height="7"/>
+                </svg>
+              </span>
+
+              <span>Overview</span>
+
+            </a>
+
+
+            <a href="#recent-tests" class="account-nav-item">
+
+              <span class="nav-icon">
+                <svg
+                  width="18"
+                  height="18"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-width="2"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                >
+                  <path d="M9 11l3 3L22 4"/>
+                  <path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/>
+                </svg>
+              </span>
+
+              <span>Recent Tests</span>
+
+            </a>
+
+
+            <a href="#flagged" class="account-nav-item">
+
+              <span class="nav-icon">
+                <svg
+                  width="18"
+                  height="18"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-width="2"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                >
+                  <path d="M5 21V4"/>
+                  <path d="M5 4c5-3 9 3 14 0v10c-5 3-9-3-14 0"/>
+                </svg>
+              </span>
+
+              <span>Flagged Questions</span>
+
+            </a>
+
+
+            <a href="#bookmarks" class="account-nav-item">
+
+              <span class="nav-icon">
+                <svg
+                  width="18"
+                  height="18"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-width="2"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                >
+                  <path d="M19 21l-7-5-7 5V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2z"/>
+                </svg>
+              </span>
+
+              <span>Bookmarked Notes</span>
+
+            </a>
+
+
+            <a href="#history" class="account-nav-item">
+
+              <span class="nav-icon">
+                <svg
+                  width="18"
+                  height="18"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-width="2"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                >
+                  <path d="M3 12a9 9 0 1 0 3-6.7"/>
+                  <polyline points="3 4 3 10 9 10"/>
+                  <polyline points="12 7 12 12 15 14"/>
+                </svg>
+              </span>
+
+              <span>Test History</span>
+
+            </a>
+
+          </nav>
+
+        </div>
+
+
+        <!-- Preparation -->
+
+        <div class="sidebar-section">
+
+          <span class="sidebar-section-title">
+            PREPARATION
+          </span>
+
+          <nav class="account-nav">
+
+            <a href="#performance" class="account-nav-item">
+
+              <span class="nav-icon">
+                <svg
+                  width="18"
+                  height="18"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-width="2"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                >
+                  <line x1="18" y1="20" x2="18" y2="10"/>
+                  <line x1="12" y1="20" x2="12" y2="4"/>
+                  <line x1="6" y1="20" x2="6" y2="14"/>
+                </svg>
+              </span>
+
+              <span>Performance</span>
+
+            </a>
+
+
+            <a href="subscription.html" class="account-nav-item">
+
+              <span class="nav-icon">
+                <svg
+                  width="18"
+                  height="18"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-width="2"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                >
+                  <rect x="2" y="5" width="20" height="14" rx="2"/>
+                  <line x1="2" y1="10" x2="22" y2="10"/>
+                </svg>
+              </span>
+
+              <span>Subscription</span>
+
+            </a>
+
+          </nav>
+
+        </div>
+
+
+        <!-- Account -->
+
+        <div class="sidebar-section sidebar-bottom">
+
+          <span class="sidebar-section-title">
+            ACCOUNT
+          </span>
+
+          <nav class="account-nav">
+
+            <a href="#settings" class="account-nav-item">
+
+              <span class="nav-icon">
+                <svg
+                  width="18"
+                  height="18"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-width="2"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                >
+                  <circle cx="12" cy="12" r="3"/>
+                  <path d="M19.4 15a1.7 1.7 0 0 0 .34 1.88l.06.06-1.7 1.7-.06-.06a1.7 1.7 0 0 0-1.88-.34 1.7 1.7 0 0 0-1.03 1.56V20h-2.4v-.2a1.7 1.7 0 0 0-1.03-1.56 1.7 1.7 0 0 0-1.88.34l-.06.06-1.7-1.7.06-.06A1.7 1.7 0 0 0 8.4 15a1.7 1.7 0 0 0-1.56-1.03H6v-2.4h.2A1.7 1.7 0 0 0 7.76 10a1.7 1.7 0 0 0-.34-1.88l-.06-.06 1.7-1.7.06.06A1.7 1.7 0 0 0 11 6.4a1.7 1.7 0 0 0 1.03-1.56V4h2.4v.2A1.7 1.7 0 0 0 15.46 5.76a1.7 1.7 0 0 0 1.88-.34l.06-.06 1.7 1.7-.06.06A1.7 1.7 0 0 0 18.7 9a1.7 1.7 0 0 0 1.56 1.03h.2v2.4h-.2A1.7 1.7 0 0 0 19.4 15z"/>
+                </svg>
+              </span>
+
+              <span>Settings</span>
+
+            </a>
+
+
+            <a href="contact.html" class="account-nav-item">
+
+              <span class="nav-icon">
+                <svg
+                  width="18"
+                  height="18"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-width="2"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                >
+                  <circle cx="12" cy="12" r="10"/>
+                  <path d="M9.1 9a3 3 0 1 1 5.8 1c0 2-3 2-3 4"/>
+                  <line x1="12" y1="18" x2="12.01" y2="18"/>
+                </svg>
+              </span>
+
+              <span>Help & Support</span>
+
+            </a>
+
+          </nav>
+
+        </div>
+
+
+        <a href="login.html" class="logout-btn">
+
+          <svg
+            width="17"
+            height="17"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="2"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+          >
+            <path d="M10 17l5-5-5-5"/>
+            <path d="M15 12H3"/>
+            <path d="M21 19V5a2 2 0 0 0-2-2h-6"/>
+          </svg>
+
+          Sign Out
+
+        </a>
+
+      </aside>
+
+
+      <!-- =====================================================
+           RIGHT CONTENT
+           ===================================================== -->
+
+      <section class="account-content">
+
+
+        <!-- ===================================================
+             PROFILE
+             =================================================== -->
+
+        <section id="profile" class="content-section">
+
+          <div class="content-header">
+
+            <div>
+              <span class="content-label">
+                MY ACCOUNT
+              </span>
+
+              <h1>Profile</h1>
+
+              <p>
+                Manage your personal information and account details.
+              </p>
+            </div>
+
+          </div>
+
+
+          <div class="profile-card">
+
+            <div class="profile-card-top">
+
+              <div class="large-avatar">
+                A
+              </div>
+
+              <div class="profile-main-info">
+                <h2>Aashish</h2>
+                <p>JEE Aspirant</p>
+
+                <span class="member-badge">
+                  Free Account
+                </span>
+              </div>
+
+              <button class="edit-profile-btn">
+                Edit Profile
+              </button>
+
+            </div>
+
+
+            <div class="profile-details">
+
+              <div class="detail-item">
+                <span class="detail-label">FULL NAME</span>
+                <strong>Aashish</strong>
+              </div>
+
+              <div class="detail-item">
+                <span class="detail-label">EMAIL ADDRESS</span>
+                <strong>your-email@example.com</strong>
+              </div>
+
+              <div class="detail-item">
+                <span class="detail-label">PREPARING FOR</span>
+                <strong>JEE Main & Advanced</strong>
+              </div>
+
+              <div class="detail-item">
+                <span class="detail-label">ACCOUNT STATUS</span>
+                <strong class="status-text">Active</strong>
+              </div>
+
+            </div>
+
+          </div>
+
+        </section>
+
+
+        <!-- ===================================================
+             OVERVIEW
+             =================================================== -->
+
+        <section id="overview" class="content-section">
+
+          <div class="content-header compact">
+
+            <div>
+              <span class="content-label">
+                SUMMARY
+              </span>
+
+              <h2>Overview</h2>
+            </div>
+
+          </div>
+
+
+          <div class="stats-grid">
+
+            <div class="stat-card">
+              <span class="stat-label">TESTS ATTEMPTED</span>
+              <strong>0</strong>
+              <span class="stat-sub">No attempts yet</span>
+            </div>
+
+            <div class="stat-card">
+              <span class="stat-label">QUESTIONS SOLVED</span>
+              <strong>0</strong>
+              <span class="stat-sub">Keep practicing</span>
+            </div>
+
+            <div class="stat-card">
+              <span class="stat-label">NOTES SAVED</span>
+              <strong>0</strong>
+              <span class="stat-sub">No bookmarks yet</span>
+            </div>
+
+            <div class="stat-card">
+              <span class="stat-label">CURRENT PLAN</span>
+              <strong class="plan-stat">FREE</strong>
+              <span class="stat-sub">Upgrade anytime</span>
+            </div>
+
+          </div>
+
+        </section>
+
+
+        <!-- ===================================================
+             RECENT TESTS
+             =================================================== -->
+
+        <section id="recent-tests" class="content-section">
+
+          <div class="content-header compact">
+
+            <div>
+              <span class="content-label">
+                PERFORMANCE
+              </span>
+
+              <h2>Recent Tests</h2>
+
+              <p>
+                Your latest test attempts will appear here.
+              </p>
+            </div>
+
+          </div>
+
+
+          <div class="empty-content">
+
+            <div class="empty-content-icon">
+              <svg
+                width="26"
+                height="26"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="1.8"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+              >
+                <path d="M9 11l3 3L22 4"/>
+                <path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/>
+              </svg>
+            </div>
+
+            <h3>No test attempts yet</h3>
+
+            <p>
+              Start a test to see your scores and detailed analysis here.
+            </p>
+
+            <a href="subscription.html" class="content-action">
+              Explore Test Series →
+            </a>
+
+          </div>
+
+        </section>
+
+
+        <!-- ===================================================
+             FLAGGED QUESTIONS
+             =================================================== -->
+
+        <section id="flagged" class="content-section">
+
+          <div class="content-header compact">
+
+            <div>
+              <span class="content-label">
+                PRACTICE
+              </span>
+
+              <h2>Flagged Questions</h2>
+
+              <p>
+                Questions you've marked for review.
+              </p>
+            </div>
+
+          </div>
+
+
+          <div class="empty-content">
+
+            <div class="empty-content-icon">
+              <svg
+                width="26"
+                height="26"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="1.8"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+              >
+                <path d="M5 21V4"/>
+                <path d="M5 4c5-3 9 3 14 0v10c-5 3-9-3-14 0"/>
+              </svg>
+            </div>
+
+            <h3>No flagged questions</h3>
+
+            <p>
+              Flag difficult questions during practice to revisit them later.
+            </p>
+
+          </div>
+
+        </section>
+
+
+        <!-- ===================================================
+             BOOKMARKED NOTES
+             =================================================== -->
+
+        <section id="bookmarks" class="content-section">
+
+          <div class="content-header compact">
+
+            <div>
+              <span class="content-label">
+                SAVED CONTENT
+              </span>
+
+              <h2>Bookmarked Notes</h2>
+
+              <p>
+                Your saved chapter-wise notes.
+              </p>
+
+            </div>
+
+          </div>
+
+
+          <div class="empty-content">
+
+            <div class="empty-content-icon">
+              <svg
+                width="26"
+                height="26"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="1.8"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+              >
+                <path d="M19 21l-7-5-7 5V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2z"/>
+              </svg>
+            </div>
+
+            <h3>No bookmarked notes</h3>
+
+            <p>
+              Bookmark important notes for quick access during your preparation.
+            </p>
+
+            <a href="subscription.html" class="content-action">
+              Explore Notes →
+            </a>
+
+          </div>
+
+        </section>
+
+
+        <!-- ===================================================
+             TEST HISTORY
+             =================================================== -->
+
+        <section id="history" class="content-section">
+
+          <div class="content-header compact">
+
+            <div>
+              <span class="content-label">
+                HISTORY
+              </span>
+
+              <h2>Test History</h2>
+
+              <p>
+                A complete record of your previous test attempts.
+              </p>
+
+            </div>
+
+          </div>
+
+
+          <div class="empty-content">
+
+            <div class="empty-content-icon">
+              <svg
+                width="26"
+                height="26"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="1.8"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+              >
+                <path d="M3 12a9 9 0 1 0 3-6.7"/>
+                <polyline points="3 4 3 10 9 10"/>
+                <polyline points="12 7 12 12 15 14"/>
+              </svg>
+            </div>
+
+            <h3>No history available</h3>
+
+            <p>
+              Your completed tests will be listed here.
+            </p>
+
+          </div>
+
+        </section>
+
+
+        <!-- ===================================================
+             PERFORMANCE
+             =================================================== -->
+
+        <section id="performance" class="content-section">
+
+          <div class="content-header compact">
+
+            <div>
+              <span class="content-label">
+                ANALYTICS
+              </span>
+
+              <h2>Performance</h2>
+
+              <p>
+                Track your preparation and identify areas for improvement.
+              </p>
+
+            </div>
+
+          </div>
+
+
+          <div class="performance-placeholder">
+
+            <div class="performance-item">
+              <span>Physics</span>
+
+              <div class="progress-track">
+                <div class="progress-bar" style="width: 0%;"></div>
+              </div>
+
+              <strong>--</strong>
+            </div>
+
+
+            <div class="performance-item">
+              <span>Chemistry</span>
+
+              <div class="progress-track">
+                <div class="progress-bar" style="width: 0%;"></div>
+              </div>
+
+              <strong>--</strong>
+            </div>
+
+
+            <div class="performance-item">
+              <span>Mathematics</span>
+
+              <div class="progress-track">
+                <div class="progress-bar" style="width: 0%;"></div>
+              </div>
+
+              <strong>--</strong>
+            </div>
+
+            <p class="performance-note">
+              Performance analytics will become available after your first test.
+            </p>
+
+          </div>
+
+        </section>
+
+
+        <!-- ===================================================
+             SETTINGS
+             =================================================== -->
+
+        <section id="settings" class="content-section">
+
+          <div class="content-header compact">
+
+            <div>
+              <span class="content-label">
+                ACCOUNT
+              </span>
+
+              <h2>Settings</h2>
+
+              <p>
+                Manage your account preferences.
+              </p>
+
+            </div>
+
+          </div>
+
+
+          <div class="settings-list">
+
+            <div class="setting-row">
+
+              <div>
+                <h3>Email Notifications</h3>
+                <p>Receive important updates about your account.</p>
+              </div>
+
+              <label class="switch">
+                <input type="checkbox" checked>
+                <span class="slider"></span>
+              </label>
+
+            </div>
+
+
+            <div class="setting-row">
+
+              <div>
+                <h3>Test Reminders</h3>
+                <p>Receive reminders about your preparation.</p>
+              </div>
+
+              <label class="switch">
+                <input type="checkbox" checked>
+                <span class="slider"></span>
+              </label>
+
+            </div>
+
+          </div>
+
+        </section>
+
+      </section>
+
+    </div>
+
+  </main>
+
+
+  <!-- =========================================================
+       SITE FOOTER
+       ========================================================= -->
+
+  <footer class="site-footer">
+
+    <div class="container footer-inner">
+
+      <div class="footer-brand">
+
+        <div class="logo">
+          JEE<span>Jeeto</span>
+        </div>
+
+        <p>
+          Previous year JEE Main questions and class-wise notes,
+          in one place.
+        </p>
+
+      </div>
+
+      <a href="contact.html" class="btn">
+        Contact Us
+      </a>
+
+    </div>
+
+
+    <div class="footer-bottom">
+
+      <div class="container footer-bottom-inner">
+
+        <span>
+          &copy; 2026 JEEJeeto. All rights reserved.
+        </span>
+
+        <div class="footer-legal">
+
+          <a href="privacy.html">
+            Privacy Policy
+          </a>
+
+          <a href="terms.html">
+            Terms &amp; Disclaimer
+          </a>
+
+        </div>
+
+      </div>
+
+
+      <div class="container footer-disclaimer">
+
+        JEEJeeto is an independent practice simulator and is not
+        affiliated with, authorized by, or endorsed by the National
+        Testing Agency (NTA), the Ministry of Education, or any IIT.
+
+      </div>
+
+    </div>
+
+  </footer>
+
+
+  <!-- =========================================================
+       SIDEBAR NAVIGATION
+       ========================================================= -->
+  <!-- Dynamic Profile Dashboard Script -->
+  <script src="js/navbar.js"></script>
+  <script>
+    // Tab switching in sidebar
+    const navItems = document.querySelectorAll(".account-nav-item");
+    navItems.forEach(item => {
+      item.addEventListener("click", function () {
+        if (this.getAttribute("href").startsWith("#")) {
+          navItems.forEach(nav => nav.classList.remove("active"));
+          this.classList.add("active");
+        }
+      });
+    });
+
+    // Guard: Redirect if not logged in
+    if (sessionStorage.getItem('jee_session_active') !== 'true') {
+      window.location.href = 'login.html';
+    }
+
+    async function loadUserProfileAndStats() {
+      try {
+        // 1. Fetch User Data
+        const userRes = await fetch('/api/auth/me');
+        const userData = await userRes.json();
+        if (userData.authenticated && userData.user) {
+          const user = userData.user;
+          const initial = (user.name || user.fullName || 'U').charAt(0).toUpperCase();
+          
+          document.querySelectorAll('.profile-avatar, .large-avatar').forEach(el => el.textContent = initial);
+          document.querySelectorAll('.sidebar-user-info h3, .profile-main-info h2').forEach(el => el.textContent = user.name || user.fullName);
+          
+          const emailDetail = document.querySelector('.profile-details .detail-item:nth-child(2) strong');
+          if (emailDetail) emailDetail.textContent = user.email;
+          const nameDetail = document.querySelector('.profile-details .detail-item:nth-child(1) strong');
+          if (nameDetail) nameDetail.textContent = user.name || user.fullName;
+        }
+
+        // 2. Fetch User Subscription Plan
+        const subRes = await fetch('/api/payment/status');
+        const subData = await subRes.json();
+        const planStat = document.querySelector('.plan-stat');
+        const memberBadge = document.querySelector('.member-badge');
+        if (subData.subscription && new Date(subData.subscription.expires_at) > new Date()) {
+          const planName = (subData.subscription.plan || 'ACTIVE').toUpperCase();
+          if (planStat) planStat.textContent = planName;
+          if (memberBadge) {
+            memberBadge.textContent = `${planName} Plan`;
+            memberBadge.style.background = '#dcfce7';
+            memberBadge.style.color = '#16a34a';
+          }
+        }
+
+        // 3. Fetch Test Attempts History & Calculate Stats
+        const attemptsRes = await fetch('/api/attempts');
+        const attempts = await attemptsRes.json();
+
+        if (Array.isArray(attempts) && attempts.length > 0) {
+          let totalSolved = 0;
+          let totalCorrect = 0;
+          let totalScore = 0;
+
+          attempts.forEach(a => {
+            totalCorrect += (a.correct_count || 0);
+            totalSolved += ((a.correct_count || 0) + (a.wrong_count || 0));
+            totalScore += (a.score || 0);
+          });
+
+          const totalTests = attempts.length;
+          const overallAccuracy = totalSolved > 0 ? Math.round((totalCorrect / totalSolved) * 100) : 0;
+
+          // Update Overview Cards
+          const statCards = document.querySelectorAll('.stats-grid .stat-card strong');
+          if (statCards[0]) statCards[0].textContent = totalTests;
+          if (statCards[1]) statCards[1].textContent = totalSolved;
+
+          // Populate Recent Tests & History
+          const recentTestsContainer = document.querySelector('#recent-tests .empty-content');
+          const historyContainer = document.querySelector('#history .empty-content');
+
+          const attemptsHTML = `
+            <div style="display:flex; flex-direction:column; gap:12px; margin-top:16px;">
+              ${attempts.map(att => {
+                const dateStr = new Date(att.attempted_at).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' });
+                return `
+                  <div style="background:#fff; border:1px solid #e2e8f0; border-radius:8px; padding:14px 18px; display:flex; justify-content:space-between; align-items:center;">
+                    <div>
+                      <strong style="font-size:15px; color:#0f172a; text-transform:uppercase;">${att.test_key.replace(/-/g, ' ')}</strong>
+                      <div style="font-size:12px; color:#64748b; margin-top:2px;">Attempted on ${dateStr}</div>
+                    </div>
+                    <div style="text-align:right;">
+                      <span style="font-size:16px; font-weight:800; color:#16a34a;">${att.score}</span> <span style="font-size:12px; color:#64748b;">/ 300</span>
+                      <div style="font-size:11px; color:#64748b;">${att.correct_count} Correct &bull; ${att.wrong_count} Wrong</div>
+                    </div>
+                  </div>
+                `;
+              }).join('')}
+            </div>
+          `;
+
+          if (recentTestsContainer) recentTestsContainer.outerHTML = attemptsHTML;
+          if (historyContainer) historyContainer.outerHTML = attemptsHTML;
+
+          // Update Performance Section
+          const perfPlaceholder = document.querySelector('.performance-placeholder');
+          if (perfPlaceholder) {
+            perfPlaceholder.innerHTML = `
+              <div class="performance-item">
+                <span>Overall Accuracy</span>
+                <div class="progress-track"><div class="progress-bar" style="width: ${overallAccuracy}%; background:#16a34a;"></div></div>
+                <strong>${overallAccuracy}%</strong>
+              </div>
+              <div class="performance-item">
+                <span>Average Score</span>
+                <div class="progress-track"><div class="progress-bar" style="width: ${Math.min(100, Math.round((totalScore / totalTests) / 3))}; background:#2563eb;"></div></div>
+                <strong>${Math.round(totalScore / totalTests)} / 300</strong>
+              </div>
+              <p class="performance-note" style="margin-top:14px; color:#64748b; font-size:12px;">
+                Performance stats calculated across all ${totalTests} test attempts.
+              </p>
+            `;
+          }
+        }
+      } catch (err) {
+        console.error('Failed to load dashboard data:', err);
+      }
+    }
+
+    loadUserProfileAndStats();
+  </script>
+</body>
+</html>
