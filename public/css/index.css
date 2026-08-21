@@ -143,8 +143,6 @@ h1, h2, h3, h4 {
    4. HERO SECTION (.hero)
    =================================================================== */
 .hero {
-  position: relative;
-  overflow: hidden;
   background: var(--bg-hero);
   background-image: 
     radial-gradient(circle at 50% 0%, rgba(245, 158, 11, 0.12) 0%, transparent 60%),
@@ -156,7 +154,7 @@ h1, h2, h3, h4 {
 }
 
 /* Fading image styling */
-/* .hero-right-image {
+.hero-right-image {
   position: absolute;
   right: 0;
   top: 105px;
@@ -167,22 +165,8 @@ h1, h2, h3, h4 {
   opacity: 0.7; /* Lowers overall intensity so it doesn't distract from text */
   
   /* The fading effect: fades transparent on the far left, solid towards the right */
-  /* mask-image: linear-gradient(to right, rgba(0, 0, 0, 0) 8%, rgba(0, 0, 0, 1) 90%);
+  mask-image: linear-gradient(to right, rgba(0, 0, 0, 0) 8%, rgba(0, 0, 0, 1) 90%);
   -webkit-mask-image: linear-gradient(to right, rgba(0, 0, 0, 0) 8%, rgba(0, 0, 0, 1) 90%);
-} */
-.hero-right-image {
-  position: absolute;
-  right: 0;
-  bottom: 0;
-  top: auto;
-  height: 100%;
-  width: 45%;
-  object-fit: cover;
-  object-position: right bottom;
-  pointer-events: none;
-  opacity: 0.7;
-  mask-image: linear-gradient(to right, rgba(0, 0, 0, 0) 8%, rgba(0, 0, 1) 90%);
-  -webkit-mask-image: linear-gradient(to right, rgba(0, 0, 0, 0) 8%, rgba(0, 0, 1) 90%);
 }
 
 .hero h1 {
@@ -655,30 +639,9 @@ h1, h2, h3, h4 {
   line-height: 1.7;
 }
 
-/* Responsive Overrides
+/* Responsive Overrides */
 @media (max-width: 768px) {
   .hero h1 { font-size: 30px; }
   .grid { margin-top: -20px; }
   .footer-inner, .footer-bottom-inner { flex-direction: column; gap: 16px; text-align: center; }
-} */
- @media (max-width: 768px) {
-  .hero h1 { font-size: 30px; }
-
-  /* Make hero image sit neatly in the background on phones */
-  .hero-right-image {
-    width: 100%;
-    height: 100%;
-    opacity: 0.25; /* Low opacity so text remains readable */
-  }
-
-  /* Change margin-top: -20px to normal spacing so cards don't overlap */
-  .grid { 
-    margin-top: 40px; 
-  }
-
-  .footer-inner, .footer-bottom-inner { 
-    flex-direction: column; 
-    gap: 16px; 
-    text-align: center; 
-  }
 }
