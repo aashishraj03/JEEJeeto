@@ -641,7 +641,39 @@ h1, h2, h3, h4 {
 
 /* Responsive Overrides */
 @media (max-width: 768px) {
-  .hero h1 { font-size: 30px; }
-  .grid { margin-top: -20px; }
-  .footer-inner, .footer-bottom-inner { flex-direction: column; gap: 16px; text-align: center; }
+  .hero {
+    min-height: 420px;
+    padding: 40px 16px 60px;
+  }
+
+  .hero h1 { 
+    font-size: 26px; 
+    max-width: 220px;
+  }
+
+  .hero p {
+    font-size: 14px;
+    max-width: 220px;
+  }
+
+  .btn-secondary {
+    font-size: 18px;
+    padding: 12px 24px;
+  }
+
+  .hero-right-image {
+    height: 75%;
+    max-height: 320px;
+    max-width: 55%;
+  }
+
+  .grid { 
+    margin-top: 40px; 
+  }
+
+  .footer-inner, .footer-bottom-inner { 
+    flex-direction: column; 
+    gap: 16px; 
+    text-align: center; 
+  }
 }

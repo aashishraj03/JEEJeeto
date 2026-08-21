@@ -144,6 +144,19 @@ h1, h2, h3, h4 {
 /* ===================================================================
    4. SLIDING AUTHENTICATION SECTION
    =================================================================== */
+.mobile-toggle-text {
+  display: none;
+  margin-top: 16px;
+  font-size: 13.5px;
+  color: var(--text-muted);
+}
+
+.mobile-toggle-text a {
+  color: var(--primary-gold);
+  font-weight: 700;
+  text-decoration: underline;
+}
+
 .auth-wrapper {
   flex: 1;
   display: flex;
@@ -494,21 +507,35 @@ h1, h2, h3, h4 {
 
 @media (max-width: 650px) {
   .auth-container {
-    min-height: 520px;
+    min-height: 480px;
     border-radius: 20px;
   }
+
   .form-box {
     width: 100%;
+    position: relative;
+    transition: none;
+    padding: 36px 20px;
   }
+
   .toggle-box {
     display: none;
   }
+
+  .mobile-toggle-text {
+    display: block;
+  }
+
   .form-box.register {
     display: none;
+    transform: none;
+    visibility: visible;
   }
+
   .auth-container.active .form-box.register {
     display: flex;
   }
+
   .auth-container.active .form-box.login {
     display: none;
   }

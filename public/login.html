@@ -50,6 +50,7 @@
           </div>
 
           <button type="submit" class="auth-btn" style="margin-top: 8px;">Register</button>
+          <p class="mobile-toggle-text">Already have an account? <a href="javascript:void(0)" id="mobileLoginBtn">Login</a></p>
         </form>
       </div>
 
@@ -71,6 +72,7 @@
 
           <a href="#" class="forgot-link">Forgot Password?</a>
           <button type="submit" class="auth-btn">Login</button>
+          <p class="mobile-toggle-text">Don't have an account? <a href="javascript:void(0)" id="mobileRegisterBtn">Register</a></p>
         </form>
       </div>
 
@@ -130,6 +132,14 @@
     });
 
     loginBtn.addEventListener('click', () => {
+      authContainer.classList.remove('active');
+    });
+
+    document.getElementById('mobileRegisterBtn')?.addEventListener('click', () => {
+      authContainer.classList.add('active');
+    });
+
+    document.getElementById('mobileLoginBtn')?.addEventListener('click', () => {
       authContainer.classList.remove('active');
     });
 
