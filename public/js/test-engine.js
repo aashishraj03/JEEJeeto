@@ -78,7 +78,7 @@ async function loadQuestionSet(key) {
     console.warn("Couldn't reach server, falling back to static questions.", e);
   }
 
-  const fallback = questionBank[key] || questionBank["main-2024-jan-shift1"] || [];
+  const fallback = (typeof questionBank !== "undefined" && questionBank[key]) ? questionBank[key] : [];
   return fallback;
 }
 
@@ -86,11 +86,11 @@ async function loadQuestionSet(key) {
 let questions = [];
 let totalQuestions = 75;
 let currentQuestion = 1;
-const status = {};             // "not-visited" | "not-answered" | "answered" | "marked" | "answered-marked"
-const answers = {};            // question number -> selected option index
-const timeSpent = {};          // question number -> seconds spent
-const answerChangedFlags = {}; // question number -> boolean
-const markedHistory = {};      // question number -> boolean
+const status = {};             
+const answers = {};            
+const timeSpent = {};          
+const answerChangedFlags = {}; 
+const markedHistory = {};      
 let testIsSubmitted = false;
 
 // Active per-question time ticker
@@ -274,8 +274,8 @@ function updateTimer() {
   }
 }
 
-// ===== Action Button Handlers =====
-document.addEventListener("DOMContentLoaded", () => {
+// ===== Direct Event Binding Helper =====
+function initActionHandlers() {
   const saveBtn = document.getElementById("saveNextBtn");
   const markBtn = document.getElementById("markBtn");
   const clearBtn = document.getElementById("clearBtn");
@@ -341,11 +341,15 @@ document.addEventListener("DOMContentLoaded", () => {
   }
 
   if (submitBtn) {
-    submitBtn.onclick = submitTest;
+    submitBtn.onclick = () => {
+      const confirmSubmit = confirm("Are you sure you want to submit the test?");
+      if (confirmSubmit) {
+        submitTest();
+      }
+    };
   }
-});
+}
 
-// ===== Submit Test Logic (Saves Telemetry & Directs to Profile) =====
 // ===== Submit Test Logic =====
 async function submitTest() {
   testIsSubmitted = true;
@@ -380,48 +384,22 @@ async function submitTest() {
 
   const totalScore = (correct * 4) - (wrong * 1);
 
-  // 1. Hide Test Interface Elements Immediately
+  // 1. Hide Top Navigation Bars
   const subNav = document.querySelector(".subject-nav-bar");
   const timerBadge = document.querySelector(".nta-timer-badge");
   if (subNav) subNav.style.display = "none";
   if (timerBadge) timerBadge.style.display = "none";
 
-  // 2. Save Attempt Telemetry
-  let attemptId = null;
-  try {
-    const res = await fetch("/api/attempts", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      credentials: "include",
-      body: JSON.stringify({
-        testKey: setKey,
-        score: totalScore,
-        correct,
-        wrong,
-        unattempted,
-        responses: responsesPayload
-      })
-    });
-    
-    if (res.ok) {
-      const data = await res.json();
-      attemptId = data.attemptId;
-    }
-  } catch (e) {
-    console.warn("Couldn't save attempt to server:", e);
-  }
-
-  // 3. Render Completion Screen
-  const layout = document.querySelector(".nta-main-layout");
-  if (layout) {
-    layout.style.height = "calc(100vh - 52px)";
-    layout.innerHTML = `
-      <div style="flex:1; padding: 60px 20px; text-align: center; background:#fff; overflow-y:auto;">
-        <div style="width:64px; height:64px; background:#dcfce7; color:#16a34a; border-radius:50%; display:flex; align-items:center; justify-content:center; font-size:30px; margin:0 auto 16px;">✓</div>
+  // 2. Render Completion Screen Immediately (No UI Freeze)
+  const container = document.getElementById("exam-scale-inner") || document.querySelector(".nta-main-layout");
+  if (container) {
+    container.innerHTML = `
+      <div style="width:100%; height:100%; padding: 60px 20px; text-align: center; background:#fff; overflow-y:auto; display:flex; flex-direction:column; align-items:center; justify-content:center;">
+        <div style="width:64px; height:64px; background:#dcfce7; color:#16a34a; border-radius:50%; display:flex; align-items:center; justify-content:center; font-size:30px; margin-bottom:16px;">✓</div>
         <h2 style="color:#173b6c; font-size:26px; margin-bottom:6px;">Test Submitted Successfully</h2>
         <p style="font-size:14px; color:#64748b; margin-bottom:24px;">Your attempt has been saved to your account profile.</p>
 
-        <div style="max-width:440px; margin: 0 auto 28px; background:#f8fafc; border:1px solid #e2e8f0; border-radius:10px; padding:20px; text-align:left;">
+        <div style="width:100%; max-width:440px; margin: 0 auto 28px; background:#f8fafc; border:1px solid #e2e8f0; border-radius:10px; padding:20px; text-align:left;">
           <div style="font-size:20px; font-weight:800; color:#0f172a; margin-bottom:12px; display:flex; justify-content:space-between;">
             <span>Total Score:</span>
             <span style="color:#16a34a;">${totalScore} <span style="font-size:13px; color:#64748b;">/ 300</span></span>
@@ -440,17 +418,46 @@ async function submitTest() {
           </div>
         </div>
 
-        <div style="display:flex; justify-content:center; gap:12px;">
-          <a href="profile.html${attemptId ? `?viewAttempt=${attemptId}` : ''}" class="nta-btn" style="background:#0f172a; color:#fff; display:inline-block; line-height:36px; padding:0 20px; text-decoration:none; border-radius:4px; font-size:13px; font-weight:700;">View Detailed Analysis</a>
+        <div style="display:flex; justify-content:center; gap:12px;" id="submissionActionButtons">
+          <a href="profile.html#recent-tests" id="viewProfileAnalysisBtn" class="nta-btn" style="background:#0f172a; color:#fff; display:inline-block; line-height:36px; padding:0 20px; text-decoration:none; border-radius:4px; font-size:13px; font-weight:700;">View Detailed Analysis</a>
           <a href="tests.html" class="nta-btn btn-save-next" style="display:inline-block; line-height:36px; padding:0 20px; text-decoration:none; font-size:13px; font-weight:700;">Back to Test Series</a>
         </div>
       </div>
     `;
   }
+
+  // 3. Send Telemetry to Server
+  try {
+    const res = await fetch("/api/attempts", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      credentials: "include",
+      body: JSON.stringify({
+        testKey: setKey,
+        score: totalScore,
+        correct,
+        wrong,
+        unattempted,
+        responses: responsesPayload
+      })
+    });
+    
+    if (res.ok) {
+      const data = await res.json();
+      const analysisLink = document.getElementById("viewProfileAnalysisBtn");
+      if (analysisLink && data.attemptId) {
+        analysisLink.href = `profile.html?viewAttempt=${data.attemptId}`;
+      }
+    }
+  } catch (e) {
+    console.warn("Couldn't save attempt to server:", e);
+  }
 }
 
 // ===== Initialization =====
 (async () => {
+  initActionHandlers();
+
   const rawQuestions = await loadQuestionSet(setKey);
   questions = generateFull75Questions(rawQuestions);
   totalQuestions = questions.length;
