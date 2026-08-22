@@ -13,7 +13,6 @@ html, body {
   font-family: 'Open Sans', Arial, sans-serif;
   background-color: #f4f6f9;
   color: #222;
-  overflow: hidden;
   user-select: none;
 }
 
@@ -90,10 +89,16 @@ html, body {
 
 /* =========================================================
    LAYOUT SPLIT (MAIN QUESTION AREA VS PALETTE)
+   dvh instead of vh: on mobile, vh includes the space behind
+   the collapsible address bar, so the real visible area is
+   shorter than 100vh reports. dvh tracks the actual viewport,
+   which is what keeps the bottom action bar from being pushed
+   below the fold. (Older browsers fall back to vh above.)
 ========================================================= */
 .nta-main-layout {
   display: flex;
   height: calc(100vh - 90px);
+  height: calc(100dvh - 90px);
 }
 
 .nta-question-container {
@@ -102,6 +107,7 @@ html, body {
   flex-direction: column;
   background: #fff;
   border-right: 1px solid #ccd4de;
+  min-width: 0; /* lets flex children shrink below content size on narrow screens */
 }
 
 .question-meta-bar {
@@ -134,6 +140,7 @@ html, body {
   flex: 1;
   overflow-y: auto;
   padding: 20px 24px;
+  min-height: 0; /* required so this scrolls instead of pushing the footer off */
 }
 
 .question-text-area {
@@ -184,18 +191,22 @@ html, body {
    BOTTOM ACTIONS BAR
 ========================================================= */
 .nta-bottom-actions {
-  height: 54px;
+  min-height: 54px;
   background: #f8fafc;
   border-top: 1px solid #ccd4de;
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding: 0 16px;
+  padding: 8px 16px;
+  flex-wrap: wrap;
+  gap: 8px;
+  flex-shrink: 0; /* never let the footer get squeezed by the scroll area above it */
 }
 
 .action-btn-group {
   display: flex;
   gap: 8px;
+  flex-wrap: wrap;
 }
 
 .nta-btn {
@@ -207,6 +218,7 @@ html, body {
   cursor: pointer;
   border: 1px solid transparent;
   transition: all 0.15s;
+  white-space: nowrap;
 }
 
 .btn-save-next {
@@ -235,6 +247,7 @@ html, body {
 ========================================================= */
 .nta-palette-container {
   width: 320px;
+  flex-shrink: 0;
   background: #f1f4f8;
   display: flex;
   flex-direction: column;
@@ -345,6 +358,7 @@ html, body {
   flex: 1;
   overflow-y: auto;
   padding: 12px;
+  min-height: 0;
 }
 
 .palette-heading {
@@ -435,52 +449,61 @@ html, body {
 }
 .btn-submit-exam:hover { background: #0369a1; }
 
-html, body {
-  height: 100%;
-  font-family: 'Open Sans', Arial, sans-serif;
-  background-color: #f4f6f9;
-  color: #222;
-  /* remove overflow: hidden here */
-  user-select: none;
-}
-
-.nta-main-layout {
-  display: flex;
-  height: calc(100vh - 90px);
-  height: calc(100dvh - 90px); /* dvh accounts for mobile browser chrome */
-}
-
+/* =========================================================
+   PHONE BREAKPOINT
+   Stack question panel above the palette instead of side by
+   side, and let the palette collapse to a compact strip so
+   the bottom action bar always has room to show in full.
+========================================================= */
 @media (max-width: 768px) {
   .nta-main-layout {
     flex-direction: column;
-    height: auto;
-    min-height: calc(100dvh - 90px);
+    height: calc(100vh - 90px);
+    height: calc(100dvh - 90px);
   }
 
   .nta-question-container {
     border-right: none;
     border-bottom: 1px solid #ccd4de;
+    flex: 1 1 auto;
+    min-height: 0;
   }
 
-  .nta-palette-container {
-    width: 100%;
+  .question-content-scroll {
+    padding: 14px 16px;
   }
 
   .nta-bottom-actions {
-    flex-wrap: wrap;
-    height: auto;
-    padding: 8px;
-    gap: 8px;
+    flex-direction: column;
+    align-items: stretch;
+    padding: 8px 10px;
   }
 
   .action-btn-group {
-    flex-wrap: wrap;
     justify-content: center;
-    width: 100%;
   }
 
   .nta-btn {
     flex: 1 1 auto;
-    min-width: 100px;
+  }
+
+  .nta-palette-container {
+    width: 100%;
+    flex: 0 0 auto;
+    max-height: 40vh;
+    max-height: 40dvh;
+  }
+
+  .palette-buttons-grid {
+    grid-template-columns: repeat(8, 1fr);
+  }
+
+  .nta-exam-title {
+    font-size: 13px;
+  }
+
+  .nta-timer-badge {
+    font-size: 12px;
+    padding: 3px 8px;
   }
 }
