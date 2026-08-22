@@ -292,6 +292,13 @@ h1, h2, h3, h4 {
   color: var(--text-main);
 }
 
+.input-field input#regPassword,
+.input-field input#loginPassword,
+.input-field input#newPassword {
+  padding-right: 42px;
+}
+
+
 .forgot-link {
   font-size: 13px;
   color: var(--text-muted);

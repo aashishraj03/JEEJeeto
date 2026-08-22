@@ -26,6 +26,40 @@
     </div>
   </div>
 
+  <!-- Forgot Password Modal -->
+  <div id="forgotModal" style="display: none; position: fixed; inset: 0; background: rgba(15, 23, 42, 0.7); z-index: 2000; align-items: center; justify-content: center; padding: 20px;">
+    <div style="background: #ffffff; border-radius: 12px; max-width: 400px; width: 100%; padding: 28px; box-shadow: 0 10px 25px rgba(0,0,0,0.2); position: relative;">
+      <h3 style="margin-bottom: 6px; color: #0f172a;">Reset Password</h3>
+      <p style="font-size: 13px; color: #64748b; margin-bottom: 18px;" id="modalSubtitle">Enter your registered email to receive an OTP.</p>
+
+      <!-- Step 1: Request OTP -->
+      <div id="otpStep1">
+        <div class="input-field" style="margin-bottom: 14px;">
+          <input type="email" id="forgotEmail" placeholder="Your Registered Email" required style="width: 100%; height: 42px; border: 1px solid #cbd5e1; border-radius: 6px; padding: 0 12px;">
+        </div>
+        <button type="button" class="auth-btn" id="sendOtpBtn" style="width: 100%; height: 40px; background: #f59e0b; font-weight: 700; border: none; border-radius: 6px; cursor: pointer;">Send OTP</button>
+      </div>
+
+      <!-- Step 2: Verify OTP & New Password -->
+      <div id="otpStep2" style="display: none;">
+        <div class="input-field" style="margin-bottom: 12px;">
+          <input type="text" id="otpValue" placeholder="Enter 6-Digit OTP" maxlength="6" style="width: 100%; height: 42px; border: 1px solid #cbd5e1; border-radius: 6px; padding: 0 12px; letter-spacing: 4px; font-weight: 700;">
+        </div>
+        <div class="input-field" style="margin-bottom: 14px;">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
+          <input type="password" id="newPassword" placeholder="New Password (8+ chars)" required>
+          <button type="button" class="toggle-password" data-target="newPassword" aria-label="Show password">
+            <svg class="eye-icon" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
+            <svg class="eye-off-icon" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="display:none"><path d="M17.94 17.94A10.94 10.94 0 0 1 12 20c-7 0-11-8-11-8a18.5 18.5 0 0 1 5.06-5.94M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19m-6.72-1.07a3 3 0 1 1-4.24-4.24"/><line x1="1" y1="1" x2="23" y2="23"/></svg>
+          </button>
+        </div>
+        <button type="button" class="auth-btn" id="resetPassBtn" style="width: 100%; height: 40px; background: #16a34a; color: #fff; font-weight: 700; border: none; border-radius: 6px; cursor: pointer;">Update Password</button>
+      </div>
+
+      <button type="button" id="closeForgotModal" style="margin-top: 14px; background: none; border: none; width: 100%; color: #64748b; cursor: pointer; font-size: 13px;">Cancel</button>
+    </div>
+  </div>
+
   <!-- Sliding Auth Container -->
   <main class="auth-wrapper">
     <div class="auth-container" id="authContainer">
@@ -286,6 +320,107 @@
         btn.querySelector('.eye-off-icon').style.display = showing ? 'none' : 'block';
         btn.setAttribute('aria-label', showing ? 'Show password' : 'Hide password');
       });
+    });
+
+    // Forgot Password Modal Triggers
+    const forgotModal = document.getElementById('forgotModal');
+    const forgotLink = document.querySelector('.forgot-link');
+    const closeForgotModal = document.getElementById('closeForgotModal');
+    const otpStep1 = document.getElementById('otpStep1');
+    const otpStep2 = document.getElementById('otpStep2');
+    const sendOtpBtn = document.getElementById('sendOtpBtn');
+    const resetPassBtn = document.getElementById('resetPassBtn');
+
+    if (forgotLink) {
+      forgotLink.addEventListener('click', (e) => {
+        e.preventDefault();
+        otpStep1.style.display = 'block';
+        otpStep2.style.display = 'none';
+        forgotModal.style.display = 'flex';
+      });
+    }
+
+    if (closeForgotModal) {
+      closeForgotModal.addEventListener('click', () => {
+        forgotModal.style.display = 'none';
+      });
+    }
+
+    // Step 1: Send OTP
+    sendOtpBtn.addEventListener('click', async () => {
+      const email = document.getElementById('forgotEmail').value.trim();
+      if (!email) {
+        alert('Please enter your email address.');
+        return;
+      }
+
+      sendOtpBtn.disabled = true;
+      sendOtpBtn.textContent = 'Sending OTP...';
+
+      try {
+        const res = await fetch('/api/auth/forgot-password/send-otp', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ email })
+        });
+        const data = await res.json();
+
+        if (res.ok) {
+          alert('OTP sent! Please check your email inbox/spam folder.');
+          otpStep1.style.display = 'none';
+          otpStep2.style.display = 'block';
+          document.getElementById('modalSubtitle').textContent = `Enter the OTP sent to ${email}`;
+        } else {
+          alert(data.error || 'Failed to send OTP.');
+        }
+      } catch (err) {
+        alert('Network error. Check if your server is running.');
+      } finally {
+        sendOtpBtn.disabled = false;
+        sendOtpBtn.textContent = 'Send OTP';
+      }
+    });
+
+    // Step 2: Verify OTP & Update Password
+    resetPassBtn.addEventListener('click', async () => {
+      const email = document.getElementById('forgotEmail').value.trim();
+      const otp = document.getElementById('otpValue').value.trim();
+      const newPassword = document.getElementById('newPassword').value;
+
+      if (!otp || otp.length !== 6) {
+        alert('Please enter the 6-digit OTP.');
+        return;
+      }
+
+      const passwordRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[!@#$%^&*()_+\-=\[\]{};':"\\|,.<>\/?]).{8,}$/;
+      if (!passwordRegex.test(newPassword)) {
+        alert('New password must be at least 8 characters long and contain uppercase, lowercase, number, and special character.');
+        return;
+      }
+
+      resetPassBtn.disabled = true;
+      resetPassBtn.textContent = 'Updating...';
+
+      try {
+        const res = await fetch('/api/auth/forgot-password/verify-and-reset', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ email, otp, newPassword })
+        });
+        const data = await res.json();
+
+        if (res.ok) {
+          alert('Password reset successful! You can now log in with your new password.');
+          forgotModal.style.display = 'none';
+        } else {
+          alert(data.error || 'Password reset failed.');
+        }
+      } catch (err) {
+        alert('Network error. Could not reset password.');
+      } finally {
+        resetPassBtn.disabled = false;
+        resetPassBtn.textContent = 'Update Password';
+      }
     });
   </script>
   <script src="js/navbar.js"></script>
