@@ -331,14 +331,17 @@
       });
     });
 
-    // Circular Select All Toggle
+    // Circular Select All Toggle (Skips disabled/owned chapters)
     circleSelectAllBtns.forEach(btn => {
       btn.addEventListener('click', () => {
         const targetContainer = document.querySelector(`[data-subject-container="${btn.dataset.target}"]`);
-        const checkboxes = targetContainer.querySelectorAll('.chap-check');
-        const allChecked = Array.from(checkboxes).every(cb => cb.checked);
+        const availableCheckboxes = Array.from(targetContainer.querySelectorAll('.chap-check')).filter(cb => !cb.disabled);
         
-        checkboxes.forEach(cb => {
+        if (availableCheckboxes.length === 0) return;
+
+        const allChecked = availableCheckboxes.every(cb => cb.checked);
+        
+        availableCheckboxes.forEach(cb => {
           cb.checked = !allChecked;
         });
         
@@ -364,7 +367,7 @@
       let testLabel = 'Test Series (None)';
       if (testToggle.checked) {
         const activeRadio = document.querySelector('input[name="testPlan"]:checked');
-        if (activeRadio) {
+        if (activeRadio && !activeRadio.disabled) {
           testCost = parseFloat(activeRadio.value);
           testLabel = `Test Series (${activeRadio.dataset.label})`;
         }
@@ -382,7 +385,7 @@
 
       if (notesToggle.checked) {
         chapCheckboxes.forEach(cb => {
-          if (cb.checked) {
+          if (cb.checked && !cb.disabled) {
             const subj = cb.dataset.subject;
             counts[subj]++;
             const isC11 = cb.closest('#class11') !== null;
@@ -400,11 +403,11 @@
       document.getElementById('badge-math12').textContent = `${class12Counts.math} selected`;
       document.getElementById('badge-phy12').textContent = `${class12Counts.physics} selected`;
 
-      // Synchronize circular select-all buttons
+      // Synchronize circular select-all buttons based on remaining unpurchased items
       circleSelectAllBtns.forEach(btn => {
         const targetContainer = document.querySelector(`[data-subject-container="${btn.dataset.target}"]`);
-        const checkboxes = targetContainer.querySelectorAll('.chap-check');
-        const allChecked = Array.from(checkboxes).length > 0 && Array.from(checkboxes).every(cb => cb.checked);
+        const availableCheckboxes = Array.from(targetContainer.querySelectorAll('.chap-check')).filter(cb => !cb.disabled);
+        const allChecked = availableCheckboxes.length > 0 && availableCheckboxes.every(cb => cb.checked);
         btn.classList.toggle('active', allChecked);
       });
 
@@ -431,6 +434,73 @@
       }
     }
 
+    // --- USER PURCHASE STATE INITIALIZER ---
+    async function loadUserPurchases() {
+      try {
+        // 1. Fetch user active subscriptions & notes access in parallel
+        const [notesRes, subRes] = await Promise.all([
+          fetch('/api/notes/my-access', { credentials: 'include' }),
+          fetch('/api/payment/status', { credentials: 'include' })
+        ]);
+
+        const notesData = await notesRes.json();
+        const subData = await subRes.json();
+
+        // 2. Lock Purchased Chapters
+        if (notesData.allAccess) {
+          chapCheckboxes.forEach(cb => {
+            cb.checked = false;
+            cb.disabled = true;
+            cb.closest('.chapter-item')?.classList.add('item-purchased');
+          });
+        } else if (notesData.unlockedChapters && notesData.unlockedChapters.length > 0) {
+          const ownedSet = new Set(notesData.unlockedChapters.map(k => k.toLowerCase().trim()));
+          chapCheckboxes.forEach(cb => {
+            const key = cb.dataset.key ? cb.dataset.key.toLowerCase().trim() : '';
+            if (ownedSet.has(key)) {
+              cb.checked = false;
+              cb.disabled = true;
+              cb.closest('.chapter-item')?.classList.add('item-purchased');
+            }
+          });
+        }
+
+        // 3. Lock / Manage Test Series Plans
+        const radio30 = document.querySelector('input[name="testPlan"][data-days="30"]');
+        const radio365 = document.querySelector('input[name="testPlan"][data-days="365"]');
+        const card30 = document.getElementById('cardTest30');
+        const card365 = document.getElementById('cardTest365');
+
+        if (subData.subscribed && subData.subscription) {
+          const plan = subData.subscription.plan || '';
+
+          if (plan.includes('365d') || plan.includes('yearly') || plan === 'all_access_notes') {
+            // 1-Year plan active -> Lock BOTH plans
+            if (radio30) { radio30.disabled = true; radio30.checked = false; }
+            if (radio365) { radio365.disabled = true; radio365.checked = false; }
+            card30?.classList.add('item-purchased');
+            card365?.classList.add('item-purchased');
+            card30?.classList.remove('active');
+            card365?.classList.remove('active');
+            testToggle.checked = false; // Turn off test module by default
+          } else if (plan.includes('30d') || plan.includes('monthly')) {
+            // 30-Day plan active -> Lock 30-Day, Leave 1-Year available but NOT preselected
+            if (radio30) { radio30.disabled = true; radio30.checked = false; }
+            if (radio365) { radio365.disabled = false; radio365.checked = false; }
+            card30?.classList.add('item-purchased');
+            card30?.classList.remove('active');
+            card365?.classList.remove('active');
+            testToggle.checked = false; // User can manually enable if they want to upgrade
+          }
+        }
+
+        updateCart();
+      } catch (err) {
+        console.error('Failed to sync user purchased items:', err);
+        updateCart();
+      }
+    }
+
     testToggle.addEventListener('change', updateCart);
     notesToggle.addEventListener('change', updateCart);
     chapCheckboxes.forEach(cb => cb.addEventListener('change', updateCart));
@@ -439,18 +509,16 @@
     proceedBtn.addEventListener('click', async () => {
       const includeTest = testToggle.checked;
       const selectedTestRadio = document.querySelector('input[name="testPlan"]:checked');
-      const testDays = (includeTest && selectedTestRadio) ? parseInt(selectedTestRadio.dataset.days) : 0;
+      const testDays = (includeTest && selectedTestRadio && !selectedTestRadio.disabled) ? parseInt(selectedTestRadio.dataset.days) : 0;
 
       const counts = { physics: 0, chem: 0, math: 0 };
       const selectedChapters = [];
 
       if (notesToggle.checked) {
         chapCheckboxes.forEach(cb => {
-          if (cb.checked) {
+          if (cb.checked && !cb.disabled) {
             const subj = cb.dataset.subject;
             if (counts[subj] !== undefined) counts[subj]++;
-            
-            // Use the exact data-key attribute
             if (cb.dataset.key) {
               selectedChapters.push(cb.dataset.key.trim().toLowerCase());
             }
@@ -459,8 +527,8 @@
       }
 
       const totalChapters = counts.physics + counts.chem + counts.math;
-      if (!includeTest && totalChapters === 0) {
-        alert('Please select at least one Test Series plan or chapter note.');
+      if ((!includeTest || testDays === 0) && totalChapters === 0) {
+        alert('Please select at least one available Test Series plan or chapter note.');
         return;
       }
 
@@ -473,7 +541,7 @@
           headers: { 'Content-Type': 'application/json' },
           credentials: 'include',
           body: JSON.stringify({
-            includeTest,
+            includeTest: (includeTest && testDays > 0),
             testDays,
             counts,
             chapters: selectedChapters
@@ -511,7 +579,7 @@
                 razorpay_order_id: response.razorpay_order_id,
                 razorpay_payment_id: response.razorpay_payment_id,
                 razorpay_signature: response.razorpay_signature,
-                includeTest,
+                includeTest: (includeTest && testDays > 0),
                 testDays,
                 counts,
                 chapters: selectedChapters
@@ -550,8 +618,8 @@
       }
     });
 
-    
-    updateCart();
+    // Run purchase loader on DOM initialization
+    loadUserPurchases();
   </script>
   <script src="js/navbar.js"></script>
 </body>
