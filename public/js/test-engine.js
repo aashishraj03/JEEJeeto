@@ -16,8 +16,7 @@ function generateFull75Questions(loadedQuestions = []) {
 
   subjects.forEach(subj => {
     for (let i = subj.start; i <= subj.end; i++) {
-      // Use real question if present in DB/questionBank, else supply a structured JEE problem
-      const existing = loadedQuestions.find(q => q.subject === subj.name && (loadedQuestions.indexOf(q) + 1) === i) 
+      const existing = loadedQuestions.find(q => q.subject === subj.name && (loadedQuestions.indexOf(q) + 1) === i)
                     || loadedQuestions[i - 1];
 
       if (existing) {
@@ -90,7 +89,7 @@ const answers = {}; // question number -> selected option index
 // ===== Subject Switching =====
 function switchSubject(subjectName) {
   document.querySelectorAll(".sub-tab-btn").forEach(btn => btn.classList.remove("active"));
-  
+
   if (subjectName === "Physics") {
     document.getElementById("tab-phy")?.classList.add("active");
     goToQuestion(1);
@@ -134,7 +133,6 @@ function renderQuestion() {
   if (questions.length === 0) return;
   const q = questions[currentQuestion - 1];
 
-  // Update Question Header & Subject Tab Highlighting
   const qNumEl = document.getElementById("q-number");
   if (qNumEl) qNumEl.textContent = `Question No. ${currentQuestion} (${q.subject})`;
 
@@ -147,11 +145,9 @@ function renderQuestion() {
     document.getElementById("tab-math")?.classList.add("active");
   }
 
-  // Question Text
   const qTextEl = document.getElementById("q-text");
   if (qTextEl) qTextEl.innerHTML = q.text;
 
-  // Question Figure
   const figureDiv = document.getElementById("q-figure");
   if (figureDiv) {
     figureDiv.innerHTML = "";
@@ -164,7 +160,6 @@ function renderQuestion() {
     }
   }
 
-  // Options
   const optionsDiv = document.getElementById("q-options");
   if (optionsDiv) {
     optionsDiv.innerHTML = "";
@@ -191,7 +186,6 @@ function renderQuestion() {
     });
   }
 
-  // Typeset LaTeX with MathJax if available
   if (window.MathJax && window.MathJax.typesetPromise) {
     MathJax.typesetPromise([qTextEl, optionsDiv]).catch(() => {});
   }
@@ -334,7 +328,6 @@ async function submitTest() {
 
   const score = (correct * 4) - (wrong * 1);
 
-  // Save to DB via authenticated session
   try {
     await fetch("/api/attempts", {
       method: "POST",
@@ -346,16 +339,14 @@ async function submitTest() {
     console.warn("Couldn't save attempt to server:", e);
   }
 
-  // 1. Hide the Subject Nav Bar & Timer Badge
   const subNav = document.querySelector(".subject-nav-bar");
   const timerBadge = document.querySelector(".nta-timer-badge");
   if (subNav) subNav.style.display = "none";
   if (timerBadge) timerBadge.style.display = "none";
 
-  // 2. Render Full Clean Result Screen
   const layout = document.querySelector(".nta-main-layout");
   if (layout) {
-    layout.style.height = "calc(100vh - 52px)";
+    layout.style.height = "calc(100% - 52px)";
     layout.innerHTML = `
       <div style="flex:1; padding: 40px 20px; text-align: center; background:#fff; overflow-y:auto;">
         <div style="width:64px; height:64px; background:#dcfce7; color:#16a34a; border-radius:50%; display:flex; align-items:center; justify-content:center; font-size:30px; margin:0 auto 16px;">✓</div>
@@ -394,7 +385,34 @@ async function submitTest() {
   }
 }
 
-// ===== Initialization =====
+// =========================================================
+// SCALE ENGINE — shrinks the fixed 1280x800 exam canvas to
+// fit any screen so the desktop layout (button positions
+// included) is always identical, just smaller on phones.
+// =========================================================
+const DESIGN_WIDTH = 1280;
+const DESIGN_HEIGHT = 800;
+
+function applyScale() {
+  const inner = document.getElementById("exam-scale-inner");
+  if (!inner) return;
+
+  const viewportHeight = window.visualViewport ? window.visualViewport.height : window.innerHeight;
+  const scaleX = window.innerWidth / DESIGN_WIDTH;
+  const scaleY = viewportHeight / DESIGN_HEIGHT;
+  const scale = Math.min(scaleX, scaleY);
+
+  inner.style.transform = `scale(${scale})`;
+}
+
+window.addEventListener("resize", applyScale);
+window.addEventListener("orientationchange", () => setTimeout(applyScale, 150));
+if (window.visualViewport) {
+  window.visualViewport.addEventListener("resize", applyScale);
+}
+document.addEventListener("DOMContentLoaded", applyScale);
+
+// ===== Initialization (runs immediately, same as before) =====
 (async () => {
   const rawQuestions = await loadQuestionSet(setKey);
   questions = generateFull75Questions(rawQuestions);
@@ -409,4 +427,5 @@ async function submitTest() {
   renderPalette();
   updateTimer();
   timerHandle = setInterval(updateTimer, 1000);
+  applyScale();
 })();
