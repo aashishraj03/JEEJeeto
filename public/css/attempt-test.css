@@ -434,3 +434,53 @@ html, body {
   cursor: pointer;
 }
 .btn-submit-exam:hover { background: #0369a1; }
+
+html, body {
+  height: 100%;
+  font-family: 'Open Sans', Arial, sans-serif;
+  background-color: #f4f6f9;
+  color: #222;
+  /* remove overflow: hidden here */
+  user-select: none;
+}
+
+.nta-main-layout {
+  display: flex;
+  height: calc(100vh - 90px);
+  height: calc(100dvh - 90px); /* dvh accounts for mobile browser chrome */
+}
+
+@media (max-width: 768px) {
+  .nta-main-layout {
+    flex-direction: column;
+    height: auto;
+    min-height: calc(100dvh - 90px);
+  }
+
+  .nta-question-container {
+    border-right: none;
+    border-bottom: 1px solid #ccd4de;
+  }
+
+  .nta-palette-container {
+    width: 100%;
+  }
+
+  .nta-bottom-actions {
+    flex-wrap: wrap;
+    height: auto;
+    padding: 8px;
+    gap: 8px;
+  }
+
+  .action-btn-group {
+    flex-wrap: wrap;
+    justify-content: center;
+    width: 100%;
+  }
+
+  .nta-btn {
+    flex: 1 1 auto;
+    min-width: 100px;
+  }
+}
