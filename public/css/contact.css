@@ -11,7 +11,7 @@
    1. CONTACT PAGE LAYOUT
    ================================================================= */
 .contact-page {
-  flex: 1;
+  flex: 1; /* Expands to push the footer to the bottom */
   width: 100%;
   display: flex;
   justify-content: center;
@@ -19,6 +19,17 @@
   padding: 60px 24px 80px;
 }
 
+/* Ensure body acts as a full-height flex column */
+body {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+
+/* Force footer to stick to the bottom */
+.site-footer {
+  margin-top: auto;
+}
 
 /* ================================================================
    2. CONTACT CARD
