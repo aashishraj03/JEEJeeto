@@ -596,9 +596,60 @@ h1, h2, h3, h4 {
   }
 }
 
-@media (max-width: 640px) {
+/* @media (max-width: 640px) {
   .topbar { padding: 14px 20px; }
   .chapter-grid { grid-template-columns: 1fr; }
   .footer-inner, .footer-bottom-inner { flex-direction: column; gap: 16px; text-align: center; }
   .footer-legal a { margin: 0 10px; }
+} */
+
+/* ===================================================================
+   MOBILE NAVBAR & HEADER FIX
+   =================================================================== */
+@media (max-width: 640px) {
+  .topbar {
+    padding: 10px 14px;
+    flex-wrap: wrap;
+    gap: 8px;
+  }
+
+  .topbar .logo {
+    font-size: 13px;
+  }
+
+  .topbar .nav-group {
+    width: 100%;
+    justify-content: space-between;
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+    scrollbar-width: none; /* Hide scrollbar on Firefox */
+    padding: 4px 0 2px 0;
+  }
+
+  .topbar .nav-group::-webkit-scrollbar {
+    display: none; /* Hide scrollbar on Chrome/Safari */
+  }
+
+  .topbar nav {
+    gap: 14px;
+    white-space: nowrap;
+    display: flex;
+    align-items: center;
+  }
+
+  .topbar nav a {
+    font-size: 13px;
+    padding: 4px 2px;
+  }
+
+  .account-btn {
+    width: 32px;
+    height: 32px;
+    min-width: 32px;
+    margin-left: 12px;
+  }
+
+  .account-btn svg {
+    width: 15px;
+    height: 15px;}
 }
