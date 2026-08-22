@@ -97,7 +97,7 @@ app.use(cookieParser());
 // 4. Strict Rate Limiting (3 requests per 5 minutes per IP on auth routes)
 const authLimiter = rateLimit({
   windowMs: 5 * 60 * 1000,
-  max: 3,
+  max: 5,
   standardHeaders: true,
   legacyHeaders: false,
   handler: (req, res) => {

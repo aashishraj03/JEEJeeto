@@ -9,25 +9,49 @@ const isValidEmail = (email) => {
   return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
 };
 
+// 10-Digit Mobile Number Validator (Starts with 6, 7, 8, or 9)
+const isValidPhone = (phone) => {
+  return /^[6-9]\d{9}$/.test(phone);
+};
+
+// Strong Password Validator (1 Uppercase, 1 Lowercase, 1 Digit, 1 Special Char, Min 8 Chars)
+const isValidPassword = (password) => {
+  return /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[!@#$%^&*()_+\-=\[\]{};':"\\|,.<>\/?]).{8,}$/.test(password);
+};
+
 // Register Endpoint
 router.post('/register', async (req, res) => {
   try {
     const rawName = req.body.fullName || req.body.name;
-    const { email, password } = req.body;
+    const { email, phone, password } = req.body;
 
-    if (!rawName || !email || !password) {
-      return res.status(400).json({ error: 'All fields are required.' });
+    if (!rawName || !email || !phone || !password) {
+      return res.status(400).json({ error: 'All fields (Name, Email, Phone, Password) are required.' });
     }
 
     const fullName = String(rawName).trim();
     const sanitizedEmail = String(email).toLowerCase().trim();
+    const sanitizedPhone = String(phone).trim();
+
+    // Validate Name (Must contain at least 1 alphabet character)
+    if (!/[a-zA-Z]/.test(fullName)) {
+      return res.status(400).json({ error: 'Name must contain at least one alphabet letter.' });
+    }
 
     if (!isValidEmail(sanitizedEmail)) {
       return res.status(400).json({ error: 'Please provide a valid email address.' });
     }
 
-    if (password.length < 6) {
-      return res.status(400).json({ error: 'Password must be at least 6 characters long.' });
+    // Validate 10-digit Phone Number
+    if (!isValidPhone(sanitizedPhone)) {
+      return res.status(400).json({ error: 'Please provide a valid 10-digit mobile number starting with 6, 7, 8, or 9.' });
+    }
+
+    // Validate Password Complexity
+    if (!isValidPassword(password)) {
+      return res.status(400).json({ 
+        error: 'Password must be at least 8 characters long and contain at least one uppercase letter, one lowercase letter, one number, and one special character.' 
+      });
     }
 
     const userCheck = await db.query('SELECT id FROM users WHERE email = $1', [sanitizedEmail]);
@@ -42,15 +66,15 @@ router.post('/register', async (req, res) => {
       parallelism: 2,
     });
 
-    // Explicitly enforce role as 'student'
+    // Enforce role as 'student' and save phone number
     const result = await db.query(
-      'INSERT INTO users (full_name, email, password_hash, role) VALUES ($1, $2, $3, $4) RETURNING id, full_name, email, role',
-      [fullName, sanitizedEmail, passwordHash, 'student']
+      'INSERT INTO users (full_name, email, phone, password_hash, role) VALUES ($1, $2, $3, $4, $5) RETURNING id, full_name, email, phone, role',
+      [fullName, sanitizedEmail, sanitizedPhone, passwordHash, 'student']
     );
 
     const user = result.rows[0];
     const token = jwt.sign(
-      { id: user.id, userId: user.id, email: user.email, role: user.role, name: user.full_name },
+      { id: user.id, userId: user.id, email: user.email, phone: user.phone, role: user.role, name: user.full_name },
       process.env.JWT_SECRET,
       { expiresIn: '12h' }
     );
@@ -68,6 +92,7 @@ router.post('/register', async (req, res) => {
         id: user.id,
         fullName: user.full_name,
         email: user.email,
+        phone: user.phone,
         role: user.role
       }
     });
@@ -100,7 +125,7 @@ router.post('/login', async (req, res) => {
     }
 
     const token = jwt.sign(
-      { id: user.id, userId: user.id, email: user.email, role: user.role, name: user.full_name },
+      { id: user.id, userId: user.id, email: user.email, phone: user.phone, role: user.role, name: user.full_name },
       process.env.JWT_SECRET,
       { expiresIn: '12h' }
     );
@@ -119,6 +144,7 @@ router.post('/login', async (req, res) => {
         fullName: user.full_name,
         name: user.full_name,
         email: user.email,
+        phone: user.phone,
         role: user.role,
       },
     });
