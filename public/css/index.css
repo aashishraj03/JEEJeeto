@@ -151,20 +151,20 @@ h1, h2, h3, h4 {
   padding: 80px 24px 110px;
   text-align: center;
   border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+  position: relative; /* ADDED: gives .hero-right-image a proper containing block */
+  overflow: hidden;    /* ADDED: keeps the image from ever bleeding outside the section */
 }
 
-/* Fading image styling */
 .hero-right-image {
   position: absolute;
   right: 0;
-  top: 105px;
-  height: 60%;
-  width: 42%; /* Adjust width depending on how much space you want it to cover */
+  top: 12%;       /* CHANGED from top: 105px — gap now scales with hero's own height */
+  height: 76%;   /* CHANGED from height: 60% — height is now derived from top/bottom */
+  /* bottom: 12%;    ADDED — sets the bottom gap explicitly instead of a fixed % height */
+  width: 42%;
   object-fit: cover;
-  pointer-events: none; /* Ensures mouse clicks pass right through the image */
-  opacity: 0.7; /* Lowers overall intensity so it doesn't distract from text */
-  
-  /* The fading effect: fades transparent on the far left, solid towards the right */
+  pointer-events: none;
+  opacity: 0.7;
   mask-image: linear-gradient(to right, rgba(0, 0, 0, 0) 8%, rgba(0, 0, 0, 1) 90%);
   -webkit-mask-image: linear-gradient(to right, rgba(0, 0, 0, 0) 8%, rgba(0, 0, 0, 1) 90%);
 }
