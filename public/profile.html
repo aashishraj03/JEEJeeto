@@ -12,6 +12,12 @@
   <!-- Profile / Account styles -->
   <link rel="stylesheet" href="css/profile.css">
   <script defer src="/_vercel/speed-insights/script.js"></script>
+  <script>
+    window.MathJax = {
+      tex: { inlineMath: [['$', '$'], ['\\(', '\\)']] }
+    };
+  </script>
+  <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js" id="MathJax-script" async></script>
 </head>
 
 <body>
@@ -94,20 +100,10 @@
 
             </a>
 
-
             <a href="#overview" class="account-nav-item">
 
               <span class="nav-icon">
-                <svg
-                  width="18"
-                  height="18"
-                  viewBox="0 0 24 24"
-                  fill="none"
-                  stroke="currentColor"
-                  stroke-width="2"
-                  stroke-linecap="round"
-                  stroke-linejoin="round"
-                >
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                   <rect x="3" y="3" width="7" height="7"/>
                   <rect x="14" y="3" width="7" height="7"/>
                   <rect x="3" y="14" width="7" height="7"/>
@@ -297,7 +293,7 @@
               <span>Settings</span>
             </a>
 
-            <a href="mailto:your_email@gmail.com?subject=Support%20Inquiry%20-%20JEE%20Jeeto" class="account-nav-item">
+            <a href="mailto:aashishraj0310@gmail.com?subject=Support%20Inquiry%20-%20JEE%20Jeeto" class="account-nav-item">
               <span class="nav-icon">
                 <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                   <circle cx="12" cy="12" r="10"/>
@@ -816,6 +812,23 @@
 
     </div>
 
+    <!-- Test Analysis Modal / Drawer -->
+  <div id="analysisModal" class="analysis-modal-backdrop" style="display: none;">
+    <div class="analysis-modal-container">
+      <div class="analysis-modal-header">
+        <div>
+          <span class="content-label">DETAILED ANALYSIS</span>
+          <h2 id="modalTestTitle">Test Analysis</h2>
+          <span id="modalTestDate" style="font-size:12px; color:#64748b;">Attempted on --</span>
+        </div>
+        <button type="button" id="closeAnalysisBtn" class="close-modal-btn">&times;</button>
+      </div>
+
+      <div class="analysis-modal-body" id="analysisModalBody">
+        <div style="padding: 40px; text-align: center; color: #64748b;">Loading detailed analytics...</div>
+      </div>
+    </div>
+  </div>
   </main>
 
 
@@ -834,7 +847,7 @@
         </p>
       </div>
       <!-- <a href="contact.html" class="btn">Contact Us</a> -->
-       <a href="mailto:your_email@gmail.com?subject=Support%20Inquiry%20-%20JEE%20Jeeto" class="btn">Contact Us</a>
+       <a href="mailto:aashishraj0310@gmail.com?subject=Support%20Inquiry%20-%20JEE%20Jeeto" class="btn">Contact Us</a>
     </div>
 
 
@@ -879,6 +892,142 @@
        ========================================================= -->
   <!-- Dynamic Profile Dashboard Script -->
   <script src="js/navbar.js"></script>
+  <script src="js/navbar.js"></script>
+  <script src="js/profile.js"></script>
+  <script>
+    // Tab switching in sidebar
+    const navItems = document.querySelectorAll(".account-nav-item");
+    navItems.forEach(item => {
+      item.addEventListener("click", function () {
+        if (this.getAttribute("href").startsWith("#")) {
+          navItems.forEach(nav => nav.classList.remove("active"));
+          this.classList.add("active");
+        }
+      });
+    });
+
+    // Guard: Redirect if not logged in
+    if (sessionStorage.getItem('jee_session_active') !== 'true') {
+      window.location.href = 'login.html';
+    }
+
+    async function loadUserProfileAndStats() {
+      try {
+        // 1. Fetch User Data
+        const userRes = await fetch('/api/auth/me');
+        const userData = await userRes.json();
+        if (userData.authenticated && userData.user) {
+          const user = userData.user;
+          const initial = (user.name || user.fullName || 'U').charAt(0).toUpperCase();
+          
+          document.querySelectorAll('.profile-avatar, .large-avatar').forEach(el => el.textContent = initial);
+          document.querySelectorAll('.sidebar-user-info h3, .profile-main-info h2').forEach(el => el.textContent = user.name || user.fullName);
+          
+          const emailDetail = document.querySelector('.profile-details .detail-item:nth-child(2) strong');
+          if (emailDetail) emailDetail.textContent = user.email;
+          const nameDetail = document.querySelector('.profile-details .detail-item:nth-child(1) strong');
+          if (nameDetail) nameDetail.textContent = user.name || user.fullName;
+        }
+
+        // 2. Fetch User Subscription Plan
+        const subRes = await fetch('/api/payment/status');
+        const subData = await subRes.json();
+        const planStat = document.querySelector('.plan-stat');
+        const memberBadge = document.querySelector('.member-badge');
+        if (subData.subscription && new Date(subData.subscription.expires_at) > new Date()) {
+          const planName = (subData.subscription.plan || 'ACTIVE').toUpperCase();
+          if (planStat) planStat.textContent = planName;
+          if (memberBadge) {
+            memberBadge.textContent = `${planName} Plan`;
+            memberBadge.style.background = '#dcfce7';
+            memberBadge.style.color = '#16a34a';
+          }
+        }
+
+        // 3. Fetch Test Attempts History
+        const attemptsRes = await fetch('/api/attempts');
+        const attempts = await attemptsRes.json();
+
+        if (Array.isArray(attempts) && attempts.length > 0) {
+          let totalSolved = 0;
+          let totalCorrect = 0;
+          let totalScore = 0;
+
+          attempts.forEach(a => {
+            totalCorrect += (a.correct_count || 0);
+            totalSolved += ((a.correct_count || 0) + (a.wrong_count || 0));
+            totalScore += (a.score || 0);
+          });
+
+          const totalTests = attempts.length;
+          const overallAccuracy = totalSolved > 0 ? Math.round((totalCorrect / totalSolved) * 100) : 0;
+
+          // Update Overview Cards
+          const statCards = document.querySelectorAll('.stats-grid .stat-card strong');
+          if (statCards[0]) statCards[0].textContent = totalTests;
+          if (statCards[1]) statCards[1].textContent = totalSolved;
+
+          // Populate Recent Tests & History with Clickable Cards
+          const recentTestsContainer = document.querySelector('#recent-tests .empty-content');
+          const historyContainer = document.querySelector('#history .empty-content');
+
+          const attemptsHTML = `
+            <div style="display:flex; flex-direction:column; gap:12px; margin-top:16px;">
+              ${attempts.map(att => {
+                const dateStr = new Date(att.attempted_at).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' });
+                return `
+                  <div class="test-attempt-card" onclick="openTestAnalysis(${att.id})">
+                    <div>
+                      <strong style="font-size:14.5px; color:#0f172a; text-transform:uppercase;">${att.test_key.replace(/-/g, ' ')}</strong>
+                      <div style="font-size:12px; color:#64748b; margin-top:2px;">Attempted on ${dateStr} &bull; <span style="color:#0284c7; font-weight:600;">View Analysis &rarr;</span></div>
+                    </div>
+                    <div style="text-align:right;">
+                      <span style="font-size:16px; font-weight:800; color:#16a34a;">${att.score}</span> <span style="font-size:12px; color:#64748b;">/ 300</span>
+                      <div style="font-size:11px; color:#64748b;">${att.correct_count} Correct &bull; ${att.wrong_count} Wrong</div>
+                    </div>
+                  </div>
+                `;
+              }).join('')}
+            </div>
+          `;
+
+          if (recentTestsContainer) recentTestsContainer.outerHTML = attemptsHTML;
+          if (historyContainer) historyContainer.outerHTML = attemptsHTML;
+
+          // Update Performance Section
+          const perfPlaceholder = document.querySelector('.performance-placeholder');
+          if (perfPlaceholder) {
+            perfPlaceholder.innerHTML = `
+              <div class="performance-item">
+                <span>Overall Accuracy</span>
+                <div class="progress-track"><div class="progress-bar" style="width: ${overallAccuracy}%; background:#16a34a;"></div></div>
+                <strong>${overallAccuracy}%</strong>
+              </div>
+              <div class="performance-item">
+                <span>Average Score</span>
+                <div class="progress-track"><div class="progress-bar" style="width: ${Math.min(100, Math.round((totalScore / totalTests) / 3))}; background:#2563eb;"></div></div>
+                <strong>${Math.round(totalScore / totalTests)} / 300</strong>
+              </div>
+              <p class="performance-note" style="margin-top:14px; color:#64748b; font-size:12px;">
+                Performance stats calculated across all ${totalTests} test attempts.
+              </p>
+            `;
+          }
+
+          // Check if navigated with ?viewAttempt=<id>
+          const urlParams = new URLSearchParams(window.location.search);
+          const viewAttemptId = urlParams.get('viewAttempt');
+          if (viewAttemptId) {
+            openTestAnalysis(viewAttemptId);
+          }
+        }
+      } catch (err) {
+        console.error('Failed to load dashboard data:', err);
+      }
+    }
+
+    loadUserProfileAndStats();
+  </script>
   <script>
     // Tab switching in sidebar
     const navItems = document.querySelectorAll(".account-nav-item");

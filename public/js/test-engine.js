@@ -16,7 +16,7 @@ function generateFull75Questions(loadedQuestions = []) {
 
   subjects.forEach(subj => {
     for (let i = subj.start; i <= subj.end; i++) {
-      const existing = loadedQuestions.find(q => q.subject === subj.name && (loadedQuestions.indexOf(q) + 1) === i)
+      const existing = loadedQuestions.find(q => q.subject === subj.name && (loadedQuestions.indexOf(q) + 1) === i) 
                     || loadedQuestions[i - 1];
 
       if (existing) {
@@ -24,6 +24,7 @@ function generateFull75Questions(loadedQuestions = []) {
       } else {
         fullSet.push({
           subject: subj.name,
+          chapter: `${subj.name} Basics`,
           num: i,
           text: `[${subj.name} Q${i}] Evaluate the standard value and select the correct option for this problem: $\\int_{0}^{1} x^{${(i % 5) + 1}} \\, dx$`,
           options: [
@@ -63,10 +64,12 @@ async function loadQuestionSet(key) {
       if (rows.length > 0) {
         return rows.map((r, idx) => ({
           subject: r.subject,
+          chapter: r.chapter || `${r.subject} Unit`,
           text: r.question_text,
           image: r.image_path || undefined,
           options: [r.option_a, r.option_b, r.option_c, r.option_d],
           correctIndex: r.correct_index,
+          explanation: r.explanation || null,
           num: idx + 1
         }));
       }
@@ -79,17 +82,40 @@ async function loadQuestionSet(key) {
   return fallback;
 }
 
-// ===== State Management =====
+// ===== State Management & Telemetry Trackers =====
 let questions = [];
 let totalQuestions = 75;
 let currentQuestion = 1;
-const status = {};  // "not-visited" | "not-answered" | "answered" | "marked" | "answered-marked"
-const answers = {}; // question number -> selected option index
+const status = {};             // "not-visited" | "not-answered" | "answered" | "marked" | "answered-marked"
+const answers = {};            // question number -> selected option index
+const timeSpent = {};          // question number -> seconds spent
+const answerChangedFlags = {}; // question number -> boolean
+const markedHistory = {};      // question number -> boolean
+let testIsSubmitted = false;
+
+// Active per-question time ticker
+setInterval(() => {
+  if (!testIsSubmitted && currentQuestion) {
+    timeSpent[currentQuestion] = (timeSpent[currentQuestion] || 0) + 1;
+  }
+}, 1000);
+
+// Helper: Format seconds to M:SS or H:MM:SS
+function formatDuration(totalSec) {
+  const m = Math.floor(totalSec / 60);
+  const s = totalSec % 60;
+  if (m >= 60) {
+    const h = Math.floor(m / 60);
+    const remM = m % 60;
+    return `${h}h ${remM}m ${s}s`;
+  }
+  return `${m}m ${s < 10 ? '0' : ''}${s}s`;
+}
 
 // ===== Subject Switching =====
 function switchSubject(subjectName) {
   document.querySelectorAll(".sub-tab-btn").forEach(btn => btn.classList.remove("active"));
-
+  
   if (subjectName === "Physics") {
     document.getElementById("tab-phy")?.classList.add("active");
     goToQuestion(1);
@@ -174,6 +200,9 @@ function renderQuestion() {
       if (answers[currentQuestion] === i) input.checked = true;
 
       input.onchange = () => {
+        if (answers[currentQuestion] !== undefined && answers[currentQuestion] !== i) {
+          answerChangedFlags[currentQuestion] = true;
+        }
         answers[currentQuestion] = i;
       };
 
@@ -256,7 +285,10 @@ document.addEventListener("DOMContentLoaded", () => {
     saveBtn.onclick = () => {
       const selected = document.querySelector('input[name="nta_option"]:checked');
       if (selected) {
-        answers[currentQuestion] = parseInt(selected.value);
+        if (answers[currentQuestion] !== undefined && answers[currentQuestion] !== parseInt(selected.value, 10)) {
+          answerChangedFlags[currentQuestion] = true;
+        }
+        answers[currentQuestion] = parseInt(selected.value, 10);
         status[currentQuestion] = "answered";
       } else if (answers[currentQuestion] !== undefined) {
         status[currentQuestion] = "answered";
@@ -275,9 +307,13 @@ document.addEventListener("DOMContentLoaded", () => {
 
   if (markBtn) {
     markBtn.onclick = () => {
+      markedHistory[currentQuestion] = true;
       const selected = document.querySelector('input[name="nta_option"]:checked');
       if (selected) {
-        answers[currentQuestion] = parseInt(selected.value);
+        if (answers[currentQuestion] !== undefined && answers[currentQuestion] !== parseInt(selected.value, 10)) {
+          answerChangedFlags[currentQuestion] = true;
+        }
+        answers[currentQuestion] = parseInt(selected.value, 10);
         status[currentQuestion] = "answered-marked";
       } else if (answers[currentQuestion] !== undefined) {
         status[currentQuestion] = "answered-marked";
@@ -309,75 +345,103 @@ document.addEventListener("DOMContentLoaded", () => {
   }
 });
 
+// ===== Submit Test Logic (Saves Telemetry & Directs to Profile) =====
 // ===== Submit Test Logic =====
 async function submitTest() {
+  testIsSubmitted = true;
   if (timerHandle) clearInterval(timerHandle);
 
   let correct = 0, wrong = 0, unattempted = 0;
+  const responsesPayload = [];
 
   questions.forEach((q, i) => {
     const qNum = i + 1;
-    if (answers[qNum] === undefined) {
-      unattempted++;
-    } else if (answers[qNum] === q.correctIndex) {
-      correct++;
-    } else {
-      wrong++;
-    }
+    const userChoice = answers[qNum];
+    const qTime = timeSpent[qNum] || 0;
+    const isAtt = userChoice !== undefined;
+    const isCorr = isAtt && userChoice === q.correctIndex;
+
+    if (!isAtt) unattempted++;
+    else if (isCorr) correct++;
+    else wrong++;
+
+    responsesPayload.push({
+      questionNum: qNum,
+      subject: q.subject,
+      chapter: q.chapter || `${q.subject} General`,
+      selectedOption: userChoice !== undefined ? userChoice : null,
+      correctOption: q.correctIndex,
+      isCorrect: isCorr,
+      timeSpent: qTime,
+      markedForReview: !!markedHistory[qNum],
+      answerChanged: !!answerChangedFlags[qNum]
+    });
   });
 
-  const score = (correct * 4) - (wrong * 1);
+  const totalScore = (correct * 4) - (wrong * 1);
 
-  try {
-    await fetch("/api/attempts", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      credentials: "include",
-      body: JSON.stringify({ testKey: setKey, score, correct, wrong, unattempted })
-    });
-  } catch (e) {
-    console.warn("Couldn't save attempt to server:", e);
-  }
-
+  // 1. Hide Test Interface Elements Immediately
   const subNav = document.querySelector(".subject-nav-bar");
   const timerBadge = document.querySelector(".nta-timer-badge");
   if (subNav) subNav.style.display = "none";
   if (timerBadge) timerBadge.style.display = "none";
 
+  // 2. Save Attempt Telemetry
+  let attemptId = null;
+  try {
+    const res = await fetch("/api/attempts", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      credentials: "include",
+      body: JSON.stringify({
+        testKey: setKey,
+        score: totalScore,
+        correct,
+        wrong,
+        unattempted,
+        responses: responsesPayload
+      })
+    });
+    
+    if (res.ok) {
+      const data = await res.json();
+      attemptId = data.attemptId;
+    }
+  } catch (e) {
+    console.warn("Couldn't save attempt to server:", e);
+  }
+
+  // 3. Render Completion Screen
   const layout = document.querySelector(".nta-main-layout");
   if (layout) {
-    layout.style.height = "calc(100% - 52px)";
+    layout.style.height = "calc(100vh - 52px)";
     layout.innerHTML = `
-      <div style="flex:1; padding: 40px 20px; text-align: center; background:#fff; overflow-y:auto;">
+      <div style="flex:1; padding: 60px 20px; text-align: center; background:#fff; overflow-y:auto;">
         <div style="width:64px; height:64px; background:#dcfce7; color:#16a34a; border-radius:50%; display:flex; align-items:center; justify-content:center; font-size:30px; margin:0 auto 16px;">✓</div>
         <h2 style="color:#173b6c; font-size:26px; margin-bottom:6px;">Test Submitted Successfully</h2>
-        <p style="font-size:14px; color:#64748b; margin-bottom:24px;">Your attempt has been saved to your profile dashboard.</p>
+        <p style="font-size:14px; color:#64748b; margin-bottom:24px;">Your attempt has been saved to your account profile.</p>
 
-        <div style="max-width:460px; margin: 0 auto 28px; background:#f8fafc; border:1px solid #e2e8f0; border-radius:10px; padding:24px; text-align:left;">
-          <div style="font-size:20px; font-weight:800; color:#0f172a; margin-bottom:16px; border-bottom:1px solid #e2e8f0; padding-bottom:12px; display:flex; justify-content:space-between;">
+        <div style="max-width:440px; margin: 0 auto 28px; background:#f8fafc; border:1px solid #e2e8f0; border-radius:10px; padding:20px; text-align:left;">
+          <div style="font-size:20px; font-weight:800; color:#0f172a; margin-bottom:12px; display:flex; justify-content:space-between;">
             <span>Total Score:</span>
-            <span style="color:#16a34a;">${score} <span style="font-size:14px; color:#64748b; font-weight:600;">/ 300</span></span>
+            <span style="color:#16a34a;">${totalScore} <span style="font-size:13px; color:#64748b;">/ 300</span></span>
           </div>
-          <div style="display:flex; justify-content:space-between; margin-bottom:10px; font-size:14px;">
-            <span>Correct Questions (+4):</span>
+          <div style="display:flex; justify-content:space-between; margin-bottom:8px; font-size:13.5px;">
+            <span>Correct (+4):</span>
             <strong style="color:#16a34a;">${correct}</strong>
           </div>
-          <div style="display:flex; justify-content:space-between; margin-bottom:10px; font-size:14px;">
-            <span>Incorrect Questions (-1):</span>
+          <div style="display:flex; justify-content:space-between; margin-bottom:8px; font-size:13.5px;">
+            <span>Incorrect (-1):</span>
             <strong style="color:#dc2626;">${wrong}</strong>
           </div>
-          <div style="display:flex; justify-content:space-between; margin-bottom:10px; font-size:14px;">
+          <div style="display:flex; justify-content:space-between; font-size:13.5px;">
             <span>Unattempted (0):</span>
             <strong>${unattempted}</strong>
-          </div>
-          <div style="display:flex; justify-content:space-between; margin-top:14px; padding-top:10px; border-top:1px dashed #cbd5e1; font-size:14px; font-weight:700;">
-            <span>Accuracy:</span>
-            <span>${(correct + wrong) > 0 ? Math.round((correct / (correct + wrong)) * 100) : 0}%</span>
           </div>
         </div>
 
         <div style="display:flex; justify-content:center; gap:12px;">
-          <a href="profile.html#recent-tests" class="nta-btn" style="background:#0f172a; color:#fff; display:inline-block; line-height:36px; padding:0 20px; text-decoration:none; border-radius:4px; font-size:13px; font-weight:700;">View Profile Analytics</a>
+          <a href="profile.html${attemptId ? `?viewAttempt=${attemptId}` : ''}" class="nta-btn" style="background:#0f172a; color:#fff; display:inline-block; line-height:36px; padding:0 20px; text-decoration:none; border-radius:4px; font-size:13px; font-weight:700;">View Detailed Analysis</a>
           <a href="tests.html" class="nta-btn btn-save-next" style="display:inline-block; line-height:36px; padding:0 20px; text-decoration:none; font-size:13px; font-weight:700;">Back to Test Series</a>
         </div>
       </div>
@@ -385,34 +449,7 @@ async function submitTest() {
   }
 }
 
-// =========================================================
-// SCALE ENGINE — shrinks the fixed 1280x800 exam canvas to
-// fit any screen so the desktop layout (button positions
-// included) is always identical, just smaller on phones.
-// =========================================================
-const DESIGN_WIDTH = 1280;
-const DESIGN_HEIGHT = 800;
-
-function applyScale() {
-  const inner = document.getElementById("exam-scale-inner");
-  if (!inner) return;
-
-  const viewportHeight = window.visualViewport ? window.visualViewport.height : window.innerHeight;
-  const scaleX = window.innerWidth / DESIGN_WIDTH;
-  const scaleY = viewportHeight / DESIGN_HEIGHT;
-  const scale = Math.min(scaleX, scaleY);
-
-  inner.style.transform = `scale(${scale})`;
-}
-
-window.addEventListener("resize", applyScale);
-window.addEventListener("orientationchange", () => setTimeout(applyScale, 150));
-if (window.visualViewport) {
-  window.visualViewport.addEventListener("resize", applyScale);
-}
-document.addEventListener("DOMContentLoaded", applyScale);
-
-// ===== Initialization (runs immediately, same as before) =====
+// ===== Initialization =====
 (async () => {
   const rawQuestions = await loadQuestionSet(setKey);
   questions = generateFull75Questions(rawQuestions);
@@ -420,6 +457,7 @@ document.addEventListener("DOMContentLoaded", applyScale);
 
   for (let i = 1; i <= totalQuestions; i++) {
     status[i] = "not-visited";
+    timeSpent[i] = 0;
   }
   status[1] = "not-answered";
 
@@ -427,5 +465,4 @@ document.addEventListener("DOMContentLoaded", applyScale);
   renderPalette();
   updateTimer();
   timerHandle = setInterval(updateTimer, 1000);
-  applyScale();
 })();
