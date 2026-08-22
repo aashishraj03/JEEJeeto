@@ -38,7 +38,7 @@
           
           <div class="input-field">
             <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
-            <input type="text" id="regFullName" placeholder="Full Name" required>
+            <input type="text" id="regFullName" placeholder="Full Name" pattern=".*[a-zA-Z].*" title="Name must contain at least one alphabet letter" required>
           </div>
 
           <div class="input-field">
@@ -48,7 +48,7 @@
 
           <div class="input-field">
             <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
-            <input type="password" id="regPassword" placeholder="Password" required>
+            <input type="password" id="regPassword" placeholder="Password" pattern="(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[!@#$%^&amp;*()_+\-=\[\]{};':&quot;\\|,.<>\/?]).{8,}" title="Password must contain at least 8 characters, including 1 uppercase letter, 1 lowercase letter, 1 number, and 1 special character" required>
           </div>
 
           <button type="submit" class="auth-btn" style="margin-top: 8px;">Register</button>
@@ -64,7 +64,7 @@
           
           <div class="input-field">
             <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>
-            <input type="email" id="loginEmail" placeholder="Email Address" required>
+            <input type="email" id="loginEmail" placeholder="Email Address" pattern="[a-zA-Z0-9._%+\-]+@[a-zA-Z0-9.\-]+\.[a-zA-Z]{2,}" title="Please enter a valid email address (e.g., student@example.com)" required>
           </div>
 
           <div class="input-field">
@@ -148,9 +148,30 @@
     // 1. Handle Registration
     document.getElementById('registerForm').addEventListener('submit', async (e) => {
       e.preventDefault();
-      const fullName = document.getElementById('regFullName').value;
-      const email = document.getElementById('regEmail').value;
+      const fullName = document.getElementById('regFullName').value.trim();
+      const email = document.getElementById('regEmail').value.trim();
       const password = document.getElementById('regPassword').value;
+
+      // 1. Validate Full Name (at least 1 letter)
+      const nameRegex = /[a-zA-Z]/;
+      if (!nameRegex.test(fullName)) {
+        alert('Full Name must contain at least one alphabet letter.');
+        return;
+      }
+
+      // 2. Validate Email Format
+      const emailRegex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
+      if (!emailRegex.test(email)) {
+        alert('Please enter a valid email address (e.g. name@gmail.com).');
+        return;
+      }
+
+      // 3. Validate Password (1 uppercase, 1 lowercase, 1 digit, 1 special char, min 8 chars)
+      const passwordRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[!@#$%^&*()_+\-=\[\]{};':"\\|,.<>\/?]).{8,}$/;
+      if (!passwordRegex.test(password)) {
+        alert('Password must be at least 8 characters long and include an uppercase letter, a lowercase letter, a number, and a special character.');
+        return;
+      }
 
       try {
         const res = await fetch('/api/auth/register', {
