@@ -5,6 +5,49 @@ const typeParam = urlParams.get("type") || "mock";
 
 let setKey = paperParam || typeParam;
 
+// ===== Fast Click & Touch Handler Helper (Zero 300ms Delay) =====
+function bindFastClick(element, handler) {
+  if (!element) return;
+  let touchHandled = false;
+
+  element.addEventListener('touchstart', function (e) {
+    touchHandled = true;
+    handler(e);
+  }, { passive: true });
+
+  element.addEventListener('click', function (e) {
+    if (touchHandled) {
+      touchHandled = false;
+      return;
+    }
+    handler(e);
+  });
+}
+
+// ===== Dynamically Update Exam Header & Page Title =====
+function setDynamicExamTitle(key) {
+  const examTitleEl = document.getElementById("exam-title");
+  const normalizedKey = (key || "").toLowerCase();
+
+  let isAdvanced = normalizedKey.includes("adv") || normalizedKey.includes("advanced");
+  let examName = isAdvanced ? "JEE (Advanced)" : "JEE (Main)";
+
+  let formattedSubtitle = "";
+  if (paperParam) {
+    formattedSubtitle = paperParam
+      .replace(/[-_]/g, " ")
+      .replace(/\b\w/g, c => c.toUpperCase());
+  }
+
+  if (examTitleEl) {
+    examTitleEl.textContent = formattedSubtitle 
+      ? `${examName} CBT - ${formattedSubtitle}` 
+      : `${examName} Computer Based Test (CBT)`;
+  }
+
+  document.title = `${examName} CBT Simulator - JEE Jeeto`;
+}
+
 // ===== 75-Question Blueprint Generator =====
 function generateFull75Questions(loadedQuestions = []) {
   const fullSet = [];
@@ -230,9 +273,10 @@ function renderPalette() {
 
   for (let i = 1; i <= totalQuestions; i++) {
     const btn = document.createElement("button");
+    btn.type = "button";
     btn.className = `q-btn q-${status[i]}`;
     btn.textContent = i;
-    btn.onclick = () => goToQuestion(i);
+    bindFastClick(btn, () => goToQuestion(i));
     grid.appendChild(btn);
   }
 }
@@ -274,80 +318,77 @@ function updateTimer() {
   }
 }
 
-// ===== Direct Event Binding Helper =====
+// ===== Direct Action Handlers with Fast-Click =====
 function initActionHandlers() {
   const saveBtn = document.getElementById("saveNextBtn");
   const markBtn = document.getElementById("markBtn");
   const clearBtn = document.getElementById("clearBtn");
+  const prevBtn = document.getElementById("prevBtn");
   const submitBtn = document.getElementById("submitBtn");
 
-  if (saveBtn) {
-    saveBtn.onclick = () => {
-      const selected = document.querySelector('input[name="nta_option"]:checked');
-      if (selected) {
-        if (answers[currentQuestion] !== undefined && answers[currentQuestion] !== parseInt(selected.value, 10)) {
-          answerChangedFlags[currentQuestion] = true;
-        }
-        answers[currentQuestion] = parseInt(selected.value, 10);
-        status[currentQuestion] = "answered";
-      } else if (answers[currentQuestion] !== undefined) {
-        status[currentQuestion] = "answered";
-      } else {
-        status[currentQuestion] = "not-answered";
+  bindFastClick(saveBtn, () => {
+    const selected = document.querySelector('input[name="nta_option"]:checked');
+    if (selected) {
+      if (answers[currentQuestion] !== undefined && answers[currentQuestion] !== parseInt(selected.value, 10)) {
+        answerChangedFlags[currentQuestion] = true;
       }
-
-      if (currentQuestion < totalQuestions) {
-        goToQuestion(currentQuestion + 1);
-      } else {
-        renderPalette();
-        updateLegendCounts();
-      }
-    };
-  }
-
-  if (markBtn) {
-    markBtn.onclick = () => {
-      markedHistory[currentQuestion] = true;
-      const selected = document.querySelector('input[name="nta_option"]:checked');
-      if (selected) {
-        if (answers[currentQuestion] !== undefined && answers[currentQuestion] !== parseInt(selected.value, 10)) {
-          answerChangedFlags[currentQuestion] = true;
-        }
-        answers[currentQuestion] = parseInt(selected.value, 10);
-        status[currentQuestion] = "answered-marked";
-      } else if (answers[currentQuestion] !== undefined) {
-        status[currentQuestion] = "answered-marked";
-      } else {
-        status[currentQuestion] = "marked";
-      }
-
-      if (currentQuestion < totalQuestions) {
-        goToQuestion(currentQuestion + 1);
-      } else {
-        renderPalette();
-        updateLegendCounts();
-      }
-    };
-  }
-
-  if (clearBtn) {
-    clearBtn.onclick = () => {
-      delete answers[currentQuestion];
+      answers[currentQuestion] = parseInt(selected.value, 10);
+      status[currentQuestion] = "answered";
+    } else if (answers[currentQuestion] !== undefined) {
+      status[currentQuestion] = "answered";
+    } else {
       status[currentQuestion] = "not-answered";
-      document.querySelectorAll('input[name="nta_option"]').forEach(el => (el.checked = false));
+    }
+
+    if (currentQuestion < totalQuestions) {
+      goToQuestion(currentQuestion + 1);
+    } else {
       renderPalette();
       updateLegendCounts();
-    };
-  }
+    }
+  });
 
-  if (submitBtn) {
-    submitBtn.onclick = () => {
-      const confirmSubmit = confirm("Are you sure you want to submit the test?");
-      if (confirmSubmit) {
-        submitTest();
+  bindFastClick(markBtn, () => {
+    markedHistory[currentQuestion] = true;
+    const selected = document.querySelector('input[name="nta_option"]:checked');
+    if (selected) {
+      if (answers[currentQuestion] !== undefined && answers[currentQuestion] !== parseInt(selected.value, 10)) {
+        answerChangedFlags[currentQuestion] = true;
       }
-    };
-  }
+      answers[currentQuestion] = parseInt(selected.value, 10);
+      status[currentQuestion] = "answered-marked";
+    } else if (answers[currentQuestion] !== undefined) {
+      status[currentQuestion] = "answered-marked";
+    } else {
+      status[currentQuestion] = "marked";
+    }
+
+    if (currentQuestion < totalQuestions) {
+      goToQuestion(currentQuestion + 1);
+    } else {
+      renderPalette();
+      updateLegendCounts();
+    }
+  });
+
+  bindFastClick(clearBtn, () => {
+    delete answers[currentQuestion];
+    status[currentQuestion] = "not-answered";
+    document.querySelectorAll('input[name="nta_option"]').forEach(el => (el.checked = false));
+    renderPalette();
+    updateLegendCounts();
+  });
+
+  bindFastClick(prevBtn, () => {
+    goToPrevQuestion();
+  });
+
+  bindFastClick(submitBtn, () => {
+    const confirmSubmit = confirm("Are you sure you want to submit the test?");
+    if (confirmSubmit) {
+      submitTest();
+    }
+  });
 }
 
 // ===== Submit Test Logic =====
@@ -390,7 +431,7 @@ async function submitTest() {
   if (subNav) subNav.style.display = "none";
   if (timerBadge) timerBadge.style.display = "none";
 
-  // 2. Render Completion Screen Immediately (No UI Freeze)
+  // 2. Render Completion Screen
   const container = document.getElementById("exam-scale-inner") || document.querySelector(".nta-main-layout");
   if (container) {
     container.innerHTML = `
@@ -474,7 +515,6 @@ async function loadCandidateProfile() {
     console.warn("Could not load candidate profile:", err);
   }
 
-  // Fallback if not loaded
   if (nameEl) nameEl.textContent = "Candidate";
   if (avatarEl) avatarEl.textContent = "C";
 }
@@ -482,7 +522,8 @@ async function loadCandidateProfile() {
 // ===== Initialization =====
 (async () => {
   initActionHandlers();
-  loadCandidateProfile(); // <-- ADD THIS LINE
+  setDynamicExamTitle(setKey);
+  loadCandidateProfile();
 
   const rawQuestions = await loadQuestionSet(setKey);
   questions = generateFull75Questions(rawQuestions);

@@ -17,6 +17,20 @@ html, body {
   user-select: none;
 }
 
+/* Enable instantaneous taps and remove touch delay across all interactive elements */
+button,
+.nta-btn,
+.q-btn,
+.sub-tab-btn,
+.option-item,
+.btn-submit-exam {
+  touch-action: manipulation;
+  -webkit-tap-highlight-color: transparent;
+  cursor: pointer;
+  user-select: none;
+  -webkit-user-select: none;
+}
+
 /* =========================================================
    TOP HEADER BANNER
 ========================================================= */
@@ -443,6 +457,7 @@ html, body {
   html, body {
     background: #eef2f7;
     overflow-y: auto;
+    -webkit-overflow-scrolling: touch;
   }
 
   /* ---- Top bar: keep it, just tighten it up ---- */
@@ -475,6 +490,7 @@ html, body {
     border: 1px solid #dbe2ea;
     border-radius: 10px;
     font-size: 11px;
+    touch-action: manipulation;
   }
   .sub-tab-btn::before {
     font-size: 18px;
@@ -521,6 +537,8 @@ html, body {
   .q-btn {
     height: 42px;
     font-size: 12px;
+    touch-action: manipulation;
+    pointer-events: auto;
   }
 
   /* ---- Question card ---- */
@@ -538,6 +556,8 @@ html, body {
   .option-item {
     padding: 12px 14px;
     font-size: 14px;
+    touch-action: manipulation;
+    -webkit-tap-highlight-color: transparent;
   }
   .option-item input[type="radio"] {
     width: 18px;
@@ -576,6 +596,8 @@ html, body {
     border-radius: 10px;
     padding: 0 4px;
     text-align: center;
+    touch-action: manipulation;
+    pointer-events: auto;
   }
   .nta-btn::before { font-size: 16px; }
 
