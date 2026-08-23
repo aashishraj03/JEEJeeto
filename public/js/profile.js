@@ -308,3 +308,247 @@ document.addEventListener('DOMContentLoaded', () => {
     };
   }
 });
+
+// ===== Edit Profile Modal Handlers =====
+document.addEventListener('DOMContentLoaded', () => {
+  const editBtn = document.querySelector('.edit-profile-btn');
+  const editModal = document.getElementById('editProfileModal');
+  const closeEditBtn = document.getElementById('closeEditProfileBtn');
+  const cancelEditBtn = document.getElementById('cancelEditProfileBtn');
+  const editForm = document.getElementById('editProfileForm');
+  const editFullNameInput = document.getElementById('editFullNameInput');
+  const editPhoneInput = document.getElementById('editPhoneInput');
+  const editEmailInput = document.getElementById('editEmailInput');
+
+  // Open Modal & Pre-fill User Values
+  if (editBtn && editModal) {
+    editBtn.onclick = () => {
+      const currentName = document.querySelector('.profile-main-info h2')?.textContent?.trim() || '';
+      const currentEmail = document.querySelector('.profile-details .detail-item:nth-child(2) strong')?.textContent?.trim() || '';
+      
+      if (editFullNameInput) editFullNameInput.value = currentName;
+      if (editEmailInput) editEmailInput.value = currentEmail;
+      
+      editModal.style.display = 'flex';
+    };
+  }
+
+  // Close Modal Helper
+  const closeEditModal = () => {
+    if (editModal) editModal.style.display = 'none';
+  };
+
+  if (closeEditBtn) closeEditBtn.onclick = closeEditModal;
+  if (cancelEditBtn) cancelEditBtn.onclick = closeEditModal;
+  if (editModal) {
+    editModal.onclick = (e) => {
+      if (e.target === editModal) closeEditModal();
+    };
+  }
+
+  // Submit Form to PUT /api/auth/me
+  if (editForm) {
+    editForm.onsubmit = async (e) => {
+      e.preventDefault();
+      const updatedName = editFullNameInput.value.trim();
+      const updatedPhone = editPhoneInput.value.trim();
+
+      if (!updatedName) {
+        alert('Name cannot be empty.');
+        return;
+      }
+
+      if (updatedPhone && !/^[6-9]\d{9}$/.test(updatedPhone)) {
+        alert('Please enter a valid 10-digit mobile number starting with 6, 7, 8, or 9.');
+        return;
+      }
+
+      const saveBtn = document.getElementById('saveProfileBtn');
+      if (saveBtn) {
+        saveBtn.disabled = true;
+        saveBtn.textContent = 'Saving...';
+      }
+
+      try {
+        const res = await fetch('/api/auth/me', {
+          method: 'PUT',
+          headers: { 'Content-Type': 'application/json' },
+          credentials: 'include',
+          body: JSON.stringify({ fullName: updatedName, phone: updatedPhone || undefined })
+        });
+
+        const data = await res.json();
+        if (res.ok && data.success) {
+          const newName = data.user.fullName || data.user.name;
+          const initial = newName.charAt(0).toUpperCase();
+
+          // Update UI Elements live
+          document.querySelectorAll('.profile-avatar, .large-avatar').forEach(el => el.textContent = initial);
+          document.querySelectorAll('.sidebar-user-info h3, .profile-main-info h2').forEach(el => el.textContent = newName);
+          
+          const nameDetail = document.querySelector('.profile-details .detail-item:nth-child(1) strong');
+          if (nameDetail) nameDetail.textContent = newName;
+
+          closeEditModal();
+        } else {
+          alert(data.error || 'Failed to update profile.');
+        }
+      } catch (err) {
+        console.error('Update profile network error:', err);
+        alert('Network error while saving changes.');
+      } finally {
+        if (saveBtn) {
+          saveBtn.disabled = false;
+          saveBtn.textContent = 'Save Changes';
+        }
+      }
+    };
+  }
+});
+
+// ===== Email & Password Change Logic with 14-Day Cooldown Alerts =====
+document.addEventListener('DOMContentLoaded', () => {
+  // 1. Email Handlers
+  const openEmailBtn = document.getElementById('openChangeEmailBtn');
+  const emailModal = document.getElementById('changeEmailModal');
+  const closeEmailBtn = document.getElementById('closeEmailModalBtn');
+  const cancelEmailBtn = document.getElementById('cancelEmailModalBtn');
+  const sendEmailOtpBtn = document.getElementById('sendEmailOtpBtn');
+  const changeEmailForm = document.getElementById('changeEmailForm');
+
+  if (openEmailBtn && emailModal) {
+    openEmailBtn.onclick = () => { emailModal.style.display = 'flex'; };
+  }
+  const closeEmailModal = () => { if (emailModal) emailModal.style.display = 'none'; };
+  if (closeEmailBtn) closeEmailBtn.onclick = closeEmailModal;
+  if (cancelEmailBtn) cancelEmailBtn.onclick = closeEmailModal;
+
+  if (sendEmailOtpBtn) {
+    sendEmailOtpBtn.onclick = async () => {
+      const newEmail = document.getElementById('newEmailInput')?.value?.trim();
+      if (!newEmail) {
+        alert('Please enter your new email address.');
+        return;
+      }
+
+      sendEmailOtpBtn.disabled = true;
+      sendEmailOtpBtn.textContent = 'Sending...';
+
+      try {
+        const res = await fetch('/api/auth/security/send-otp', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          credentials: 'include',
+          body: JSON.stringify({ type: 'email_change', newEmail })
+        });
+        const data = await res.json();
+        if (res.ok && data.success) {
+          alert(data.message || 'Verification OTP sent to your registered email.');
+        } else {
+          alert(data.error || 'Failed to send OTP.');
+        }
+      } catch (err) {
+        alert('Network error sending OTP.');
+      } finally {
+        sendEmailOtpBtn.disabled = false;
+        sendEmailOtpBtn.textContent = 'Send OTP';
+      }
+    };
+  }
+
+  if (changeEmailForm) {
+    changeEmailForm.onsubmit = async (e) => {
+      e.preventDefault();
+      const newEmail = document.getElementById('newEmailInput')?.value?.trim();
+      const otp = document.getElementById('emailOtpInput')?.value?.trim();
+
+      try {
+        const res = await fetch('/api/auth/security/change-email', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          credentials: 'include',
+          body: JSON.stringify({ newEmail, otp })
+        });
+        const data = await res.json();
+        if (res.ok && data.success) {
+          alert('Email updated successfully! Note that you cannot change it again for 14 days.');
+          const emailDetail = document.querySelector('.profile-details .detail-item:nth-child(2) strong');
+          if (emailDetail) emailDetail.textContent = data.email;
+          closeEmailModal();
+        } else {
+          alert(data.error || 'Failed to update email.');
+        }
+      } catch (err) {
+        alert('Network error updating email.');
+      }
+    };
+  }
+
+  // 2. Password Handlers
+  const openPassBtn = document.getElementById('openChangePassBtn');
+  const passModal = document.getElementById('changePasswordModal');
+  const closePassBtn = document.getElementById('closePassModalBtn');
+  const cancelPassBtn = document.getElementById('cancelPassModalBtn');
+  const sendPassOtpBtn = document.getElementById('sendPassOtpBtn');
+  const changePassForm = document.getElementById('changePasswordForm');
+
+  if (openPassBtn && passModal) {
+    openPassBtn.onclick = () => { passModal.style.display = 'flex'; };
+  }
+  const closePassModal = () => { if (passModal) passModal.style.display = 'none'; };
+  if (closePassBtn) closePassBtn.onclick = closePassModal;
+  if (cancelPassBtn) cancelPassBtn.onclick = closePassModal;
+
+  if (sendPassOtpBtn) {
+    sendPassOtpBtn.onclick = async () => {
+      sendPassOtpBtn.disabled = true;
+      sendPassOtpBtn.textContent = 'Sending OTP...';
+
+      try {
+        const res = await fetch('/api/auth/security/send-otp', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          credentials: 'include',
+          body: JSON.stringify({ type: 'password_change' })
+        });
+        const data = await res.json();
+        if (res.ok && data.success) {
+          alert(data.message || 'OTP sent to your registered email.');
+        } else {
+          alert(data.error || 'Failed to send OTP.');
+        }
+      } catch (err) {
+        alert('Network error sending OTP.');
+      } finally {
+        sendPassOtpBtn.disabled = false;
+        sendPassOtpBtn.textContent = 'Resend OTP';
+      }
+    };
+  }
+
+  if (changePassForm) {
+    changePassForm.onsubmit = async (e) => {
+      e.preventDefault();
+      const otp = document.getElementById('passOtpInput')?.value?.trim();
+      const newPassword = document.getElementById('newPasswordInput')?.value;
+
+      try {
+        const res = await fetch('/api/auth/security/change-password', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          credentials: 'include',
+          body: JSON.stringify({ otp, newPassword })
+        });
+        const data = await res.json();
+        if (res.ok && data.success) {
+          alert('Password updated successfully! Note that you cannot change it again for 14 days.');
+          closePassModal();
+        } else {
+          alert(data.error || 'Failed to update password.');
+        }
+      } catch (err) {
+        alert('Network error updating password.');
+      }
+    };
+  }
+});

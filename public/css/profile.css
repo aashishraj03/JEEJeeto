@@ -1030,6 +1030,81 @@
   border: 1px solid #e2e8f0;
 }
 
+/* ===================================================================
+   SETTINGS SECURITY BUTTONS & NOTICES
+   =================================================================== */
+.setting-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 18px 20px;
+  background: var(--bg-surface, #ffffff);
+  border: 1px solid var(--line-color, #e2e8f0);
+  border-radius: var(--radius-md, 10px);
+  margin-bottom: 12px;
+  gap: 16px;
+}
+
+.setting-row h3 {
+  font-size: 15px;
+  font-weight: 700;
+  color: var(--text-main, #0f172a);
+  margin-bottom: 3px;
+}
+
+.setting-row p {
+  font-size: 13px;
+  color: var(--text-muted, #64748b);
+  line-height: 1.45;
+  margin-bottom: 4px;
+}
+
+.cooldown-notice {
+  display: inline-block;
+  font-size: 11.5px;
+  font-weight: 600;
+  color: #b45309;
+  background: #fef3c7;
+  padding: 2px 8px;
+  border-radius: 4px;
+  margin-top: 4px;
+}
+
+.setting-action-btn {
+  height: 36px;
+  padding: 0 16px;
+  font-size: 12.5px;
+  font-weight: 700;
+  font-family: inherit;
+  color: var(--text-main, #0f172a);
+  background: #f1f5f9;
+  border: 1px solid #cbd5e1;
+  border-radius: var(--radius-sm, 6px);
+  cursor: pointer;
+  white-space: nowrap;
+  transition: all 0.2s ease;
+  flex-shrink: 0;
+}
+
+.setting-action-btn:hover {
+  background: var(--primary-gold, #f59e0b);
+  border-color: var(--primary-gold, #f59e0b);
+  color: #ffffff;
+  transform: translateY(-1px);
+  box-shadow: 0 2px 8px rgba(245, 158, 11, 0.25);
+}
+
+@media (max-width: 640px) {
+  .setting-row {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+  .setting-action-btn {
+    width: 100%;
+    margin-top: 8px;
+  }
+}
+
 /* ================================================================
    17. TABLET
    ================================================================= */

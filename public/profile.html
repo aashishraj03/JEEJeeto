@@ -69,39 +69,19 @@
 
 
         <!-- Main Navigation -->
-
         <div class="sidebar-section">
-
-          <span class="sidebar-section-title">
-            MY ACCOUNT
-          </span>
-
+          <span class="sidebar-section-title">MY ACCOUNT</span>
           <nav class="account-nav">
-
             <a href="#profile" class="account-nav-item active">
-
               <span class="nav-icon">
-                <svg
-                  width="18"
-                  height="18"
-                  viewBox="0 0 24 24"
-                  fill="none"
-                  stroke="currentColor"
-                  stroke-width="2"
-                  stroke-linecap="round"
-                  stroke-linejoin="round"
-                >
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                   <circle cx="12" cy="8" r="4"/>
                   <path d="M4 20c0-4.4 3.6-7 8-7s8 2.6 8 7"/>
                 </svg>
               </span>
-
               <span>Profile</span>
-
             </a>
-
             <a href="#overview" class="account-nav-item">
-
               <span class="nav-icon">
                 <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                   <rect x="3" y="3" width="7" height="7"/>
@@ -110,48 +90,20 @@
                   <rect x="14" y="14" width="7" height="7"/>
                 </svg>
               </span>
-
               <span>Overview</span>
-
             </a>
-
-
             <a href="#recent-tests" class="account-nav-item">
-
               <span class="nav-icon">
-                <svg
-                  width="18"
-                  height="18"
-                  viewBox="0 0 24 24"
-                  fill="none"
-                  stroke="currentColor"
-                  stroke-width="2"
-                  stroke-linecap="round"
-                  stroke-linejoin="round"
-                >
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                   <path d="M9 11l3 3L22 4"/>
                   <path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/>
                 </svg>
               </span>
-
               <span>Recent Tests</span>
-
             </a>
-
-
             <a href="#flagged" class="account-nav-item">
-
               <span class="nav-icon">
-                <svg
-                  width="18"
-                  height="18"
-                  viewBox="0 0 24 24"
-                  fill="none"
-                  stroke="currentColor"
-                  stroke-width="2"
-                  stroke-linecap="round"
-                  stroke-linejoin="round"
-                >
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                   <path d="M5 21V4"/>
                   <path d="M5 4c5-3 9 3 14 0v10c-5 3-9-3-14 0"/>
                 </svg>
@@ -748,68 +700,42 @@
 
         </section>
 
-
         <!-- ===================================================
              SETTINGS
              =================================================== -->
 
         <section id="settings" class="content-section">
-
           <div class="content-header compact">
-
             <div>
-              <span class="content-label">
-                ACCOUNT
-              </span>
-
+              <span class="content-label">SECURITY &amp; ACCOUNT</span>
               <h2>Settings</h2>
-
-              <p>
-                Manage your account preferences.
-              </p>
-
+              <p>Manage your account credentials and security preferences.</p>
             </div>
-
           </div>
-
 
           <div class="settings-list">
-
+            <!-- 1. Change Email Row -->
             <div class="setting-row">
-
               <div>
-                <h3>Email Notifications</h3>
-                <p>Receive important updates about your account.</p>
+                <h3>Account Email</h3>
+                <p>Change your registered email address with OTP verification sent to your current email.</p>
+                <span class="cooldown-notice">⚠️ Notice: Can only be changed once every 14 days.</span>
               </div>
-
-              <label class="switch">
-                <input type="checkbox" checked>
-                <span class="slider"></span>
-              </label>
-
+              <button type="button" id="openChangeEmailBtn" class="setting-action-btn">Change Email</button>
             </div>
 
-
+            <!-- 2. Change Password Row -->
             <div class="setting-row">
-
               <div>
-                <h3>Test Reminders</h3>
-                <p>Receive reminders about your preparation.</p>
+                <h3>Account Password</h3>
+                <p>Update your login password by verifying your registered email address.</p>
+                <span class="cooldown-notice">⚠️ Notice: Can only be changed once every 14 days.</span>
               </div>
-
-              <label class="switch">
-                <input type="checkbox" checked>
-                <span class="slider"></span>
-              </label>
-
+              <button type="button" id="openChangePassBtn" class="setting-action-btn">Change Password</button>
             </div>
-
           </div>
-
         </section>
-
       </section>
-
     </div>
 
     <!-- Test Analysis Modal / Drawer -->
@@ -826,6 +752,108 @@
 
       <div class="analysis-modal-body" id="analysisModalBody">
         <div style="padding: 40px; text-align: center; color: #64748b;">Loading detailed analytics...</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Edit Profile Modal -->
+  <div id="editProfileModal" class="analysis-modal-backdrop" style="display: none;">
+    <div class="analysis-modal-container" style="max-width: 440px;">
+      <div class="analysis-modal-header">
+        <div>
+          <span class="content-label">ACCOUNT DETAILS</span>
+          <h2 style="font-size: 18px; margin: 2px 0 0 0;">Edit Profile</h2>
+        </div>
+        <button type="button" id="closeEditProfileBtn" class="close-modal-btn">&times;</button>
+      </div>
+
+      <div class="analysis-modal-body" style="padding: 20px 24px;">
+        <form id="editProfileForm">
+          <label style="display: block; font-size: 11px; font-weight: 700; color: #475569; margin-bottom: 6px; letter-spacing: 0.05em;">FULL NAME</label>
+          <input type="text" id="editFullNameInput" required style="width: 100%; padding: 10px 12px; border: 1px solid #e2e8f0; border-radius: 6px; font-size: 13.5px; margin-bottom: 14px; outline: none;">
+
+          <label style="display: block; font-size: 11px; font-weight: 700; color: #475569; margin-bottom: 6px; letter-spacing: 0.05em;">MOBILE NUMBER</label>
+          <input type="tel" id="editPhoneInput" placeholder="10-digit mobile number" maxlength="10" style="width: 100%; padding: 10px 12px; border: 1px solid #e2e8f0; border-radius: 6px; font-size: 13.5px; margin-bottom: 14px; outline: none;">
+
+          <label style="display: block; font-size: 11px; font-weight: 700; color: #475569; margin-bottom: 6px; letter-spacing: 0.05em;">EMAIL ADDRESS (READ-ONLY)</label>
+          <input type="email" id="editEmailInput" disabled style="width: 100%; padding: 10px 12px; border: 1px solid #e2e8f0; background: #f8fafc; color: #64748b; border-radius: 6px; font-size: 13.5px; margin-bottom: 20px;">
+
+          <div style="display: flex; justify-content: flex-end; gap: 10px;">
+            <button type="button" id="cancelEditProfileBtn" style="padding: 8px 16px; border: 1px solid #cbd5e1; background: #fff; border-radius: 4px; font-size: 13px; font-weight: 600; cursor: pointer;">Cancel</button>
+            <button type="submit" id="saveProfileBtn" style="padding: 8px 16px; border: none; background: #f59e0b; color: #fff; border-radius: 4px; font-size: 13px; font-weight: 700; cursor: pointer;">Save Changes</button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+
+    <!-- Change Email Modal -->
+  <div id="changeEmailModal" class="analysis-modal-backdrop" style="display: none;">
+    <div class="analysis-modal-container" style="max-width: 440px;">
+      <div class="analysis-modal-header">
+        <div>
+          <span class="content-label">SECURITY POLICY</span>
+          <h2 style="font-size: 18px; margin: 2px 0 0 0;">Change Email Address</h2>
+        </div>
+        <button type="button" id="closeEmailModalBtn" class="close-modal-btn">&times;</button>
+      </div>
+
+      <div class="analysis-modal-body" style="padding: 20px 24px;">
+        <div style="background: #fffbeb; border: 1px solid #fef3c7; border-left: 3px solid #d97706; padding: 10px 12px; border-radius: 4px; font-size: 12px; color: #92400e; margin-bottom: 14px;">
+          <strong>Security Disclaimer:</strong> For account safety, you can only change your registered email address <strong>once every 14 days</strong>.
+        </div>
+
+        <form id="changeEmailForm">
+          <label style="display: block; font-size: 11px; font-weight: 700; color: #475569; margin-bottom: 6px; letter-spacing: 0.05em;">NEW EMAIL ADDRESS</label>
+          <div style="display: flex; gap: 8px; margin-bottom: 14px;">
+            <input type="email" id="newEmailInput" placeholder="name@example.com" required style="flex:1; padding: 10px 12px; border: 1px solid #e2e8f0; border-radius: 6px; font-size: 13.5px; outline: none;">
+            <button type="button" id="sendEmailOtpBtn" style="padding: 0 12px; background: #0f172a; color: #fff; font-size: 12px; font-weight: 700; border-radius: 4px; border: none; cursor: pointer; white-space: nowrap;">Send OTP</button>
+          </div>
+
+          <label style="display: block; font-size: 11px; font-weight: 700; color: #475569; margin-bottom: 6px; letter-spacing: 0.05em;">ENTER 6-DIGIT OTP (SENT TO CURRENT EMAIL)</label>
+          <input type="text" id="emailOtpInput" placeholder="6-digit OTP" maxlength="6" required style="width: 100%; padding: 10px 12px; border: 1px solid #e2e8f0; border-radius: 6px; font-size: 13.5px; margin-bottom: 20px; outline: none; letter-spacing: 2px; font-weight: 700;">
+
+          <div style="display: flex; justify-content: flex-end; gap: 10px;">
+            <button type="button" id="cancelEmailModalBtn" style="padding: 8px 16px; border: 1px solid #cbd5e1; background: #fff; border-radius: 4px; font-size: 13px; font-weight: 600; cursor: pointer;">Cancel</button>
+            <button type="submit" id="confirmEmailChangeBtn" style="padding: 8px 16px; border: none; background: #f59e0b; color: #fff; border-radius: 4px; font-size: 13px; font-weight: 700; cursor: pointer;">Update Email</button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+
+  <!-- Change Password Modal -->
+  <div id="changePasswordModal" class="analysis-modal-backdrop" style="display: none;">
+    <div class="analysis-modal-container" style="max-width: 440px;">
+      <div class="analysis-modal-header">
+        <div>
+          <span class="content-label">SECURITY POLICY</span>
+          <h2 style="font-size: 18px; margin: 2px 0 0 0;">Change Password</h2>
+        </div>
+        <button type="button" id="closePassModalBtn" class="close-modal-btn">&times;</button>
+      </div>
+
+      <div class="analysis-modal-body" style="padding: 20px 24px;">
+        <div style="background: #fffbeb; border: 1px solid #fef3c7; border-left: 3px solid #d97706; padding: 10px 12px; border-radius: 4px; font-size: 12px; color: #92400e; margin-bottom: 14px;">
+          <strong>Security Disclaimer:</strong> Your account password can only be updated <strong>once every 14 days</strong>.
+        </div>
+
+        <form id="changePasswordForm">
+          <div style="margin-bottom: 14px;">
+            <button type="button" id="sendPassOtpBtn" style="width: 100%; padding: 10px; background: #0f172a; color: #fff; font-size: 13px; font-weight: 700; border-radius: 6px; border: none; cursor: pointer;">Send Verification OTP to Registered Email</button>
+          </div>
+
+          <label style="display: block; font-size: 11px; font-weight: 700; color: #475569; margin-bottom: 6px; letter-spacing: 0.05em;">ENTER 6-DIGIT OTP</label>
+          <input type="text" id="passOtpInput" placeholder="6-digit OTP" maxlength="6" required style="width: 100%; padding: 10px 12px; border: 1px solid #e2e8f0; border-radius: 6px; font-size: 13.5px; margin-bottom: 14px; outline: none; letter-spacing: 2px; font-weight: 700;">
+
+          <label style="display: block; font-size: 11px; font-weight: 700; color: #475569; margin-bottom: 6px; letter-spacing: 0.05em;">NEW PASSWORD</label>
+          <input type="password" id="newPasswordInput" placeholder="Min 8 chars, 1 Upper, 1 Special, 1 Digit" required style="width: 100%; padding: 10px 12px; border: 1px solid #e2e8f0; border-radius: 6px; font-size: 13.5px; margin-bottom: 20px; outline: none;">
+
+          <div style="display: flex; justify-content: flex-end; gap: 10px;">
+            <button type="button" id="cancelPassModalBtn" style="padding: 8px 16px; border: 1px solid #cbd5e1; background: #fff; border-radius: 4px; font-size: 13px; font-weight: 600; cursor: pointer;">Cancel</button>
+            <button type="submit" id="confirmPassChangeBtn" style="padding: 8px 16px; border: none; background: #f59e0b; color: #fff; border-radius: 4px; font-size: 13px; font-weight: 700; cursor: pointer;">Update Password</button>
+          </div>
+        </form>
       </div>
     </div>
   </div>
@@ -875,7 +903,6 @@
        SIDEBAR NAVIGATION
        ========================================================= -->
   <!-- Dynamic Profile Dashboard Script -->
-  <script src="js/navbar.js"></script>
   <script src="js/navbar.js"></script>
   <script src="js/profile.js"></script>
   <script>
