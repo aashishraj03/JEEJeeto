@@ -101,6 +101,16 @@
               </span>
               <span>Recent Tests</span>
             </a>
+            <a href="#history" class="account-nav-item">
+              <span class="nav-icon">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                  <path d="M3 12a9 9 0 1 0 3-6.7"/>
+                  <polyline points="3 4 3 10 9 10"/>
+                  <polyline points="12 7 12 12 15 14"/>
+                </svg>
+              </span>
+              <span>Test History</span>
+            </a>
             <a href="#flagged" class="account-nav-item">
               <span class="nav-icon">
                 <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
@@ -108,74 +118,26 @@
                   <path d="M5 4c5-3 9 3 14 0v10c-5 3-9-3-14 0"/>
                 </svg>
               </span>
-
               <span>Flagged Questions</span>
-
             </a>
-
-
             <a href="#bookmarks" class="account-nav-item">
-
               <span class="nav-icon">
-                <svg
-                  width="18"
-                  height="18"
-                  viewBox="0 0 24 24"
-                  fill="none"
-                  stroke="currentColor"
-                  stroke-width="2"
-                  stroke-linecap="round"
-                  stroke-linejoin="round"
-                >
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                   <path d="M19 21l-7-5-7 5V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2z"/>
                 </svg>
               </span>
-
               <span>Bookmarked Notes</span>
-
             </a>
-
-
-            <a href="#history" class="account-nav-item">
-
-              <span class="nav-icon">
-                <svg
-                  width="18"
-                  height="18"
-                  viewBox="0 0 24 24"
-                  fill="none"
-                  stroke="currentColor"
-                  stroke-width="2"
-                  stroke-linecap="round"
-                  stroke-linejoin="round"
-                >
-                  <path d="M3 12a9 9 0 1 0 3-6.7"/>
-                  <polyline points="3 4 3 10 9 10"/>
-                  <polyline points="12 7 12 12 15 14"/>
-                </svg>
-              </span>
-
-              <span>Test History</span>
-
-            </a>
-
           </nav>
-
         </div>
 
-
         <!-- Preparation -->
-
         <div class="sidebar-section">
-
           <span class="sidebar-section-title">
             PREPARATION
           </span>
-
           <nav class="account-nav">
-
             <a href="#performance" class="account-nav-item">
-
               <span class="nav-icon">
                 <svg
                   width="18"
@@ -922,6 +884,29 @@
       window.location.href = 'login.html';
     }
 
+    // Helper: Build HTML for test attempt cards
+    function generateAttemptCardsHTML(attemptsList) {
+      return `
+        <div style="display:flex; flex-direction:column; gap:12px; margin-top:16px;">
+          ${attemptsList.map(att => {
+            const dateStr = new Date(att.attempted_at).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' });
+            return `
+              <div class="test-attempt-card" onclick="openTestAnalysis(${att.id})">
+                <div>
+                  <strong style="font-size:14.5px; color:#0f172a; text-transform:uppercase;">${att.test_key.replace(/-/g, ' ')}</strong>
+                  <div style="font-size:12px; color:#64748b; margin-top:2px;">Attempted on ${dateStr} &bull; <span style="color:#0284c7; font-weight:600;">View Analysis &rarr;</span></div>
+                </div>
+                <div style="text-align:right;">
+                  <span style="font-size:16px; font-weight:800; color:#16a34a;">${att.score}</span> <span style="font-size:12px; color:#64748b;">/ 300</span>
+                  <div style="font-size:11px; color:#64748b;">${att.correct_count} Correct &bull; ${att.wrong_count} Wrong</div>
+                </div>
+              </div>
+            `;
+          }).join('')}
+        </div>
+      `;
+    }
+
     async function loadUserProfileAndStats() {
       try {
         // 1. Fetch User Data
@@ -978,32 +963,25 @@
           if (statCards[0]) statCards[0].textContent = totalTests;
           if (statCards[1]) statCards[1].textContent = totalSolved;
 
-          // Populate Recent Tests & History with Clickable Cards
-          const recentTestsContainer = document.querySelector('#recent-tests .empty-content');
-          const historyContainer = document.querySelector('#history .empty-content');
-
-          const attemptsHTML = `
-            <div style="display:flex; flex-direction:column; gap:12px; margin-top:16px;">
-              ${attempts.map(att => {
-                const dateStr = new Date(att.attempted_at).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' });
-                return `
-                  <div class="test-attempt-card" onclick="openTestAnalysis(${att.id})">
-                    <div>
-                      <strong style="font-size:14.5px; color:#0f172a; text-transform:uppercase;">${att.test_key.replace(/-/g, ' ')}</strong>
-                      <div style="font-size:12px; color:#64748b; margin-top:2px;">Attempted on ${dateStr} &bull; <span style="color:#0284c7; font-weight:600;">View Analysis &rarr;</span></div>
-                    </div>
-                    <div style="text-align:right;">
-                      <span style="font-size:16px; font-weight:800; color:#16a34a;">${att.score}</span> <span style="font-size:12px; color:#64748b;">/ 300</span>
-                      <div style="font-size:11px; color:#64748b;">${att.correct_count} Correct &bull; ${att.wrong_count} Wrong</div>
-                    </div>
-                  </div>
-                `;
-              }).join('')}
+          // Populate Recent Tests (Top 3)
+          const recentTestsContainer = document.querySelector('#recent-tests .empty-content') || document.querySelector('#recent-tests .test-cards-wrapper');
+          const recent3Attempts = attempts.slice(0, 3);
+          const recentHTML = `
+            <div class="test-cards-wrapper">
+              ${generateAttemptCardsHTML(recent3Attempts)}
+              ${attempts.length > 3 ? `
+                <div style="margin-top: 14px; text-align: center;">
+                  <a href="#history" onclick="document.querySelector('a[href=\\'#history\\']').click()" style="font-size: 13px; color: #0284c7; font-weight: 700; text-decoration: none;">View All ${totalTests} Test Attempts in History &rarr;</a>
+                </div>
+              ` : ''}
             </div>
           `;
+          if (recentTestsContainer) recentTestsContainer.outerHTML = recentHTML;
 
-          if (recentTestsContainer) recentTestsContainer.outerHTML = attemptsHTML;
-          if (historyContainer) historyContainer.outerHTML = attemptsHTML;
+          // Populate Full Test History (All attempts)
+          const historyContainer = document.querySelector('#history .empty-content') || document.querySelector('#history .test-cards-wrapper');
+          const fullHistoryHTML = `<div class="test-cards-wrapper">${generateAttemptCardsHTML(attempts)}</div>`;
+          if (historyContainer) historyContainer.outerHTML = fullHistoryHTML;
 
           // Update Performance Section
           const perfPlaceholder = document.querySelector('.performance-placeholder');
@@ -1030,133 +1008,6 @@
           const viewAttemptId = urlParams.get('viewAttempt');
           if (viewAttemptId) {
             openTestAnalysis(viewAttemptId);
-          }
-        }
-      } catch (err) {
-        console.error('Failed to load dashboard data:', err);
-      }
-    }
-
-    loadUserProfileAndStats();
-  </script>
-  <script>
-    // Tab switching in sidebar
-    const navItems = document.querySelectorAll(".account-nav-item");
-    navItems.forEach(item => {
-      item.addEventListener("click", function () {
-        if (this.getAttribute("href").startsWith("#")) {
-          navItems.forEach(nav => nav.classList.remove("active"));
-          this.classList.add("active");
-        }
-      });
-    });
-
-    // Guard: Redirect if not logged in
-    if (sessionStorage.getItem('jee_session_active') !== 'true') {
-      window.location.href = 'login.html';
-    }
-
-    async function loadUserProfileAndStats() {
-      try {
-        // 1. Fetch User Data
-        const userRes = await fetch('/api/auth/me');
-        const userData = await userRes.json();
-        if (userData.authenticated && userData.user) {
-          const user = userData.user;
-          const initial = (user.name || user.fullName || 'U').charAt(0).toUpperCase();
-          
-          document.querySelectorAll('.profile-avatar, .large-avatar').forEach(el => el.textContent = initial);
-          document.querySelectorAll('.sidebar-user-info h3, .profile-main-info h2').forEach(el => el.textContent = user.name || user.fullName);
-          
-          const emailDetail = document.querySelector('.profile-details .detail-item:nth-child(2) strong');
-          if (emailDetail) emailDetail.textContent = user.email;
-          const nameDetail = document.querySelector('.profile-details .detail-item:nth-child(1) strong');
-          if (nameDetail) nameDetail.textContent = user.name || user.fullName;
-        }
-
-        // 2. Fetch User Subscription Plan
-        const subRes = await fetch('/api/payment/status');
-        const subData = await subRes.json();
-        const planStat = document.querySelector('.plan-stat');
-        const memberBadge = document.querySelector('.member-badge');
-        if (subData.subscription && new Date(subData.subscription.expires_at) > new Date()) {
-          const planName = (subData.subscription.plan || 'ACTIVE').toUpperCase();
-          if (planStat) planStat.textContent = planName;
-          if (memberBadge) {
-            memberBadge.textContent = `${planName} Plan`;
-            memberBadge.style.background = '#dcfce7';
-            memberBadge.style.color = '#16a34a';
-          }
-        }
-
-        // 3. Fetch Test Attempts History & Calculate Stats
-        const attemptsRes = await fetch('/api/attempts');
-        const attempts = await attemptsRes.json();
-
-        if (Array.isArray(attempts) && attempts.length > 0) {
-          let totalSolved = 0;
-          let totalCorrect = 0;
-          let totalScore = 0;
-
-          attempts.forEach(a => {
-            totalCorrect += (a.correct_count || 0);
-            totalSolved += ((a.correct_count || 0) + (a.wrong_count || 0));
-            totalScore += (a.score || 0);
-          });
-
-          const totalTests = attempts.length;
-          const overallAccuracy = totalSolved > 0 ? Math.round((totalCorrect / totalSolved) * 100) : 0;
-
-          // Update Overview Cards
-          const statCards = document.querySelectorAll('.stats-grid .stat-card strong');
-          if (statCards[0]) statCards[0].textContent = totalTests;
-          if (statCards[1]) statCards[1].textContent = totalSolved;
-
-          // Populate Recent Tests & History
-          const recentTestsContainer = document.querySelector('#recent-tests .empty-content');
-          const historyContainer = document.querySelector('#history .empty-content');
-
-          const attemptsHTML = `
-            <div style="display:flex; flex-direction:column; gap:12px; margin-top:16px;">
-              ${attempts.map(att => {
-                const dateStr = new Date(att.attempted_at).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' });
-                return `
-                  <div style="background:#fff; border:1px solid #e2e8f0; border-radius:8px; padding:14px 18px; display:flex; justify-content:space-between; align-items:center;">
-                    <div>
-                      <strong style="font-size:15px; color:#0f172a; text-transform:uppercase;">${att.test_key.replace(/-/g, ' ')}</strong>
-                      <div style="font-size:12px; color:#64748b; margin-top:2px;">Attempted on ${dateStr}</div>
-                    </div>
-                    <div style="text-align:right;">
-                      <span style="font-size:16px; font-weight:800; color:#16a34a;">${att.score}</span> <span style="font-size:12px; color:#64748b;">/ 300</span>
-                      <div style="font-size:11px; color:#64748b;">${att.correct_count} Correct &bull; ${att.wrong_count} Wrong</div>
-                    </div>
-                  </div>
-                `;
-              }).join('')}
-            </div>
-          `;
-
-          if (recentTestsContainer) recentTestsContainer.outerHTML = attemptsHTML;
-          if (historyContainer) historyContainer.outerHTML = attemptsHTML;
-
-          // Update Performance Section
-          const perfPlaceholder = document.querySelector('.performance-placeholder');
-          if (perfPlaceholder) {
-            perfPlaceholder.innerHTML = `
-              <div class="performance-item">
-                <span>Overall Accuracy</span>
-                <div class="progress-track"><div class="progress-bar" style="width: ${overallAccuracy}%; background:#16a34a;"></div></div>
-                <strong>${overallAccuracy}%</strong>
-              </div>
-              <div class="performance-item">
-                <span>Average Score</span>
-                <div class="progress-track"><div class="progress-bar" style="width: ${Math.min(100, Math.round((totalScore / totalTests) / 3))}; background:#2563eb;"></div></div>
-                <strong>${Math.round(totalScore / totalTests)} / 300</strong>
-              </div>
-              <p class="performance-note" style="margin-top:14px; color:#64748b; font-size:12px;">
-                Performance stats calculated across all ${totalTests} test attempts.
-              </p>
-            `;
           }
         }
       } catch (err) {
