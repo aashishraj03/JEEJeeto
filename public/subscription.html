@@ -19,7 +19,7 @@
         <a href="index.html">Home</a>
         <a href="notes.html">Browse Notes</a>
         <a href="tests.html">PYQs</a>
-        <a href="subscription.html">Subscription</a>
+        <!-- <a href="subscription.html">Subscription</a> -->
         <a href="login.html" id="navLoginBtn">Login</a>
       </nav>
       <a href="profile.html" id="navAccountBtn" class="account-btn" title="My Account" style="display: none;">
@@ -262,6 +262,15 @@
         </div>
         <div class="summary-savings" id="savingsText"></div>
 
+        <label style="display: flex; align-items: flex-start; gap: 8px; font-size: 12px; color: #475569; margin-bottom: 16px; cursor: pointer; text-align: left;">
+        <input type="checkbox" id="agreeTermsCheck" required style="margin-top: 3px; cursor: pointer;">
+        <span>
+          I accept the <a href="terms.html" target="_blank" style="color: #0f172a; text-decoration: underline; font-weight: 600;">Terms of Service</a>, 
+          <a href="privacy.html" target="_blank" style="color: #0f172a; text-decoration: underline; font-weight: 600;">Privacy Policy</a>, and 
+          <a href="refund.html" target="_blank" style="color: #0f172a; text-decoration: underline; font-weight: 600;">2-Day Cancellation &amp; Refund Policy</a>.
+        </span>
+      </label>
+
         <button class="btn-checkout" id="proceedBtn">
           Proceed to Checkout
         </button>
@@ -290,6 +299,7 @@
         <div class="footer-legal">
           <a href="privacy.html">Privacy Policy</a>
           <a href="terms.html">Terms &amp; Disclaimer</a>
+          <a href="refund.html">Refund Policy</a>
         </div>
       </div>
       <div class="container footer-disclaimer">
@@ -506,8 +516,16 @@
     notesToggle.addEventListener('change', updateCart);
     chapCheckboxes.forEach(cb => cb.addEventListener('change', updateCart));
 
-    // Razorpay Dynamic Checkout Trigger
+// Razorpay Dynamic Checkout Trigger
     proceedBtn.addEventListener('click', async () => {
+      // 1. Enforce Terms, Privacy & Refund policy agreement
+      const agreeCheck = document.getElementById('agreeTermsCheck');
+      if (agreeCheck && !agreeCheck.checked) {
+        alert('Please accept the Terms of Service, Privacy Policy, and Refund Policy to proceed with checkout.');
+        agreeCheck.focus();
+        return; // Stops checkout immediately
+      }
+
       const includeTest = testToggle.checked;
       const selectedTestRadio = document.querySelector('input[name="testPlan"]:checked');
       const testDays = (includeTest && selectedTestRadio && !selectedTestRadio.disabled) ? parseInt(selectedTestRadio.dataset.days) : 0;
@@ -618,7 +636,7 @@
         proceedBtn.textContent = 'Proceed to Checkout';
       }
     });
-
+    
     // Run purchase loader on DOM initialization
     loadUserPurchases();
   </script>
