@@ -454,9 +454,35 @@ async function submitTest() {
   }
 }
 
+// ===== Fetch & Display Logged-in Candidate Info =====
+async function loadCandidateProfile() {
+  const nameEl = document.getElementById("candidate-name");
+  const avatarEl = document.getElementById("candidate-avatar");
+
+  try {
+    const res = await fetch("/api/auth/me", { credentials: "include" });
+    if (res.ok) {
+      const data = await res.json();
+      if (data.authenticated && data.user) {
+        const fullName = data.user.fullName || data.user.name || "Student";
+        if (nameEl) nameEl.textContent = fullName;
+        if (avatarEl) avatarEl.textContent = fullName.charAt(0).toUpperCase();
+        return;
+      }
+    }
+  } catch (err) {
+    console.warn("Could not load candidate profile:", err);
+  }
+
+  // Fallback if not loaded
+  if (nameEl) nameEl.textContent = "Candidate";
+  if (avatarEl) avatarEl.textContent = "C";
+}
+
 // ===== Initialization =====
 (async () => {
   initActionHandlers();
+  loadCandidateProfile(); // <-- ADD THIS LINE
 
   const rawQuestions = await loadQuestionSet(setKey);
   questions = generateFull75Questions(rawQuestions);

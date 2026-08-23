@@ -124,6 +124,7 @@ a.latex-internal-link:hover {
    ========================================================================== */
 
 /* Dynamic Watermark Overlay */
+/* Dynamic Watermark Overlay */
 .watermark-overlay {
   position: fixed;
   top: 0;
@@ -132,7 +133,7 @@ a.latex-internal-link:hover {
   height: 100vh;
   pointer-events: none;
   z-index: 9999;
-  opacity: 0.06;
+  opacity: 0.13;
   display: flex;
   flex-wrap: wrap;
   justify-content: space-around;
@@ -141,11 +142,38 @@ a.latex-internal-link:hover {
 }
 
 .watermark-text {
-  font-size: 1.2rem;
+  display: inline-flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
   transform: rotate(-30deg);
-  font-weight: bold;
+  font-weight: 700;
   color: #000;
   white-space: nowrap;
+  margin: 35px 25px;
+  line-height: 1.35;
+  font-size: 0.95rem;
+}
+
+.watermark-text span {
+  display: block;
+}
+
+.watermark-text .wm-name {
+  font-size: 1.05rem;
+  font-weight: 800;
+}
+
+.watermark-text .wm-email {
+  font-size: 1rem;
+  font-weight: 600;
+}
+
+.watermark-text .wm-phone {
+  font-size: 1rem;
+  font-weight: 600;
+  color: #333;
 }
 
 /* Window Blur Blur Protection (Anti-Screenshot/Snipping Tool) */

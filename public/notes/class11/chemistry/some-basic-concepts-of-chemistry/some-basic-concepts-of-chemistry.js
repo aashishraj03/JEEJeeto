@@ -82,16 +82,44 @@ function escapeRegExp(string) {
 /**
  * 3. SECURITY CONTROL IMPLEMENTATION
  */
-function initSecurityMeasures() {
-  // A. Generate User Watermark Background
+async function initSecurityMeasures() {
   const watermarkContainer = document.getElementById('watermark-container');
-  const userIdentifier = "aashishraj0310@gmail.com";
-  
-  for (let i = 0; i < 25; i++) {
-    const span = document.createElement('span');
-    span.className = 'watermark-text';
-    span.textContent = userIdentifier;
-    watermarkContainer.appendChild(span);
+
+  let userName = "Candidate";
+  let userEmail = "";
+  let userPhone = "";
+
+  try {
+    const res = await fetch("/api/auth/me", { credentials: "include" });
+    if (res.ok) {
+      const data = await res.json();
+      if (data.authenticated && data.user) {
+        const user = data.user;
+        userName = user.fullName || user.name || "Candidate";
+        userEmail = user.email || "";
+        userPhone = user.phone || "";
+      }
+    }
+  } catch (err) {
+    console.warn("Could not fetch user watermark details:", err);
+  }
+
+  // A. Generate Multi-line User Watermark Tiles
+  if (watermarkContainer) {
+    watermarkContainer.innerHTML = "";
+
+    const tileHtml = `
+      <span class="wm-name">${userName}</span>
+      ${userEmail ? `<span class="wm-email">${userEmail}</span>` : ''}
+      ${userPhone ? `<span class="wm-phone">${userPhone}</span>` : ''}
+    `;
+
+    for (let i = 0; i < 28; i++) {
+      const tile = document.createElement('div');
+      tile.className = 'watermark-text';
+      tile.innerHTML = tileHtml;
+      watermarkContainer.appendChild(tile);
+    }
   }
 
   // B. Disable Right-Click Context Menu
@@ -100,9 +128,9 @@ function initSecurityMeasures() {
   // C. Intercept Shortcuts (Copy, Print, Save, Inspection Tools)
   document.addEventListener('keydown', (e) => {
     if (
-      // Ctrl/Cmd + C (Copy), P (Print), S (Save), U (View Source), A (Select All)
+      // Ctrl/Cmd + C, P, S, U, A
       ((e.ctrlKey || e.metaKey) && ['c', 'p', 's', 'u', 'a'].includes(e.key.toLowerCase())) ||
-      // F12 or DevTools Shortcut (Ctrl+Shift+I / Cmd+Option+I)
+      // F12 or DevTools Shortcut
       e.key === 'F12' ||
       ((e.ctrlKey || e.metaKey) && e.shiftKey && ['i', 'j', 'c'].includes(e.key.toLowerCase()))
     ) {
@@ -111,7 +139,7 @@ function initSecurityMeasures() {
     }
   });
 
-  // D. Blur screen when user loses focus (Mitigates Screenshot / Snipping Tools)
+  // D. Blur screen when user loses focus (Anti-Screenshot/Snipping)
   window.addEventListener('blur', () => {
     document.body.classList.add('blurred-content');
   });
