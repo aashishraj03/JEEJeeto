@@ -2,122 +2,112 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <!-- <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"> -->
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>JEE Main CBT Simulator - JEE Jeeto</title>
   <link rel="stylesheet" href="css/attempt-test.css">
   <script defer src="/_vercel/speed-insights/script.js"></script>
 </head>
 <body>
 
-  <!-- Fixed 1280x800 "desktop" canvas. JS scales this whole block down
-       to fit any screen (applyScale in test-engine.js), so the layout —
-       including button positions — is identical to the laptop version,
-       just shrunk. Nothing inside here reflows or restyles for mobile. -->
-  <div id="exam-scale-outer">
-    <div id="exam-scale-inner">
-
-      <!-- Top NTA Header -->
-      <header class="nta-header">
-        <div class="nta-exam-title">JEE (Main) Computer Based Test (CBT)</div>
-        <div class="nta-header-right">
-          <div class="nta-timer-badge">
-            <span>⏱ Time Left:</span>
-            <strong id="timer">03:00:00</strong>
-          </div>
-        </div>
-      </header>
-
-      <!-- Subject Selector Tabs (Physics 1-25, Chemistry 26-50, Mathematics 51-75) -->
-      <nav class="subject-nav-bar">
-        <button class="sub-tab-btn active" id="tab-phy" onclick="switchSubject('Physics')">Physics (25)</button>
-        <button class="sub-tab-btn" id="tab-chem" onclick="switchSubject('Chemistry')">Chemistry (25)</button>
-        <button class="sub-tab-btn" id="tab-math" onclick="switchSubject('Mathematics')">Mathematics (25)</button>
-      </nav>
-
-      <!-- Main Exam Split View -->
-      <main class="nta-main-layout">
-
-        <!-- Left: Question & Options Section -->
-        <section class="nta-question-container">
-          <div class="question-meta-bar">
-            <div id="q-number">Question No. 1</div>
-            <div class="question-marking-scheme">
-              Marks: <span>+4.00</span> &nbsp;|&nbsp; Negative: <span class="negative">-1.00</span>
-            </div>
-          </div>
-
-          <div class="question-content-scroll">
-            <div class="question-text-area" id="q-text">
-              Loading question text...
-            </div>
-
-            <div id="q-figure"></div>
-
-            <div class="options-list" id="q-options">
-              <!-- Populated by test-engine.js -->
-            </div>
-          </div>
-
-          <!-- Bottom Action Controls -->
-          <footer class="nta-bottom-actions">
-            <div class="action-btn-group">
-              <button class="nta-btn btn-save-next" id="saveNextBtn">Save &amp; Next</button>
-              <button class="nta-btn btn-clear" id="clearBtn">Clear Response</button>
-              <button class="nta-btn btn-mark-review" id="markBtn">Mark for Review &amp; Next</button>
-            </div>
-            <div class="action-btn-group">
-              <button class="nta-btn btn-clear" id="prevBtn" onclick="goToPrevQuestion()">Previous</button>
-            </div>
-          </footer>
-        </section>
-
-        <!-- Right: Candidate Palette & Status Box -->
-        <aside class="nta-palette-container">
-          <div class="candidate-profile-box">
-            <div class="candidate-photo" id="candidate-avatar">...</div>
-            <div class="candidate-info-text">
-              <span style="color:#64748b; font-size:11px;">Candidate Name:</span><br>
-              <strong id="candidate-name">Loading...</strong>
-            </div>
-          </div>
-
-          <!-- Status Indicators Legend -->
-          <div class="nta-legend-grid">
-            <div class="legend-item">
-              <span class="legend-badge badge-answered" id="count-answered">0</span> Answered
-            </div>
-            <div class="legend-item">
-              <span class="legend-badge badge-not-answered" id="count-not-answered">0</span> Not Answered
-            </div>
-            <div class="legend-item">
-              <span class="legend-badge badge-not-visited" id="count-not-visited">75</span> Not Visited
-            </div>
-            <div class="legend-item">
-              <span class="legend-badge badge-marked" id="count-marked">0</span> Marked for Review
-            </div>
-            <div class="legend-item" style="grid-column: span 2;">
-              <span class="legend-badge badge-ans-marked" id="count-ans-marked">0</span> Answered &amp; Marked for Review
-            </div>
-          </div>
-
-          <!-- 75 Question Palette Grid -->
-          <div class="palette-scroll-area">
-            <div class="palette-heading">Choose a Question:</div>
-            <div class="palette-buttons-grid" id="palette-grid">
-              <!-- 75 Buttons dynamically rendered by test-engine.js -->
-            </div>
-          </div>
-
-          <!-- Submit Test Trigger -->
-          <div class="palette-submit-bar">
-            <button class="btn-submit-exam" id="submitBtn">Submit Test</button>
-          </div>
-        </aside>
-
-      </main>
-
+  <!-- Top NTA Header -->
+  <header class="nta-header">
+    <div class="nta-exam-title">JEE (Main) Computer Based Test (CBT)</div>
+    <div class="nta-header-right">
+      <div class="nta-timer-badge">
+        <span>⏱ Time Left:</span>
+        <strong id="timer">03:00:00</strong>
+      </div>
     </div>
-  </div>
+  </header>
+
+  <!-- Subject Selector Tabs (Physics 1-25, Chemistry 26-50, Mathematics 51-75) -->
+  <nav class="subject-nav-bar">
+    <button class="sub-tab-btn active" id="tab-phy" onclick="switchSubject('Physics')">Physics (25)</button>
+    <button class="sub-tab-btn" id="tab-chem" onclick="switchSubject('Chemistry')">Chemistry (25)</button>
+    <button class="sub-tab-btn" id="tab-math" onclick="switchSubject('Mathematics')">Mathematics (25)</button>
+  </nav>
+
+  <!-- Main Exam Split View -->
+  <main class="nta-main-layout">
+
+    <!-- Left: Question & Options Section -->
+    <section class="nta-question-container">
+      <div class="question-meta-bar">
+        <div id="q-number">Question No. 1</div>
+        <div class="question-marking-scheme">
+          Marks: <span>+4.00</span> &nbsp;|&nbsp; Negative: <span class="negative">-1.00</span>
+        </div>
+      </div>
+
+      <div class="question-content-scroll">
+        <div class="question-text-area" id="q-text">
+          Loading question text...
+        </div>
+
+        <div id="q-figure"></div>
+
+        <div class="options-list" id="q-options">
+          <!-- Populated by test-engine.js -->
+        </div>
+      </div>
+
+      <!-- Bottom Action Controls -->
+      <footer class="nta-bottom-actions">
+        <div class="action-btn-group">
+          <button class="nta-btn btn-save-next" id="saveNextBtn">Save &amp; Next</button>
+          <button class="nta-btn btn-clear" id="clearBtn">Clear Response</button>
+          <button class="nta-btn btn-mark-review" id="markBtn">Mark for Review &amp; Next</button>
+        </div>
+        <div class="action-btn-group">
+          <button class="nta-btn btn-clear" id="prevBtn" onclick="goToPrevQuestion()">Previous</button>
+        </div>
+      </footer>
+    </section>
+
+    <!-- Right: Candidate Palette & Status Box -->
+    <aside class="nta-palette-container">
+      <div class="candidate-profile-box">
+        <div class="candidate-photo" id="candidate-avatar">A</div>
+        <div class="candidate-info-text">
+          <span style="color:#64748b; font-size:11px;">Candidate Name:</span><br>
+          <strong id="candidate-name">Aashish Raj</strong>
+        </div>
+      </div>
+
+      <!-- Status Indicators Legend -->
+      <div class="nta-legend-grid">
+        <div class="legend-item">
+          <span class="legend-badge badge-answered" id="count-answered">0</span> Answered
+        </div>
+        <div class="legend-item">
+          <span class="legend-badge badge-not-answered" id="count-not-answered">0</span> Not Answered
+        </div>
+        <div class="legend-item">
+          <span class="legend-badge badge-not-visited" id="count-not-visited">75</span> Not Visited
+        </div>
+        <div class="legend-item">
+          <span class="legend-badge badge-marked" id="count-marked">0</span> Marked for Review
+        </div>
+        <div class="legend-item" style="grid-column: span 2;">
+          <span class="legend-badge badge-ans-marked" id="count-ans-marked">0</span> Answered &amp; Marked for Review
+        </div>
+      </div>
+
+      <!-- 75 Question Palette Grid -->
+      <div class="palette-scroll-area">
+        <div class="palette-heading">Choose a Question:</div>
+        <div class="palette-buttons-grid" id="palette-grid">
+          <!-- 75 Buttons dynamically rendered by test-engine.js -->
+        </div>
+      </div>
+
+      <!-- Submit Test Trigger -->
+      <div class="palette-submit-bar">
+        <button class="btn-submit-exam" id="submitBtn">Submit Test</button>
+      </div>
+    </aside>
+
+  </main>
 
   <!-- MathJax Configuration -->
   <script>

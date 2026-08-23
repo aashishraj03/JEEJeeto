@@ -11,38 +11,10 @@
 html, body {
   height: 100%;
   font-family: 'Open Sans', Arial, sans-serif;
-  background-color: #0f172a; /* letterbox color visible around the scaled canvas on phones */
+  background-color: #f4f6f9;
   color: #222;
   overflow: hidden;
   user-select: none;
-}
-
-/* =========================================================
-   SCALED EXAM CANVAS
-   The whole exam is authored at a fixed desktop size
-   (1280x800). JS (applyScale, in test-engine.js) computes
-   min(screenWidth/1280, screenHeight/800) and applies it as
-   a CSS transform to this box. Nothing inside reflows — every
-   button stays exactly where it is on a laptop, just smaller.
-========================================================= */
-#exam-scale-outer {
-  width: 100vw;
-  height: 100vh;
-  height: 100dvh;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  overflow: hidden;
-}
-
-#exam-scale-inner {
-  width: 1280px;
-  height: 800px;
-  flex-shrink: 0;
-  background: #f4f6f9;
-  transform-origin: center center;
-  box-shadow: 0 0 24px rgba(0, 0, 0, 0.35);
-  /* transform: scale(...) is set dynamically by JS */
 }
 
 /* =========================================================
@@ -118,12 +90,10 @@ html, body {
 
 /* =========================================================
    LAYOUT SPLIT (MAIN QUESTION AREA VS PALETTE)
-   Fixed to the canvas's own pixel height (800 - 52 - 38 = 710),
-   since the canvas is now a fixed-size box, not vh-based.
 ========================================================= */
 .nta-main-layout {
   display: flex;
-  height: 710px;
+  height: calc(100vh - 90px);
 }
 
 .nta-question-container {
@@ -464,3 +434,166 @@ html, body {
   cursor: pointer;
 }
 .btn-submit-exam:hover { background: #0369a1; }
+
+/* =========================================================
+   MOBILE-ONLY REDESIGN (≤768px) — laptop CSS above is untouched
+========================================================= */
+@media (max-width: 768px) {
+
+  html, body {
+    background: #eef2f7;
+    overflow-y: auto;
+  }
+
+  /* ---- Top bar: keep it, just tighten it up ---- */
+  .nta-header {
+    height: 46px;
+    padding: 0 12px;
+  }
+  .nta-exam-title { font-size: 12px; }
+  .nta-timer-badge { font-size: 12px; padding: 3px 8px; }
+
+  /* ---- Subject tabs -> bordered icon cards ---- */
+  .subject-nav-bar {
+    height: auto;
+    background: transparent;
+    border-bottom: none;
+    padding: 10px 10px 0;
+    gap: 8px;
+  }
+
+  .sub-tab-btn {
+    flex: 1;
+    height: 40px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 4px;
+    background: #fff;
+    color: #173b6c;
+    border: 1px solid #dbe2ea;
+    border-radius: 10px;
+    font-size: 11px;
+  }
+  .sub-tab-btn::before {
+    font-size: 18px;
+  }
+
+  .sub-tab-btn.active {
+    background: #dbeafe;
+    color: #1d4ed8;
+    border-color: #93c5fd;
+  }
+
+  /* ---- Stack palette above question, both as cards ---- */
+  .nta-main-layout {
+    flex-direction: column;
+    height: auto;
+    gap: 10px;
+    padding: 10px;
+  }
+
+  .nta-palette-container {
+    order: -1;
+    width: 100%;
+    background: #fff;
+    border-radius: 12px;
+    box-shadow: 0 1px 4px rgba(0,0,0,0.08);
+    overflow: hidden;
+  }
+
+  .candidate-profile-box { border-bottom: 1px solid #eef1f5; }
+
+  /* Legend counts aren't in the reference look — hide on mobile */
+  .nta-legend-grid { display: none; }
+
+  .palette-scroll-area {
+    max-height: 210px;
+  }
+
+  .palette-buttons-grid {
+    grid-template-columns: repeat(auto-fill, minmax(42px, 1fr));
+    gap: 8px;
+  }
+
+  /* Palette buttons*/
+  .q-btn {
+    height: 42px;
+    font-size: 12px;
+  }
+
+  /* ---- Question card ---- */
+  .nta-question-container {
+    border-right: none;
+    border-radius: 12px;
+    box-shadow: 0 1px 4px rgba(0,0,0,0.08);
+    overflow: hidden;
+  }
+
+  .question-meta-bar { font-size: 12px; }
+  .question-content-scroll { padding: 16px; }
+  .question-text-area { font-size: 14px; }
+
+  .option-item {
+    padding: 12px 14px;
+    font-size: 14px;
+  }
+  .option-item input[type="radio"] {
+    width: 18px;
+    height: 18px;
+  }
+
+  /* ---- Bottom action bar -> 4 equal icon buttons ---- */
+  .nta-bottom-actions {
+    height: auto;
+    padding: 10px;
+    border-radius: 12px;
+    box-shadow: 0 1px 4px rgba(0,0,0,0.08);
+  }
+
+  .action-btn-group {
+    flex: 1;
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 8px;
+  }
+  .nta-bottom-actions {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 8px;
+  }
+  .action-btn-group { display: contents; } /* let all 4 buttons share one grid */
+
+  .nta-btn {
+    height: 64px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 4px;
+    font-size: 10px;
+    border-radius: 10px;
+    padding: 0 4px;
+    text-align: center;
+  }
+  .nta-btn::before { font-size: 16px; }
+
+  #markBtn {
+    background: #7c3aed;
+    border-color: #6d28d9;
+    color: #fff;
+  }
+  #clearBtn {
+    background: #f6f5f5;
+    border-color: #e6e3e3;
+    color: #352e2e;
+  }
+  #prevBtn {
+    background: #e2e8f0;
+    border-color: #cbd5e1;
+    color: #334155;
+  }
+
+  .palette-submit-bar { border-top: 1px solid #eef1f5; }
+}
