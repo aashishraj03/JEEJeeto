@@ -5,40 +5,18 @@ const typeParam = urlParams.get("type") || "mock";
 
 let setKey = paperParam || typeParam;
 
-// ===== Fast Click & Touch Handler Helper (Zero 300ms Delay) =====
-// NOTE: handler used to run on 'touchstart'. Mutating the DOM (re-rendering
-// the question / palette) during touchstart defers repaint on mobile
-// browsers until the touch gesture finishes, which is why the answer would
-// save correctly but the screen wouldn't visually update. Running on
-// 'touchend' (and cancelling the resulting ghost click) fixes this while
-// keeping taps instant.
+// ===== Fast Click & Touch Handler Helper =====
+// NOTE: this used to manually juggle touchstart/touchend to avoid the old
+// 300ms tap delay. That's unnecessary here — the page already sets
+// touch-action: manipulation (in CSS, on button/.nta-btn/.q-btn/etc.) and
+// has a proper viewport meta tag, which together make native 'click'
+// events fire instantly with no delay on every modern mobile browser.
+// The manual touch handling was actually the source of the bugs (DOM
+// mutations not repainting during touchstart, then preventDefault
+// swallowing clicks during touchend) — plain click is simpler and reliable.
 function bindFastClick(element, handler) {
   if (!element) return;
-  let moved = false;
-  let touchHandled = false;
-
-  element.addEventListener('touchstart', function () {
-    moved = false;
-  }, { passive: true });
-
-  element.addEventListener('touchmove', function () {
-    moved = true;
-  }, { passive: true });
-
-  element.addEventListener('touchend', function (e) {
-    if (moved) return; // finger scrolled, not a tap
-    touchHandled = true;
-    e.preventDefault(); // stop the delayed synthetic click from also firing
-    requestAnimationFrame(() => handler(e));
-  }, { passive: false });
-
-  element.addEventListener('click', function (e) {
-    if (touchHandled) {
-      touchHandled = false;
-      return;
-    }
-    handler(e);
-  });
+  element.addEventListener('click', handler);
 }
 
 // ===== Dynamically Update Exam Header & Page Title =====

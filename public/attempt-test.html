@@ -2,16 +2,18 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
   <title>JEE Main CBT Simulator - JEE Jeeto</title>
-  <link rel="stylesheet" href="css/attempt-test.css">
+  
+  <!-- Cache-busted stylesheet -->
+  <link rel="stylesheet" href="css/attempt-test.css?v=2">
   <script defer src="/_vercel/speed-insights/script.js"></script>
 </head>
 <body>
 
   <!-- Top NTA Header -->
   <header class="nta-header">
-    <!-- <div class="nta-exam-title">JEE (Main) Computer Based Test (CBT)</div> -->
+    <div class="nta-exam-title" id="exam-title">JEE (Main) Computer Based Test (CBT)</div>
     <div class="nta-header-right">
       <div class="nta-timer-badge">
         <span>⏱ Time Left:</span>
@@ -124,8 +126,9 @@
     }
   </script>
 
-  <script src="js/test-key.js"></script>
-  <script src="js/questions-data.js"></script>
-  <script src="js/test-engine.js"></script>
+  <!-- Cache-busted Scripts -->
+  <script src="js/test-key.js?v=2"></script>
+  <script src="js/questions-data.js?v=2"></script>
+  <script src="js/test-engine.js?v=2"></script>
 </body>
 </html>
