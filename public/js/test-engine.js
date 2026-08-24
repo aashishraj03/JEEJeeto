@@ -6,14 +6,31 @@ const typeParam = urlParams.get("type") || "mock";
 let setKey = paperParam || typeParam;
 
 // ===== Fast Click & Touch Handler Helper (Zero 300ms Delay) =====
+// NOTE: handler used to run on 'touchstart'. Mutating the DOM (re-rendering
+// the question / palette) during touchstart defers repaint on mobile
+// browsers until the touch gesture finishes, which is why the answer would
+// save correctly but the screen wouldn't visually update. Running on
+// 'touchend' (and cancelling the resulting ghost click) fixes this while
+// keeping taps instant.
 function bindFastClick(element, handler) {
   if (!element) return;
+  let moved = false;
   let touchHandled = false;
 
-  element.addEventListener('touchstart', function (e) {
-    touchHandled = true;
-    handler(e);
+  element.addEventListener('touchstart', function () {
+    moved = false;
   }, { passive: true });
+
+  element.addEventListener('touchmove', function () {
+    moved = true;
+  }, { passive: true });
+
+  element.addEventListener('touchend', function (e) {
+    if (moved) return; // finger scrolled, not a tap
+    touchHandled = true;
+    e.preventDefault(); // stop the delayed synthetic click from also firing
+    requestAnimationFrame(() => handler(e));
+  }, { passive: false });
 
   element.addEventListener('click', function (e) {
     if (touchHandled) {
@@ -129,7 +146,7 @@ async function loadQuestionSet(key) {
 let questions = [];
 let totalQuestions = 75;
 let currentQuestion = 1;
-const status = {};             
+const questionStatus = {};             
 const answers = {};            
 const timeSpent = {};          
 const answerChangedFlags = {}; 
@@ -176,7 +193,7 @@ function updateLegendCounts() {
   let answered = 0, notAnswered = 0, notVisited = 0, marked = 0, ansMarked = 0;
 
   for (let i = 1; i <= totalQuestions; i++) {
-    const st = status[i];
+    const st = questionStatus[i];
     if (st === "answered") answered++;
     else if (st === "not-answered") notAnswered++;
     else if (st === "marked") marked++;
@@ -274,7 +291,7 @@ function renderPalette() {
   for (let i = 1; i <= totalQuestions; i++) {
     const btn = document.createElement("button");
     btn.type = "button";
-    btn.className = `q-btn q-${status[i]}`;
+    btn.className = `q-btn q-${questionStatus[i]}`;
     btn.textContent = i;
     bindFastClick(btn, () => goToQuestion(i));
     grid.appendChild(btn);
@@ -283,8 +300,8 @@ function renderPalette() {
 
 function goToQuestion(num) {
   currentQuestion = num;
-  if (status[num] === "not-visited") {
-    status[num] = "not-answered";
+  if (questionStatus[num] === "not-visited") {
+    questionStatus[num] = "not-answered";
   }
   renderQuestion();
   renderPalette();
@@ -333,11 +350,11 @@ function initActionHandlers() {
         answerChangedFlags[currentQuestion] = true;
       }
       answers[currentQuestion] = parseInt(selected.value, 10);
-      status[currentQuestion] = "answered";
+      questionStatus[currentQuestion] = "answered";
     } else if (answers[currentQuestion] !== undefined) {
-      status[currentQuestion] = "answered";
+      questionStatus[currentQuestion] = "answered";
     } else {
-      status[currentQuestion] = "not-answered";
+      questionStatus[currentQuestion] = "not-answered";
     }
 
     if (currentQuestion < totalQuestions) {
@@ -356,11 +373,11 @@ function initActionHandlers() {
         answerChangedFlags[currentQuestion] = true;
       }
       answers[currentQuestion] = parseInt(selected.value, 10);
-      status[currentQuestion] = "answered-marked";
+      questionStatus[currentQuestion] = "answered-marked";
     } else if (answers[currentQuestion] !== undefined) {
-      status[currentQuestion] = "answered-marked";
+      questionStatus[currentQuestion] = "answered-marked";
     } else {
-      status[currentQuestion] = "marked";
+      questionStatus[currentQuestion] = "marked";
     }
 
     if (currentQuestion < totalQuestions) {
@@ -373,7 +390,7 @@ function initActionHandlers() {
 
   bindFastClick(clearBtn, () => {
     delete answers[currentQuestion];
-    status[currentQuestion] = "not-answered";
+    questionStatus[currentQuestion] = "not-answered";
     document.querySelectorAll('input[name="nta_option"]').forEach(el => (el.checked = false));
     renderPalette();
     updateLegendCounts();
@@ -530,10 +547,10 @@ async function loadCandidateProfile() {
   totalQuestions = questions.length;
 
   for (let i = 1; i <= totalQuestions; i++) {
-    status[i] = "not-visited";
+    questionStatus[i] = "not-visited";
     timeSpent[i] = 0;
   }
-  status[1] = "not-answered";
+  questionStatus[1] = "not-answered";
 
   renderQuestion();
   renderPalette();
