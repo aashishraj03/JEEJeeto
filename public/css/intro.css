@@ -1,0 +1,157 @@
+/* ===================================================================
+   INTRO ANIMATION — "NO EXCUSES JUST TRY"
+   Scoped entirely to #intro-overlay / .word* / .content-fade so it
+   never touches the real site's .hero, .topbar, etc.
+   =================================================================== */
+
+#intro-overlay {
+  position: fixed;
+  inset: 0;
+  background: #b1aafb;
+  z-index: 9999;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+  cursor: pointer;
+  transition: opacity 0.45s ease, transform 0.5s cubic-bezier(.6,0,.3,1);
+}
+
+#intro-overlay.intro-hide {
+  opacity: 0;
+  transform: translateY(-3%);
+  pointer-events: none;
+}
+
+.intro-skip {
+  position: absolute;
+  bottom: 24px;
+  right: 28px;
+  font-size: 12px;
+  letter-spacing: .08em;
+  text-transform: uppercase;
+  color: #999;
+  font-weight: 600;
+}
+
+.stage {
+  position: relative;
+  width: min(900px, 92vw);
+  aspect-ratio: 672 / 480;
+  --scale: 1.5;
+}
+
+.word {
+  position: absolute;
+  font-family: "Anton", "Arial Black", "Helvetica Neue", Arial, sans-serif;
+  font-weight: 400;
+  color: #0b0b0b;
+  white-space: nowrap;
+  line-height: 0.85;
+  letter-spacing: 0;
+  opacity: 0;
+  will-change: transform, opacity;
+}
+
+/* base (final resting) positions */
+.word-no      { left: 22%; top: 33%; font-size: calc(clamp(72px, 20vw, 190px) * var(--scale) * 0.9); }
+.word-excuses { left: 49%; top: 32%; font-size: calc(clamp(20px, 4.6vw, 120px) * var(--scale)); }
+.word-try     { left: 49%; top: 47%; font-size: calc(clamp(64px, 17vw, 160px) * var(--scale)); }
+.word-just    { left: 24%; top: 68%; font-size: calc(clamp(18px, 3.8vw, 34px) * var(--scale) * 1.6); letter-spacing: 0.52cm; }
+
+/* TRY: drops from the top, lands tilted & overlapping EXCUSES's spot, holds, then snaps upright into its final gap below EXCUSES */
+.word-try { animation: popTry 2s forwards; }
+@keyframes popTry {
+  0%   { opacity: 1; transform: translateX(-20%) translateY(-180%) rotate(-9deg); }
+  5%   { opacity: 1; transform: translateX(-20%) translateY(-180%) rotate(-9deg); }
+  10%  { opacity: 1; transform: translateX(-20%) translateY(-180%) rotate(-9deg); }
+  15%  { opacity: 1; transform: translateX(-20%) translateY(-180%) rotate(-9deg); }
+  20%  { opacity: 1; transform: translateX(+20%) translateY(-100%) rotate(+9deg); }
+  25%  { opacity: 1; transform: translateX(+20%) translateY(-100%) rotate(+9deg); }
+  30%  { opacity: 1; transform: translateX(+20%) translateY(-100%) rotate(+9deg); }
+  35%  { opacity: 1; transform: translateX(+20%) translateY(-100%) rotate(+9deg); }
+  40%  { opacity: 1; transform: translateX(+20%) translateY(-100%) rotate(+9deg); }
+  45%  { opacity: 1; transform: translateX(+20%) translateY(-100%) rotate(+9deg); }
+  50%  { opacity: 1; transform: translateX(+20%) translateY(-100%) rotate(+9deg); }
+  55%  { opacity: 1; transform: translateX(-10%) translateY(-40%) rotate(-5deg); }
+  60%  { opacity: 1; transform: translateX(-10%) translateY(-40%) rotate(-5deg); }
+  65%  { opacity: 1; transform: translateX(-10%) translateY(-40%) rotate(-5deg); }
+  70%  { opacity: 1; transform: translateX(-10%) translateY(-40%) rotate(-5deg); }
+  80%  { opacity: 1; transform: translateY(0%) rotate(0deg); }
+  85%  { opacity: 1; transform: translateY(0%) rotate(0deg); }
+  90%  { opacity: 1; transform: translateY(0%) rotate(0deg); }
+  95%  { opacity: 1; transform: translateY(0%) rotate(0deg); }
+  100% { opacity: 1; transform: translateY(0%) rotate(0deg); }
+}
+
+/* EXCUSES: drops from the top slightly after TRY, lands tilted, overlapping down onto TRY, holds, then snaps up into its clean final slot */
+.word-excuses { animation: popExcuses 2s forwards; }
+@keyframes popExcuses {
+  0%   { opacity: 1; transform: translateY(-180%) rotate(13deg); }
+  10%  { opacity: 1; transform: translateY(-180%) rotate(13deg); }
+  15%  { opacity: 1; transform: translateY(-180%) rotate(13deg); }
+  20%  { opacity: 1; transform: translateY(-180%) rotate(13deg); }
+  27%  { opacity: 1; transform: translateY(38%) rotate(-6deg); }
+  54%  { opacity: 1; transform: translateY(38%) rotate(-6deg); }
+  64%  { opacity: 1; transform: translateY(38%) rotate(-6deg); }
+  74%  { opacity: 1; transform: translateY(38%) rotate(-6deg); }
+  84%  { opacity: 1; transform: translateY(0%) rotate(0deg); }
+  100% { opacity: 1; transform: translateY(0%) rotate(0deg); }
+}
+
+/* JUST: slides in from off-screen LEFT, stops at a "peek" position still mostly cut off, holds, then snaps the rest of the way in */
+.word-just { animation: popJust 2s forwards; }
+@keyframes popJust {
+  0%   { opacity: 1; transform: translateX(-200%) translateY(+210%) rotate(-6deg); }
+  5%   { opacity: 1; transform: translateX(-200%) translateY(+210%) rotate(-6deg); }
+  10%  { opacity: 1; transform: translateX(-200%) translateY(+210%) rotate(-6deg); }
+  15%  { opacity: 1; transform: translateX(-200%) translateY(+210%) rotate(-6deg); }
+  20%  { opacity: 1; transform: translateX(-160%) translateY(+170%) rotate(+3deg); }
+  25%  { opacity: 1; transform: translateX(-160%) translateY(+170%) rotate(+3deg); }
+  30%  { opacity: 1; transform: translateX(-160%) translateY(+170%) rotate(+3deg); }
+  35%  { opacity: 1; transform: translateX(-100%) translateY(+100%) rotate(-9deg); }
+  40%  { opacity: 1; transform: translateX(-100%) translateY(+100%) rotate(-9deg); }
+  52%  { opacity: 1; transform: translateX(-100%) translateY(+100%) rotate(-9deg); }
+  60%  { opacity: 1; transform: translateX(-100%) translateY(+100%) rotate(-9deg); }
+  72%  { opacity: 1; transform: translateX(-58%) translateY(-20%) rotate(+3deg); }
+  78%  { opacity: 1; transform: translateX(-58%) translateY(-20%) rotate(+3deg); }
+  82%  { opacity: 1; transform: translateX(0%) translateY(-20%) rotate(+3deg); }
+  92%  { opacity: 1; transform: translateX(0%) translateY(-20%) rotate(+3deg); }
+  100% { opacity: 1; transform: translateX(0%) rotate(0deg); }
+}
+
+/* NO: same idea as JUST but bigger and lands last, slides in from off-screen LEFT */
+.word-no { animation: popNo 2s forwards; }
+@keyframes popNo {
+  0%   { opacity: 1; transform: translateX(-190%) translateY(+200%) rotate(7deg); }
+  5%   { opacity: 1; transform: translateX(-190%) translateY(+200%) rotate(7deg); }
+  10%  { opacity: 1; transform: translateX(-190%) translateY(+200%) rotate(7deg); }
+  15%  { opacity: 1; transform: translateX(-190%) translateY(+200%) rotate(7deg); }
+  20%  { opacity: 1; transform: translateX(-130%) translateY(+100%) rotate(0deg); }
+  25%  { opacity: 1; transform: translateX(-130%) translateY(+100%) rotate(0deg); }
+  30%  { opacity: 1; transform: translateX(-130%) translateY(+100%) rotate(0deg); }
+  35%  { opacity: 1; transform: translateX(-130%) translateY(+100%) rotate(0deg); }
+  40%  { opacity: 1; transform: translateX(-90%) translateY(+60%) rotate(-11deg); }
+  45%  { opacity: 1; transform: translateX(-90%) translateY(+60%) rotate(-11deg); }
+  50%  { opacity: 1; transform: translateX(-90%) translateY(+60%) rotate(-11deg); }
+  54%  { opacity: 1; transform: translateX(-48%) rotate(7deg); }
+  92%  { opacity: 1; transform: translateX(-48%) rotate(7deg); }
+  97%  { opacity: 1; transform: translateX(0%) rotate(0deg); }
+  100% { opacity: 1; transform: translateX(0%) rotate(0deg); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .word { animation: none !important; opacity: 1 !important; transform: none !important; }
+  #intro-overlay { display: none; }
+}
+
+/* Wrapper around the real page content — fades in once the intro finishes */
+.content-fade {
+  opacity: 0;
+  transform: translateY(12px);
+  transition: opacity 0.6s ease, transform 0.6s ease;
+}
+.content-fade.content-show {
+  opacity: 1;
+  transform: translateY(0);
+}

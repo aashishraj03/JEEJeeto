@@ -5,9 +5,27 @@
   <!-- <meta name="viewport" content="width=device-width, initial-scale=1.0"> -->
   <title>JEE Jeeto</title>
   <link rel="stylesheet" href="css/index.css">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Anton&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/intro.css">
   <script defer src="/_vercel/speed-insights/script.js"></script>
 </head>
 <body>
+
+  <!-- ============ INTRO ANIMATION — first thing the user sees ============ -->
+  <div id="intro-overlay" aria-hidden="true" role="presentation">
+    <div class="stage">
+      <span class="word word-try">TRY</span>
+      <span class="word word-excuses">EXCUSES</span>
+      <span class="word word-no">NO</span>
+      <span class="word word-just">JUST</span>
+    </div>
+    <span class="intro-skip">tap to skip</span>
+  </div>
+
+  <!-- ============ REST OF THE SITE — unchanged, just wrapped so it can fade in ============ -->
+  <div id="page-content" class="content-fade">
 
   <div class="topbar">
     <div class="logo">JEE<span>Jeeto</span></div>
@@ -229,6 +247,9 @@
     </div>
   </footer>
 
+  </div><!-- /#page-content -->
+
   <script src="js/navbar.js"></script>
+  <script src="js/intro.js"></script>
 </body>
 </html>
