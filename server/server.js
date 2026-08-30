@@ -21,6 +21,9 @@ const db = require('./db');
 const app = express();
 const PORT = process.env.PORT || 5000;
 
+// Trust reverse proxy / serverless headers (Vercel, AWS API Gateway, Nginx)
+app.set('trust proxy', 1);
+
 // Content Security Policy & Security Headers (Configured for Fonts, MathJax & Razorpay)
 app.use(
   helmet({
@@ -100,6 +103,11 @@ const authLimiter = rateLimit({
   max: 5,
   standardHeaders: true,
   legacyHeaders: false,
+  validate: {
+    xForwardedForHeader: false,
+    forwardedHeader: false,
+    default: false,
+  },
   handler: (req, res) => {
     res.status(429).json({ error: 'Too many login/register attempts. Please wait 5 minutes.' });
   }

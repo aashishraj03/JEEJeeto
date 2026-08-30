@@ -6,14 +6,6 @@ const typeParam = urlParams.get("type") || "mock";
 let setKey = paperParam || typeParam;
 
 // ===== Fast Click & Touch Handler Helper =====
-// NOTE: this used to manually juggle touchstart/touchend to avoid the old
-// 300ms tap delay. That's unnecessary here — the page already sets
-// touch-action: manipulation (in CSS, on button/.nta-btn/.q-btn/etc.) and
-// has a proper viewport meta tag, which together make native 'click'
-// events fire instantly with no delay on every modern mobile browser.
-// The manual touch handling was actually the source of the bugs (DOM
-// mutations not repainting during touchstart, then preventDefault
-// swallowing clicks during touchend) — plain click is simpler and reliable.
 function bindFastClick(element, handler) {
   if (!element) return;
   element.addEventListener('click', handler);
