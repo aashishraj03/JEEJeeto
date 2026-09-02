@@ -9,8 +9,8 @@ const isProduction =
 const pool = new Pool({
   connectionString: process.env.DATABASE_URL || 'postgresql://postgres:postgres@localhost:5432/jee_jeeto',
   ssl: isProduction ? { rejectUnauthorized: false } : false,
-  max: 30,
-  idleTimeoutMillis: 30000,
+  max: 1,
+  idleTimeoutMillis: 10000,
   connectionTimeoutMillis: 5000,
 });
 

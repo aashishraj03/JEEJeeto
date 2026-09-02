@@ -3,32 +3,24 @@
 <head>
   <meta charset="UTF-8">
   <!-- <meta name="viewport" content="width=device-width, initial-scale=1.0"> -->
-
   <title>Choose Test - JEE Jeeto</title>
-
   <link rel="stylesheet" href="css/test.css">
   <script defer src="/_vercel/speed-insights/script.js"></script>
 </head>
-
 <body>
-
   <!-- =========================================================
        TOPBAR
   ========================================================== -->
   <header class="topbar">
-
     <div class="logo">
       JEE<span>Jeeto</span>
     </div>
-
     <div class="nav-group">
       <nav>
         <a href="index.html">Home</a>
         <a href="notes.html">Browse Notes</a>
-        <!-- <a href="tests.html">PYQs</a> -->
         <a href="subscription.html">Subscription</a>
         <a href="login.html" id="navLoginBtn">Login</a>
-        
       </nav>
       <a href="profile.html" id="navAccountBtn" class="account-btn" title="My Account" style="display: none;">
         <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="8" r="4"/><path d="M4 20c0-4.4 3.6-7 8-7s8 2.6 8 7"/></svg>
@@ -41,22 +33,18 @@
        MAIN CONTENT
   ========================================================== -->
   <main class="page-container">
-
     <!-- Page heading -->
     <section class="page-heading">
-
       <h1>Choose Your Test</h1>
       <p>
         Select an examination and choose the paper you want to attempt.
       </p>
     </section>
 
-
     <!-- =======================================================
          EXAM SELECTOR
     ======================================================== -->
     <section class="exam-selector">
-
       <button class="exam-tab active" data-exam="mains" type="button">
         <span class="exam-name">JEE Main</span>
         <span class="exam-description">
@@ -64,22 +52,18 @@
         </span>
       </button>
 
-
       <button class="exam-tab" data-exam="advanced" type="button">
         <span class="exam-name">JEE Advanced</span>
         <span class="exam-description">
           Paper 1 &amp; Paper 2
         </span>
       </button>
-
     </section>
-
 
     <!-- =======================================================
          TEST TYPE
     ======================================================== -->
     <section class="section-block">
-
       <div class="section-header">
         <div>
           <h2>Practice Mode</h2>
@@ -89,114 +73,73 @@
         </div>
       </div>
 
-
       <div class="test-type-grid">
-
         <!-- Previous Year Papers -->
         <article class="test-type-card selected">
-
           <div class="test-type-icon">
             <span>01</span>
           </div>
-
           <div class="test-type-content">
             <h3>Previous Year Papers</h3>
             <p>
-              Attempt complete examination papers arranged by year,
-              date and shift.
+              Attempt complete examination papers arranged by year,date and shift.
             </p>
           </div>
-
           <span class="selected-label">Selected</span>
-
         </article>
-
 
         <!-- Subject-wise -->
         <article class="test-type-card">
-
           <div class="test-type-icon">
             <span>02</span>
           </div>
-
           <div class="test-type-content">
             <h3>Subject-wise Practice</h3>
             <p>
-              Practice Physics, Chemistry or Mathematics
-              independently.
+              Practice Physics, Chemistry or Mathematics independently.
             </p>
           </div>
 
-          <a
-            href="#"
-            class="small-btn"
-            onclick="requireLogin('attempt-test.html?type=subject'); return false;">
-            Practice
-          </a>
-
+          <a href="#" class="small-btn" onclick="requireLogin('attempt-test.html?type=subject'); return false;"> Practice</a>
         </article>
-
 
         <!-- Chapter-wise -->
         <article class="test-type-card">
-
           <div class="test-type-icon">
             <span>03</span>
           </div>
-
           <div class="test-type-content">
             <h3>Chapter-wise Practice</h3>
             <p>
-              Focus on a particular chapter and strengthen
-              individual concepts.
+              Focus on a particular chapter and strengthen individual concepts.
             </p>
           </div>
-
-          <a
-            href="#"
-            class="small-btn"
-            onclick="requireLogin('attempt-test.html?type=chapter'); return false;">
-            Practice
-          </a>
-
+          <a href="#" class="small-btn" onclick="requireLogin('attempt-test.html?type=chapter'); return false;"> Practice </a>
         </article>
-
 
         <!-- Mock -->
         <article class="test-type-card">
-
           <div class="test-type-icon">
             <span>04</span>
           </div>
-
           <div class="test-type-content">
             <h3>Full Mock Test</h3>
             <p>
-              Simulate the complete examination with real
-              examination timing.
+              Simulate the complete examination with real examination timing.
             </p>
           </div>
 
-          <a
-            href="#"
-            class="small-btn"
-            onclick="requireLogin('attempt-test.html?type=mock'); return false;">
-            Attempt
+          <a href="#" class="small-btn" onclick="requireLogin('attempt-test.html?type=mock'); return false;"> Attempt
           </a>
-
         </article>
-
       </div>
     </section>
-
 
     <!-- =======================================================
          PAPER LIST
     ======================================================== -->
     <section class="section-block papers-section">
-
       <div class="section-header paper-header">
-
         <div>
           <h2 id="paperHeading">JEE Main Papers</h2>
           <p>
@@ -207,60 +150,42 @@
         <span class="paper-count" id="paperCount">
           2026
         </span>
-
       </div>
-
 
       <!-- =====================================================
            JEE MAIN PAPERS
       ====================================================== -->
       <div class="paper-panel active" id="mains">
-
-
         <!-- ===================================================
              2026 APRIL 02
         ==================================================== -->
         <div class="paper-date-group">
-
           <div class="paper-group-heading">
             <span>2026</span>
             <strong>April 02</strong>
           </div>
-
           <div class="shift-row">
-
             <!-- April 02 Shift 2 (FREE) -->
             <article class="paper-card">
-
               <div class="paper-date">
                 <span class="paper-year">2026</span>
                 <strong>April 02</strong>
               </div>
-
               <div class="paper-info">
                 <h3>JEE Main 2026</h3>
                 <p>
                   April 02, 2026 &nbsp;•&nbsp; Shift 2
                 </p>
               </div>
-
-              <a
-                href="attempt-test.html?paper=jee-main-2026-apr-02-shift-2"
-                class="paper-btn">
-                Attempt
-              </a>
-
+              <a href="attempt-test.html?paper=main-2024-jan-shift1" class="paper-btn">Attempt</a>
             </article>
-
 
             <!-- April 02 Shift 1 (LOCKED) -->
             <article class="paper-card">
-
               <div class="paper-date">
                 <span class="paper-year">2026</span>
                 <strong>April 02</strong>
               </div>
-
               <div class="paper-info">
                 <h3>JEE Main 2026</h3>
                 <p>
@@ -268,38 +193,26 @@
                 </p>
               </div>
 
-              <a
-                href="attempt-test.html?paper=jee-main-2026-apr-02-shift-1"
-                class="paper-btn">
-                Attempt
-              </a>
-
+              <a href="attempt-test.html?paper=jee-main-2026-apr-02-shift-1" class="paper-btn">Attempt</a>
             </article>
-
           </div>
         </div>
-
 
         <!-- ===================================================
              2026 APRIL 01
         ==================================================== -->
         <div class="paper-date-group">
-
           <div class="paper-group-heading">
             <span>2026</span>
             <strong>April 01</strong>
           </div>
-
           <div class="shift-row">
-
             <!-- April 01 Shift 2 (LOCKED) -->
             <article class="paper-card">
-
               <div class="paper-date">
                 <span class="paper-year">2026</span>
                 <strong>April 01</strong>
               </div>
-
               <div class="paper-info">
                 <h3>JEE Main 2026</h3>
                 <p>
@@ -307,23 +220,15 @@
                 </p>
               </div>
 
-              <a
-                href="attempt-test.html?paper=jee-main-2026-apr-01-shift-2"
-                class="paper-btn">
-                Attempt
-              </a>
-
+              <a href="attempt-test.html?paper=jee-main-2026-apr-01-shift-2" class="paper-btn">Attempt</a>
             </article>
-
 
             <!-- April 01 Shift 1 (LOCKED) -->
             <article class="paper-card">
-
               <div class="paper-date">
                 <span class="paper-year">2026</span>
                 <strong>April 01</strong>
               </div>
-
               <div class="paper-info">
                 <h3>JEE Main 2026</h3>
                 <p>
@@ -331,93 +236,58 @@
                 </p>
               </div>
 
-              <a
-                href="attempt-test.html?paper=jee-main-2026-apr-01-shift-1"
-                class="paper-btn">
-                Attempt
-              </a>
-
+              <a href="attempt-test.html?paper=jee-main-2026-apr-01-shift-1" class="paper-btn">Attempt</a>
             </article>
-
           </div>
         </div>
-
       </div>
-
 
       <!-- =====================================================
            JEE ADVANCED PAPERS
       ====================================================== -->
       <div class="paper-panel" id="advanced">
-
         <!-- ===================================================
              JEE ADVANCED 2026
         ==================================================== -->
         <div class="paper-date-group">
-
           <div class="paper-group-heading">
             <span>2026</span>
             <strong>JEE Advanced</strong>
           </div>
-
           <div class="shift-row">
-
             <!-- Paper 2 (LOCKED) -->
             <article class="paper-card">
-
               <div class="paper-date">
                 <span class="paper-year">2026</span>
                 <strong>Paper 2</strong>
               </div>
-
               <div class="paper-info">
                 <h3>JEE Advanced 2026</h3>
                 <p>
                   Paper 2
                 </p>
               </div>
-
-              <a
-                href="attempt-test.html?paper=jee-advanced-2026-paper-2"
-                class="paper-btn">
-                Attempt
-              </a>
-
+              <a href="attempt-test.html?paper=jee-advanced-2026-paper-2" class="paper-btn">Attempt</a>
             </article>
-
-
             <!-- Paper 1 (LOCKED) -->
             <article class="paper-card">
-
               <div class="paper-date">
                 <span class="paper-year">2026</span>
                 <strong>Paper 1</strong>
               </div>
-
               <div class="paper-info">
                 <h3>JEE Advanced 2026</h3>
                 <p>
                   Paper 1
                 </p>
               </div>
-
-              <a
-                href="attempt-test.html?paper=jee-advanced-2026-paper-1"
-                class="paper-btn">
-                Attempt
-              </a>
-
+              <a href="attempt-test.html?paper=jee-advanced-2026-paper-1" class="paper-btn">Attempt</a>
             </article>
-
           </div>
         </div>
-
       </div>
-
     </section>
-
   </main>
-
 
   <!-- =========================================================
        FOOTER
