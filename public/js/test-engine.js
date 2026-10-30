@@ -285,6 +285,7 @@ function initActions() {
   $("submitBtn").onclick = openSummary;
   $("submitBtnM").onclick = () => { $("palette").classList.remove("open"); openSummary(); };
   $("palToggle").onclick = () => $("palette").classList.toggle("open");
+  $("palClose").onclick = $("backdrop").onclick = () => $("palette").classList.remove("open");
 }
 
 // ===== Timer =====
