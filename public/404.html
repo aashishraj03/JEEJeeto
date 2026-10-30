@@ -1,0 +1,436 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>404 — Page Not Found | JEE Portal</title>
+
+    <!-- Favicon & app icons -->
+  <link rel="icon" type="image/png" sizes="48x48" href="/icon/icon-48.png">
+  <link rel="icon" href="/icon/favicon.ico" sizes="any">
+  <link rel="icon" type="image/svg+xml" href="/icon/icon.svg">
+  <link rel="icon" type="image/png" sizes="32x32" href="/icon/icon-32.png">
+  <link rel="apple-touch-icon" href="/icon/icon-180.png">
+  <link rel="manifest" href="/icon/site.webmanifest">
+  <meta name="theme-color" content="#FFFBE8">
+  
+  <meta name="robots" content="noindex">
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700&family=Space+Grotesk:wght@700&display=swap" rel="stylesheet">
+
+  <style>
+    :root {
+      --bg-main: #22262e;
+      --bg-panel: #1b1e25;
+      --lamp-fixture: #a2a8b4;
+      --lamp-shade: #2d333f;
+      --light-glow: rgba(254, 243, 199, 0.18);
+    }
+
+    body {
+      font-family: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+      background-color: var(--bg-main);
+      color: #e2e8f0;
+      overflow-x: hidden;
+      user-select: none;
+    }
+
+    .font-num {
+      font-family: 'Space Grotesk', -apple-system, BlinkMacSystemFont, sans-serif;
+    }
+
+    .bg-noise {
+      background-image: radial-gradient(circle at 50% 18%, rgba(255, 237, 213, 0.04) 0%, transparent 65%);
+    }
+
+    .ceiling-mount {
+      box-shadow: 0 4px 14px rgba(0, 0, 0, 0.35);
+    }
+
+    .tracking-widest-sub {
+      letter-spacing: 0.32em;
+    }
+  </style>
+</head>
+<body class="min-h-screen bg-[#22262e] flex flex-col justify-between selection:bg-[#fde68a] selection:text-[#1e2229]">
+
+  <div class="fixed inset-0 pointer-events-none bg-noise"></div>
+
+  <!-- Header -->
+  <header class="relative z-30 w-full max-w-5xl mx-auto px-6 pt-7 flex items-center justify-between text-xs tracking-wider uppercase">
+    <a href="/" class="flex items-center gap-2 text-slate-400 hover:text-amber-200 transition-colors">
+      <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"/>
+      </svg>
+      <span class="font-semibold text-slate-300">JEE<span class="text-amber-200">Portal</span></span>
+    </a>
+    <div class="flex items-center gap-2 text-slate-400">
+      <span class="inline-block w-1.5 h-1.5 rounded-full bg-amber-300 animate-pulse"></span>
+      <span class="font-mono text-[11px] text-slate-400">STATUS 404</span>
+    </div>
+  </header>
+
+  <!-- Main interactive stage -->
+  <main class="relative z-20 flex-1 flex flex-col items-center justify-center px-4 w-full max-w-5xl mx-auto my-auto">
+
+    <div class="relative w-full max-w-3xl h-[450px] sm:h-[530px] flex items-center justify-center">
+
+      <!-- Ceiling mount -->
+      <div class="absolute top-0 left-1/2 -translate-x-1/2 z-30 flex flex-col items-center">
+        <div class="ceiling-mount w-8 h-2.5 rounded-b-md bg-[#383e4d] border-b border-white/10"></div>
+        <div class="w-1.5 h-1.5 rounded-full bg-slate-600 mt-[-1px]"></div>
+      </div>
+
+      <svg id="stage-svg" class="w-full h-full cursor-grab active:cursor-grabbing overflow-visible select-none"
+           viewBox="0 0 800 540" preserveAspectRatio="xMidYMin meet" role="img" aria-label="404 page not found. A swinging lamp lights up the text.">
+
+        <defs>
+          <linearGradient id="beamGrad" x1="0" y1="0" x2="0" y2="1">
+            <stop offset="0%" stop-color="#fffbeb" stop-opacity="0.72" />
+            <stop offset="16%" stop-color="#fef3c7" stop-opacity="0.30" />
+            <stop offset="65%" stop-color="#fef3c7" stop-opacity="0.14" />
+            <stop offset="92%" stop-color="#fef3c7" stop-opacity="0.04" />
+            <stop offset="100%" stop-color="#fef3c7" stop-opacity="0.0" />
+          </linearGradient>
+
+          <radialGradient id="floorGlow" cx="50%" cy="50%" r="50%">
+            <stop offset="0%" stop-color="#fef3c7" stop-opacity="0.32" />
+            <stop offset="60%" stop-color="#fef3c7" stop-opacity="0.09" />
+            <stop offset="100%" stop-color="#fef3c7" stop-opacity="0" />
+          </radialGradient>
+
+          <radialGradient id="bulbGlow" cx="50%" cy="50%" r="50%">
+            <stop offset="0%" stop-color="#ffffff" stop-opacity="1" />
+            <stop offset="50%" stop-color="#fde68a" stop-opacity="0.85" />
+            <stop offset="100%" stop-color="#fbbf24" stop-opacity="0" />
+          </radialGradient>
+
+          <clipPath id="spotlightClip">
+            <polygon points="-6,192 6,192 280,550 -280,550" />
+            <ellipse cx="0" cy="540" rx="280" ry="32" />
+          </clipPath>
+        </defs>
+
+        <!-- Ghostly silhouette of wall text -->
+        <g class="select-none pointer-events-none">
+          <text x="400" y="345" text-anchor="middle" class="font-num font-bold"
+                font-size="150" letter-spacing="0.06em" fill="#2e3542" opacity="0.45">404</text>
+          <text x="400" y="425" text-anchor="middle" class="font-bold tracking-widest-sub"
+                font-size="20" fill="#2e3542" opacity="0.45">PAGE NOT FOUND</text>
+        </g>
+
+        <!-- Swinging pendulum -->
+        <g id="pendulum" transform="rotate(0 400 0)">
+          <line x1="400" y1="0" x2="400" y2="160" stroke="#64748b" stroke-width="2" stroke-linecap="round" />
+          <rect x="398.5" y="98" width="3" height="5" rx="1.5" fill="#475569" />
+          <rect x="396.5" y="157" width="7" height="9" rx="1.5" fill="#94a3b8" />
+
+          <path d="M386 166 L414 166 L428 190 L372 190 Z"
+                fill="#2b313e" stroke="#475569" stroke-width="1.5" stroke-linejoin="round" />
+          <ellipse cx="400" cy="190" rx="28" ry="4" fill="#3a4253" stroke="#525d74" stroke-width="1" />
+
+          <circle cx="400" cy="192" r="7.5" fill="#fef3c7" />
+          <circle cx="400" cy="192" r="14" fill="url(#bulbGlow)" />
+
+          <polygon points="394,192 406,192 680,550 120,550" fill="url(#beamGrad)" pointer-events="none" />
+          <ellipse cx="400" cy="535" rx="280" ry="30" fill="url(#floorGlow)" pointer-events="none" />
+
+          <!-- Revealed text inside the light cone -->
+          <g id="counter-rotated-text-container">
+            <g clip-path="url(#spotlightClip)" transform="translate(400, 0)">
+              <g id="grounded-text-anchor">
+                <text x="0" y="345" text-anchor="middle" class="font-num font-bold select-none"
+                      font-size="150" letter-spacing="0.06em" fill="#fffbeb"
+                      filter="drop-shadow(0 2px 14px rgba(254, 243, 199, 0.42))">404</text>
+                <text x="0" y="425" text-anchor="middle" class="font-bold tracking-widest-sub select-none"
+                      font-size="20" fill="#fef3c7"
+                      filter="drop-shadow(0 1px 8px rgba(254, 243, 199, 0.35))">PAGE NOT FOUND</text>
+              </g>
+            </g>
+          </g>
+        </g>
+      </svg>
+
+      <!-- Drag hint -->
+      <div id="drag-hint" class="absolute bottom-2 left-1/2 -translate-x-1/2 flex items-center gap-1.5 px-3 py-1 rounded-full bg-white/[0.04] border border-white/5 text-[11px] text-slate-400 opacity-80 pointer-events-none transition-opacity duration-500">
+        <svg class="w-3.5 h-3.5 text-amber-300" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7h12m0 0l-4-4m4 4l-4 4m0 6H4m0 0l4 4m-4-4l4-4" />
+        </svg>
+        <span>Drag the lamp to find the page</span>
+      </div>
+    </div>
+
+    <!-- Message & actions -->
+    <div class="text-center mt-3 max-w-md mx-auto">
+      <p class="text-slate-400 text-sm sm:text-base leading-relaxed font-light mb-6">
+        We looked everywhere, but this page isn't on JEE Portal. The link may be broken, or the page may have moved.
+      </p>
+
+      <div class="flex flex-wrap items-center justify-center gap-3">
+        <a href="/"
+           class="inline-flex items-center gap-2 px-6 py-2.5 rounded-full bg-amber-100 hover:bg-amber-200 text-slate-900 text-sm font-semibold transition-all duration-150 transform active:scale-95 shadow-sm">
+          <span>Back to JEE Portal</span>
+          <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"/>
+          </svg>
+        </a>
+
+        <button onclick="giveLampNudge()"
+                class="inline-flex items-center gap-2 px-5 py-2.5 rounded-full bg-slate-800/80 hover:bg-slate-700/80 border border-slate-700/60 text-slate-300 hover:text-white text-sm font-medium transition-all duration-150 active:scale-95">
+          <span>Give it a push</span>
+          <svg class="w-3.5 h-3.5 text-amber-200" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3"/>
+          </svg>
+        </button>
+      </div>
+
+      <p class="mt-5 text-xs text-slate-500">
+        Think this is a mistake? Tell us on
+        <a id="report-insta" href="#" target="_blank" rel="noopener" class="text-amber-200/80 hover:text-amber-200 underline underline-offset-2 transition-colors">Instagram</a>
+        <span id="sep-wa" class="text-slate-600">&middot;</span>
+        <a id="report-wa" href="#" target="_blank" rel="noopener" class="text-amber-200/80 hover:text-amber-200 underline underline-offset-2 transition-colors">WhatsApp</a>
+        <span id="sep-mail" class="text-slate-600">&middot;</span>
+        <a id="report-mail" href="#" target="_blank" rel="noopener" class="text-amber-200/80 hover:text-amber-200 underline underline-offset-2 transition-colors">Gmail</a>
+      </p>
+      <div id="report-note" role="status" aria-live="polite"
+           class="fixed bottom-6 left-1/2 -translate-x-1/2 z-50 max-w-[90vw] px-5 py-3 rounded-full bg-slate-800/95 border border-amber-200/30 text-amber-100 text-sm shadow-lg shadow-black/40 text-center opacity-0 pointer-events-none transition-opacity duration-500"></div>
+    </div>
+
+  </main>
+
+  <!-- Footer -->
+  <footer class="relative z-20 w-full max-w-5xl mx-auto px-6 py-5 flex flex-col sm:flex-row items-center justify-between text-xs text-slate-500 gap-2 border-t border-white/[0.04]">
+    <div>&copy; <span id="year"></span> JEE Portal &bull; No excuse. Just try.</div>
+    <div class="flex items-center gap-4 text-slate-400">
+      <span>Error 404</span>
+    </div>
+  </footer>
+
+  <script>
+    // ====== EDIT THESE (leave a value empty '' to hide that option) ======
+    const INSTAGRAM_HANDLE = 'noexcusejusttry';       // Instagram username, no @
+    const WHATSAPP_NUMBER = '9122024003';                  // country code + number, digits only, e.g. '91XXXXXXXXXX' (empty = hidden)
+    const GMAIL_ADDRESS = 'jee.portal.notry@gmail.com';   // address that should receive reports (placeholder)
+    // ======================================================================
+
+    document.getElementById('year').textContent = new Date().getFullYear();
+
+    (function () {
+      const enc = encodeURIComponent;
+      const note = document.getElementById('report-note');
+      const details =
+        'JEE Portal problem: page not found\n' +
+        'Page: ' + location.href + '\n' +
+        'Came from: ' + (document.referrer || 'direct link') + '\n\n' +
+        'What I was trying to do: ';
+
+      // Instagram: can't be pre-filled, so copy the details and open the DM
+      const insta = document.getElementById('report-insta');
+      if (INSTAGRAM_HANDLE) {
+        insta.href = 'https://ig.me/m/' + enc(INSTAGRAM_HANDLE);
+        insta.addEventListener('click', function (e) {
+          // Let "open in new tab" clicks (Ctrl/Cmd/Shift/middle) behave normally
+          if (e.ctrlKey || e.metaKey || e.shiftKey || e.button > 0) return;
+          e.preventDefault(); // hold the jump so the popup can be read first
+          // Copy synchronously inside the click, before leaving the page.
+          // (navigator.clipboard often fails once another tab opens, so use the
+          // textarea method first and the modern API only as a backup.)
+          let ok = false;
+          try {
+            const ta = document.createElement('textarea');
+            ta.value = details;
+            ta.setAttribute('readonly', '');
+            ta.style.cssText = 'position:fixed;top:0;left:0;opacity:0;';
+            document.body.appendChild(ta);
+            ta.focus();
+            ta.select();
+            ta.setSelectionRange(0, ta.value.length);
+            ok = document.execCommand('copy');
+            document.body.removeChild(ta);
+          } catch (e) {}
+          if (!ok) {
+            try { navigator.clipboard.writeText(details); ok = true; } catch (e) {}
+          }
+          note.textContent = ok
+            ? '📋 Details copied! Make sure you paste them in your message.'
+            : 'Please mention this page in your message: ' + location.pathname;
+          note.style.opacity = '1';
+          clearTimeout(note._t);
+          // Popup stays ~2.5s, then we go to Instagram
+          note._t = setTimeout(function () {
+            note.style.opacity = '0';
+            window.location.href = insta.href;
+          }, 2500);
+        });
+      } else {
+        insta.remove();
+      }
+
+      // WhatsApp: opens a chat with the message already typed
+      const wa = document.getElementById('report-wa');
+      if (WHATSAPP_NUMBER) {
+        wa.href = 'https://wa.me/' + WHATSAPP_NUMBER + '?text=' + enc(details);
+      } else {
+        wa.remove();
+        document.getElementById('sep-wa').remove();
+      }
+
+      // Gmail: desktop opens Gmail compose in a new tab; phones use mailto
+      // (Gmail's web compose link only drops the user in the inbox on mobile)
+      const mail = document.getElementById('report-mail');
+      if (GMAIL_ADDRESS) {
+        const isMobile = /Android|iPhone|iPad|iPod/i.test(navigator.userAgent) ||
+          (navigator.maxTouchPoints > 1 && /Mac/i.test(navigator.platform));
+        const subject = 'JEE Portal problem: page not found';
+        if (isMobile) {
+          mail.href = 'mailto:' + GMAIL_ADDRESS +
+            '?subject=' + enc(subject) +
+            '&body=' + enc(details);
+          mail.removeAttribute('target');
+        } else {
+          mail.href = 'https://mail.google.com/mail/?view=cm&fs=1' +
+            '&to=' + enc(GMAIL_ADDRESS) +
+            '&su=' + enc(subject) +
+            '&body=' + enc(details);
+        }
+      } else {
+        mail.remove();
+        document.getElementById('sep-mail').remove();
+      }
+    })();
+
+    const pendulum = document.getElementById('pendulum');
+    const groundedText = document.getElementById('grounded-text-anchor');
+    const stageSvg = document.getElementById('stage-svg');
+    const dragHint = document.getElementById('drag-hint');
+
+    let angle = 22;
+    let angularVelocity = 0;
+    let angularAcceleration = 0;
+    const gravity = 0.42;
+    const damping = 0.992;
+    const defaultDrive = 0.007;
+
+    let isDragging = false;
+    let hasInteracted = false;
+    let dragStartPos = null;
+    let hasMovedSignificantly = false;
+    const PIVOT_X = 400;
+    const PIVOT_Y = 0;
+
+    function getSvgCoordinates(e) {
+      const pt = stageSvg.createSVGPoint();
+      if (e.touches && e.touches.length > 0) {
+        pt.x = e.touches[0].clientX;
+        pt.y = e.touches[0].clientY;
+      } else {
+        pt.x = e.clientX;
+        pt.y = e.clientY;
+      }
+      return pt.matrixTransform(stageSvg.getScreenCTM().inverse());
+    }
+
+    function calculatePointerAngle(svgPoint) {
+      const dx = svgPoint.x - PIVOT_X;
+      const dy = svgPoint.y - PIVOT_Y;
+      const rad = Math.atan2(dx, Math.max(dy, 40));
+      let deg = (rad * 180) / Math.PI;
+      return Math.max(-42, Math.min(42, deg));
+    }
+
+    function dismissHint() {
+      if (!hasInteracted && dragHint) {
+        dragHint.style.opacity = '0';
+        hasInteracted = true;
+      }
+    }
+
+    function startDrag(e) {
+      isDragging = true;
+      hasMovedSignificantly = false;
+      angularVelocity = 0;
+      dismissHint();
+      const coords = getSvgCoordinates(e);
+      dragStartPos = coords;
+      angle = calculatePointerAngle(coords);
+    }
+
+    function dragMove(e) {
+      if (!isDragging) return;
+      const coords = getSvgCoordinates(e);
+      if (dragStartPos) {
+        const dist = Math.hypot(coords.x - dragStartPos.x, coords.y - dragStartPos.y);
+        if (dist > 5) hasMovedSignificantly = true;
+      }
+      const newAngle = calculatePointerAngle(coords);
+      angularVelocity = (newAngle - angle) * 0.45;
+      angle = newAngle;
+    }
+
+    function endDrag() {
+      if (!isDragging) return;
+      isDragging = false;
+      if (!hasMovedSignificantly && dragStartPos) {
+        const direction = (dragStartPos.x - PIVOT_X) >= 0 ? 1 : -1;
+        pushLamp(direction, 2.5);
+        return;
+      }
+      angularVelocity = Math.max(-3.5, Math.min(3.5, angularVelocity));
+    }
+
+    stageSvg.addEventListener('mousedown', startDrag);
+    window.addEventListener('mousemove', dragMove);
+    window.addEventListener('mouseup', endDrag);
+
+    stageSvg.addEventListener('touchstart', startDrag, { passive: true });
+    window.addEventListener('touchmove', dragMove, { passive: true });
+    window.addEventListener('touchend', endDrag);
+
+    function pushLamp(dir, magnitude = 2.8) {
+      dismissHint();
+      let effectiveDir = dir;
+      if (effectiveDir === undefined || effectiveDir === null) {
+        if (Math.abs(angularVelocity) > 0.05) {
+          effectiveDir = angularVelocity > 0 ? 1 : -1;
+        } else if (Math.abs(angle) > 1) {
+          effectiveDir = angle > 0 ? 1 : -1;
+        } else {
+          effectiveDir = 1;
+        }
+      }
+      angularVelocity += effectiveDir * magnitude;
+    }
+
+    function giveLampNudge() {
+      pushLamp();
+    }
+
+    let lastTime = performance.now();
+
+    function updatePhysics(time) {
+      const dt = Math.min((time - lastTime) / 16.666, 2.0);
+      lastTime = time;
+
+      if (!isDragging) {
+        const rad = (angle * Math.PI) / 180;
+        angularAcceleration = -Math.sin(rad) * gravity;
+        const idleBreeze = Math.sin(time * 0.0018) * defaultDrive;
+        angularVelocity += (angularAcceleration + idleBreeze) * dt;
+        angularVelocity *= Math.pow(damping, dt);
+        angle += angularVelocity * dt;
+      }
+
+      // SVG rotate() is clockwise, which swings a hanging lamp to the LEFT,
+      // so negate the angle: positive angle = lamp swings right.
+      pendulum.setAttribute('transform', `rotate(${(-angle).toFixed(2)} 400 0)`);
+      groundedText.setAttribute('transform', `rotate(${angle.toFixed(2)} 0 0)`);
+
+      requestAnimationFrame(updatePhysics);
+    }
+
+    requestAnimationFrame(updatePhysics);
+  </script>
+</body>
+</html>

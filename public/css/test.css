@@ -226,6 +226,31 @@ h4 {
   color: var(--primary-hover);
 }
 
+.year-divider {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  margin: 28px 0 20px;
+  font-size: 0.95rem;
+  font-weight: 600;
+  color: #666;
+}
+.year-divider::before,
+.year-divider::after {
+  content: "";
+  flex: 1;
+  height: 1px;
+  background: currentColor;
+  opacity: 0.25;
+}
+.year-divider .yd-label {
+  padding: 6px 18px;
+  border: 1px solid rgba(128, 128, 128, 0.35);
+  border-radius: 999px;
+  white-space: nowrap;
+}
+.year-divider .yd-label b { color: inherit; font-weight: 800; }
+
 /* =========================================================
    SECTION
 ========================================================= */
@@ -469,6 +494,15 @@ h4 {
   padding: 5px 8px;
   border-radius: 5px;
 }
+
+.year-filter { display: flex; flex-wrap: wrap; gap: 8px; margin: 0 0 20px; }
+.year-chip {
+  border: 1px solid #d0d5dd; background: #fff; color: inherit;
+  padding: 6px 14px; border-radius: 999px; cursor: pointer;
+  font: inherit; font-size: 14px;
+}
+.year-chip.active { background: #1a1a1a; color: #fff; border-color: #1a1a1a; }
+.paper-date-group[hidden] { display: none; }
 
 /* =========================================================
    PAPER BUTTON

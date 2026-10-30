@@ -7,7 +7,7 @@ const isProduction =
   (process.env.DATABASE_URL && process.env.DATABASE_URL.includes('pooler.supabase.com'));
 
 const pool = new Pool({
-  connectionString: process.env.DATABASE_URL || 'postgresql://postgres:postgres@localhost:5432/jee_jeeto',
+  connectionString: process.env.DATABASE_URL || 'postgresql://postgres:postgres@localhost:5432/launchitjee',
   ssl: isProduction ? { rejectUnauthorized: false } : false,
   max: 1,
   idleTimeoutMillis: 10000,

@@ -4,11 +4,9 @@ const db = require('../db');
 const jwt = require('jsonwebtoken');
 const { requireAuth, requireAdmin } = require('../middleware');
 
-const FREE_TEST_KEYS = [
-  'jee-main-2026-apr-02-shift-2',
-  'main-2024-jan-shift1',
-  'mock'
-];
+// No paper is free forever: access = active subscription OR the 3-day signup trial.
+// (Add a test key here only if you ever want one paper to stay free for everyone.)
+const FREE_TEST_KEYS = [];
 
 // 1. Fetch Questions by Test Key (With Gating)
 router.get('/questions/:key', async (req, res) => {
@@ -40,8 +38,22 @@ router.get('/questions/:key', async (req, res) => {
       [userId]
     );
 
-    if (subCheck.rows.length === 0) {
-      return res.status(403).json({ error: 'LOCKED', message: 'Subscription required for this test.' });
+    // Paid subscription OR still inside the 3-day free trial (counted from signup)
+    let hasAccess = subCheck.rows.length > 0;
+    if (!hasAccess) {
+      const trialCheck = await db.query(
+        'SELECT 1 FROM users WHERE id = $1 AND trial_ends_at > NOW()',
+        [userId]
+      );
+      hasAccess = trialCheck.rows.length > 0;
+    }
+
+    if (!hasAccess) {
+      return res.status(403).json({
+        error: 'LOCKED',
+        reason: 'TRIAL_ENDED',
+        message: 'Your free trial has ended. Subscribe to continue.'
+      });
     }
 
     const result = await db.query('SELECT * FROM questions WHERE test_key = $1', [testKey]);

@@ -1,0 +1,141 @@
+/* Electrostatics – per-chapter styles (JEE portal)
+   Colours are variables only; the palette will be set later. */
+
+:root {
+  --c-bg: #ffffff;
+  --c-surface: #f6f7f9;
+  --c-text: #1f2430;
+  --c-muted: #5b6475;
+  --c-border: #dde1e8;
+  --c-accent: #2d5be3;
+  --c-accent-soft: #e8eefc;
+
+  --c-formula-bg: #eef3ff;
+  --c-formula-border: #2d5be3;
+  --c-def-bg: #eefaf1;
+  --c-def-border: #2e9b57;
+  --c-proof-bg: #fff7e8;
+  --c-proof-border: #d98a00;
+  --c-result-bg: #f3effb;
+  --c-result-border: #7a52c7;
+  --c-note-bg: #fdeeee;
+  --c-note-border: #d64545;
+
+  --c-pos: #d64545;
+  --c-neg: #2d5be3;
+
+  --toc-width: 300px;
+  --header-h: 72px;
+  --radius: 10px;
+}
+
+html { scroll-behavior: smooth; }
+body { margin: 0; background: var(--c-bg); color: var(--c-text); line-height: 1.7; }
+
+/* ---------- Header ---------- */
+.notes-header {
+  position: sticky; top: 0; z-index: 30;
+  display: flex; align-items: center; gap: 16px;
+  min-height: var(--header-h); padding: 10px 24px;
+  background: var(--c-bg); border-bottom: 1px solid var(--c-border);
+}
+.notes-title { margin: 0; font-size: 1.5rem; line-height: 1.2; }
+.notes-sub { margin: 2px 0 0; color: var(--c-muted); font-size: .9rem; }
+.toc-toggle {
+  display: none; padding: 8px 12px; border: 1px solid var(--c-border);
+  background: var(--c-surface); color: var(--c-text); border-radius: 8px; cursor: pointer; font: inherit;
+}
+
+/* ---------- Layout ---------- */
+.notes-layout { display: grid; grid-template-columns: var(--toc-width) minmax(0, 1fr); align-items: start; }
+.notes-main { padding: 24px clamp(16px, 4vw, 48px) 80px; max-width: 900px; min-width: 0; }
+
+/* ---------- Sidebar table of contents ---------- */
+.toc {
+  position: sticky; top: var(--header-h);
+  height: calc(100vh - var(--header-h)); overflow-y: auto;
+  padding: 16px 12px 40px 20px; box-sizing: border-box;
+  background: var(--c-surface); border-right: 1px solid var(--c-border); font-size: .88rem;
+}
+.toc-title { margin: 0 0 8px; font-weight: 700; letter-spacing: .04em; text-transform: uppercase; font-size: .75rem; color: var(--c-muted); }
+.toc ul { list-style: none; margin: 0; padding: 0; }
+.toc ul ul { margin: 2px 0 6px 12px; padding-left: 8px; border-left: 1px solid var(--c-border); }
+.toc a {
+  display: block; padding: 4px 8px; border-radius: 6px;
+  color: var(--c-text); text-decoration: none; line-height: 1.4;
+}
+.toc a:hover { background: var(--c-accent-soft); }
+.toc a.active { background: var(--c-accent); color: #fff; font-weight: 600; }
+.toc > ul > li > a { font-weight: 600; }
+
+/* ---------- Headings ---------- */
+.topic { margin-bottom: 48px; }
+.notes-main h2 {
+  margin: 0 0 16px; padding-bottom: 8px; font-size: 1.6rem;
+  border-bottom: 2px solid var(--c-accent); scroll-margin-top: calc(var(--header-h) + 12px);
+}
+.notes-main h3 { margin: 28px 0 10px; font-size: 1.2rem; scroll-margin-top: calc(var(--header-h) + 12px); }
+.notes-main h3.plain { scroll-margin-top: 0; }
+.notes-main h4 { margin: 22px 0 8px; font-size: 1rem; color: var(--c-muted); }
+.notes-main p { margin: 0 0 12px; }
+.notes-main ul, .notes-main ol { margin: 0 0 14px; padding-left: 24px; }
+.notes-main li { margin-bottom: 6px; }
+.notes-main a.xref { color: var(--c-accent); text-decoration: underline; text-underline-offset: 2px; }
+
+/* ---------- Boxes ---------- */
+.formula-box, .def-box, .proof-box, .result-box, .note-box {
+  position: relative; margin: 16px 0; padding: 16px 18px 12px;
+  border-left: 5px solid; border-radius: var(--radius); overflow-x: auto;
+}
+.formula-box { background: var(--c-formula-bg); border-color: var(--c-formula-border); }
+.def-box     { background: var(--c-def-bg);     border-color: var(--c-def-border); }
+.proof-box   { background: var(--c-proof-bg);   border-color: var(--c-proof-border); }
+.result-box  { background: var(--c-result-bg);  border-color: var(--c-result-border); }
+.note-box    { background: var(--c-note-bg);    border-color: var(--c-note-border); }
+.box-label {
+  display: inline-block; margin-bottom: 6px; font-size: .72rem; font-weight: 700;
+  letter-spacing: .06em; text-transform: uppercase; color: var(--c-muted);
+}
+.formula-box p, .def-box p, .proof-box p, .result-box p, .note-box p { margin-bottom: 8px; }
+.result-box ol, .result-box ul { margin-bottom: 4px; }
+mjx-container[display="true"] { overflow-x: auto; overflow-y: hidden; max-width: 100%; margin: .6em 0 !important; }
+
+/* ---------- Tables ---------- */
+table.compare { width: 100%; margin: 14px 0; border-collapse: collapse; font-size: .95rem; display: block; overflow-x: auto; }
+table.compare th, table.compare td { padding: 9px 12px; border: 1px solid var(--c-border); text-align: left; vertical-align: top; }
+table.compare th { background: var(--c-accent-soft); }
+
+/* ---------- Figures / SVG ---------- */
+.fig { margin: 20px 0; padding: 12px; background: var(--c-surface); border: 1px solid var(--c-border); border-radius: var(--radius); text-align: center; }
+.fig svg { max-width: 100%; height: auto; }
+.fig figcaption { margin-top: 6px; font-size: .85rem; color: var(--c-muted); }
+.s-line, .s-thin, .s-wire, .s-dash, .s-axis, .s-curve { fill: none; stroke: var(--c-text); stroke-width: 1.6; }
+.s-thin { stroke-width: 1.2; }
+.s-wire { stroke-width: 5; stroke: var(--c-pos); }
+.s-dash { stroke-dasharray: 5 4; stroke: var(--c-muted); stroke-width: 1.2; }
+.s-axis { stroke: var(--c-muted); }
+.s-curve { stroke: var(--c-accent); stroke-width: 2.4; }
+.s-fill { fill: var(--c-text); }
+.s-pos { fill: var(--c-pos); }
+.s-neg { fill: var(--c-neg); }
+.s-txt { fill: var(--c-text); font-size: 13px; font-family: system-ui, sans-serif; }
+.s-mid { text-anchor: middle; fill: #fff; font-weight: 700; }
+.fig .s-txt:not(.s-mid) { fill: var(--c-text); }
+
+/* ---------- Responsive ---------- */
+@media (max-width: 900px) {
+  .notes-layout { display: block; }
+  .toc-toggle { display: inline-block; }
+  .toc {
+    position: fixed; z-index: 40; top: var(--header-h); left: 0; bottom: 0;
+    width: min(88vw, 340px); height: auto;
+    transform: translateX(-100%); transition: transform .25s ease; box-shadow: 4px 0 16px rgba(0, 0, 0, .15);
+  }
+  .toc.is-open { transform: translateX(0); }
+  .notes-main { padding: 16px; }
+}
+@media print {
+  .toc, .toc-toggle, .notes-header { display: none; }
+  .notes-layout { display: block; }
+  .formula-box, .def-box, .proof-box, .result-box, .note-box { break-inside: avoid; }
+}

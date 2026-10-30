@@ -1,0 +1,363 @@
+/* =====================================================================
+   Notes Content Stylesheet (JEE Portal) — shared across every chapter's
+   notes page. Same structure and class names as the Launchit version.
+   Colours come from the JEE portal palette (index.css) and live in the :root variables below.
+   ===================================================================== */
+
+:root {
+  /* Palette from the JEE portal's index.css */
+  --nc-ink:         #0F172A; /* --text-main / --bg-hero */
+  --nc-accent:      #F59E0B; /* --primary-gold */
+  --nc-accent-dark: #D97706; /* --primary-hover */
+  --nc-accent-tint: #FEF3C7; /* gold tint used on icons and step numbers */
+  --nc-on-accent:   #0F172A; /* text colour on gold (the site uses dark text on gold) */
+  --nc-muted:       #64748B; /* --text-muted */
+  --nc-border:      #E2E8F0; /* --line-color */
+  --nc-bg:          #F8FAFC; /* --bg-main */
+  --nc-formula-bg:  #FEF3C7;
+  --nc-formula-border: #F59E0B;
+  --nc-teal:        #0D9488; /* --teal-free */
+  --nc-teal-tint:   #CCFBF1;
+  --nc-coral:       #E11D48; /* --coral-premium */
+  --nc-coral-tint:  #FFE4E6;
+  --nc-slate:       #1E293B; /* --bg-hero-alt */
+  --nc-slate-tint:  #F1F5F9;
+}
+
+.notes-page-wrap {
+  max-width: 1180px;
+  margin: 0 auto;
+  padding: 32px 24px 100px;
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+  color: var(--nc-ink);
+  line-height: 1.75;
+}
+
+.notes-layout {
+  display: grid;
+  grid-template-columns: var(--toc-width, 260px) 1fr;
+  gap: 36px;
+  align-items: start;
+}
+
+/* ===== Table of Contents (sticky, resizable sidebar) ===== */
+.notes-toc {
+  position: sticky;
+  /* position: -webkit-sticky;
+  position: relative; */
+  top: 24px;
+  background: #fff;
+  border: 1px solid var(--nc-border);
+  border-radius: 14px;
+  padding: 18px;
+  padding-right: 22px; /* a little extra room so the resize handle doesn't crowd the text */
+  max-height: calc(100vh - 48px);
+  overflow-y: auto;
+  overflow-x: hidden;
+}
+
+/* Drag handle — sits on the sidebar's right edge. Widened invisible hit
+   area (8px) makes it easy to grab; the visible bar is thinner and only
+   shows color on hover so it doesn't look like a stray line normally. */
+.notes-toc-resize-handle {
+  position: absolute;
+  top: 0;
+  right: 0;
+  width: 8px;
+  height: 100%;
+  cursor: col-resize;
+  z-index: 5;
+}
+
+.notes-toc-resize-handle::after {
+  content: "";
+  position: absolute;
+  top: 0;
+  right: 2px;
+  width: 3px;
+  height: 100%;
+  border-radius: 2px;
+  background: transparent;
+  transition: background 0.15s ease;
+}
+
+.notes-toc-resize-handle:hover::after,
+body.notes-toc-resizing .notes-toc-resize-handle::after {
+  background: var(--nc-accent);
+}
+
+/* While actively dragging, keep the resize cursor everywhere (not just
+   over the thin handle) so fast mouse movement doesn't flicker back to
+   the normal pointer, and block accidental text selection mid-drag. */
+body.notes-toc-resizing,
+body.notes-toc-resizing * {
+  cursor: col-resize !important;
+  user-select: none !important;
+}
+
+.notes-toc-title {
+  font-family: 'Plus Jakarta Sans', sans-serif;
+  font-size: 11px;
+  font-weight: 800;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--nc-accent-dark);
+  margin-bottom: 12px;
+}
+
+.notes-toc ul {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.notes-toc a {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  text-decoration: none;
+  color: var(--nc-muted);
+  font-size: 13.5px;
+  font-weight: 600;
+  padding: 7px 10px;
+  border-radius: 8px;
+  transition: all 0.15s ease;
+}
+
+.notes-toc a:hover {
+  background: var(--nc-accent-tint);
+  color: var(--nc-accent-dark);
+}
+
+.notes-toc a.active {
+  background: var(--nc-accent);
+  color: var(--nc-on-accent);
+}
+
+.notes-toc .toc-icon {
+  font-size: 13px;
+  flex-shrink: 0;
+  opacity: 0.75;
+}
+
+/* ===== Main content ===== */
+.notes-content h1 {
+  font-family: 'Plus Jakarta Sans', sans-serif;
+  font-size: 30px;
+  font-weight: 800;
+  margin-bottom: 6px;
+}
+
+.notes-content .notes-subtitle {
+  color: var(--nc-muted);
+  font-size: 14px;
+  margin-bottom: 32px;
+}
+
+.topic-section {
+  margin-bottom: 40px;
+  padding-bottom: 32px;
+  border-bottom: 1px dashed var(--nc-border);
+  scroll-margin-top: 24px; /* so anchor-jumping doesn't tuck the heading under a sticky header */
+}
+
+.topic-section:last-child {
+  border-bottom: none;
+}
+
+.topic-heading {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-family: 'Plus Jakarta Sans', sans-serif;
+  font-size: 20px;
+  font-weight: 800;
+  margin-bottom: 10px;
+  color: var(--nc-ink);
+}
+
+.topic-icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 30px;
+  height: 30px;
+  border-radius: 50%;
+  background: var(--nc-accent-tint);
+  color: var(--nc-accent-dark);
+  font-size: 15px;
+  flex-shrink: 0;
+}
+
+.topic-section p {
+  font-size: 15px;
+  color: #334155;
+  margin-bottom: 10px;
+}
+
+/* ===== Formula callout ===== */
+.formula-box {
+  background: var(--nc-formula-bg);
+  border: 1.5px solid var(--nc-formula-border);
+  border-radius: 10px;
+  padding: 14px 18px;
+  margin: 14px 0;
+  font-size: 15.5px;
+  max-width: 100%;
+  box-sizing: border-box;
+  overflow-x: auto;
+  overflow-y: hidden;
+}
+
+.formula-box .formula-label {
+  display: block;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 10.5px;
+  font-weight: 700;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  color: var(--nc-accent-dark);
+  margin-bottom: 6px;
+}
+
+/* ===== Definition callout (for quick-reference terms) ===== */
+.definition-box {
+  background: #F8FAFC;
+  border-left: 3px solid var(--nc-accent);
+  border-radius: 0 8px 8px 0;
+  padding: 10px 16px;
+  margin: 12px 0;
+  font-size: 14px;
+  color: #475569;
+}
+
+/* ===== Small inline geometric badges (used decoratively next to key terms) ===== */
+.geo-badge {
+  display: inline-block;
+  font-size: 14px;
+  margin-right: 4px;
+}
+
+/* ===== Cross-chapter locked-link message (styled by notes-topic-links.js) ===== */
+.cross-chapter-locked-msg a {
+  color: var(--nc-accent-dark);
+  font-weight: 700;
+  font-size: 13px;
+  text-decoration: none;
+}
+.cross-chapter-locked-msg a:hover {
+  text-decoration: underline;
+}
+
+/* ===== Responsive ===== */
+@media (max-width: 860px) {
+  .notes-layout {
+    grid-template-columns: 1fr;
+  }
+  .notes-toc {
+    position: static;
+    max-height: none;
+  }
+  .notes-toc-resize-handle {
+    display: none;
+  }
+}
+
+/* sticky notes*/
+
+/* =====================================================================
+   STICKY NOTE & POINTER CALLOUT COMPONENT
+   ===================================================================== */
+
+.sticky-note {
+  position: relative;
+  background: var(--nc-accent-tint); /* gold tint */
+  border: 1px solid rgba(245, 158, 11, 0.3);
+  border-left: 5px solid var(--nc-accent);
+  border-radius: 6px;
+  padding: 14px 18px 14px 44px;
+  margin: 18px 0;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05), 0 1px 3px rgba(0, 0, 0, 0.04);
+  font-size: 13.5px;
+  line-height: 1.6;
+  color: var(--nc-ink);
+}
+
+/* Pin / Pointer icon indicator */
+.sticky-note::before {
+  content: "📌";
+  position: absolute;
+  top: 12px;
+  left: 14px;
+  font-size: 16px;
+  line-height: 1;
+}
+
+/* Optional header inside sticky note */
+.sticky-note-title {
+  display: block;
+  font-size: 12px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: var(--nc-accent-dark);
+  margin-bottom: 4px;
+}
+
+.sticky-note p {
+  margin: 0;
+  color: inherit;
+}
+
+.sticky-note p + p {
+  margin-top: 6px;
+}
+
+/* Style variants */
+/* Slate Tip */
+.sticky-note.note-tip {
+  background: var(--nc-slate-tint);
+  border-color: var(--nc-border);
+  border-left-color: var(--nc-slate);
+  color: var(--nc-ink);
+}
+.sticky-note.note-tip::before { content: "💡"; }
+.sticky-note.note-tip .sticky-note-title { color: var(--nc-slate); }
+
+/* Coral / Exam Pitfall Alert */
+.sticky-note.note-alert {
+  background: var(--nc-coral-tint);
+  border-color: rgba(225, 29, 72, 0.25);
+  border-left-color: var(--nc-coral);
+  color: var(--nc-ink);
+}
+.sticky-note.note-alert::before { content: "⚠️"; }
+.sticky-note.note-alert .sticky-note-title { color: var(--nc-coral); }
+
+/* Teal / Key Takeaway */
+.sticky-note.note-key {
+  background: var(--nc-teal-tint);
+  border-color: rgba(13, 148, 136, 0.3);
+  border-left-color: var(--nc-teal);
+  color: var(--nc-ink);
+}
+.sticky-note.note-key::before { content: "🎯"; }
+.sticky-note.note-key .sticky-note-title { color: var(--nc-teal); }
+
+/* Optional desktop float to place on the side of a paragraph/proof box */
+@media (min-width: 860px) {
+  .sticky-note.note-right {
+    float: right;
+    max-width: 280px;
+    margin: 4px 0 16px 20px;
+  }
+
+  .sticky-note.note-left {
+    float: left;
+    max-width: 280px;
+    margin: 4px 20px 16px 0;
+  }
+}

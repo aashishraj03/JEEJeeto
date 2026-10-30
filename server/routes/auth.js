@@ -224,9 +224,9 @@ router.post('/forgot-password/send-otp', async (req, res) => {
 
     // Send Email
     await transporter.sendMail({
-      from: `"JEE Jeeto Security" <${process.env.SMTP_USER}>`,
+      from: `"LaunchITJEE Security" <${process.env.SMTP_USER}>`,
       to: sanitizedEmail,
-      subject: 'Your Password Reset OTP - JEE Jeeto',
+      subject: 'Your Password Reset OTP - LaunchITJEE',
       html: `
         <div style="font-family: Arial, sans-serif; max-width: 480px; margin: auto; padding: 24px; border: 1px solid #e2e8f0; border-radius: 8px;">
           <h2 style="color: #0f172a; margin-bottom: 8px;">Password Reset Request</h2>
@@ -463,9 +463,9 @@ router.post('/security/send-otp', async (req, res) => {
       : `request to change your account password`;
 
     await transporter.sendMail({
-      from: `"JEE Jeeto Security" <${process.env.SMTP_USER}>`,
+      from: `"LaunchITJEE Security" <${process.env.SMTP_USER}>`,
       to: user.email,
-      subject: `Security Verification Code - JEE Jeeto`,
+      subject: `Security Verification Code - LaunchITJEE`,
       html: `
         <div style="font-family: Arial, sans-serif; max-width: 480px; margin: auto; padding: 24px; border: 1px solid #e2e8f0; border-radius: 8px;">
           <h2 style="color: #0f172a; margin-bottom: 8px;">Security Verification Code</h2>

@@ -156,9 +156,26 @@ router.get('/status', requireAuth, async (req, res) => {
       [req.userId]
     );
 
+    const subscribed = result.rows.length > 0;
+
+    // Free trial: 3 days from signup (users.trial_ends_at is set by the column default)
+    const trialRes = await db.query(
+      'SELECT trial_ends_at FROM users WHERE id = $1',
+      [req.userId]
+    );
+    const trialEndsAt = trialRes.rows[0]?.trial_ends_at || null;
+    const msLeft = trialEndsAt ? new Date(trialEndsAt).getTime() - Date.now() : 0;
+    const trialActive = msLeft > 0;
+
     res.json({
-      subscribed: result.rows.length > 0,
-      subscription: result.rows[0] || null
+      subscribed,
+      subscription: result.rows[0] || null,
+      trial: {
+        active: trialActive,
+        endsAt: trialEndsAt,
+        daysLeft: trialActive ? Math.ceil(msLeft / 86400000) : 0
+      },
+      hasAccess: subscribed || trialActive
     });
   } catch (err) {
     console.error('Status fetch error:', err);

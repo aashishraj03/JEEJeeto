@@ -1,9 +1,82 @@
 // ===== Parse Test Key from URL =====
 const urlParams = new URLSearchParams(window.location.search);
+const testParam = urlParams.get("test");
 const paperParam = urlParams.get("paper");
 const typeParam = urlParams.get("type") || "mock";
 
-let setKey = paperParam || typeParam;
+let setKey = testParam || paperParam || typeParam;
+
+// ===== Test duration =====
+// Full Syllabus tests ("c11-phy-full", "c12-math-full", ...) run for 3 hours.
+// Every other test keeps the 60-minute limit it has always had.
+const FULL_TEST_RE = /^c(\d+)-(phy|chem|math)-full$/i;
+const isFullTest = FULL_TEST_RE.test(setKey || "");
+const DEFAULT_TEST_MINUTES = 60;
+const FULL_TEST_MINUTES = 180;
+
+// Unit Test / Mid-term Revision ("c11-phy-revision"): the student builds it on
+// tests.html, and the choices travel in the page address:
+//   ?test=c11-phy-revision&chapters=1,3,5&basic=15&moderate=15&advanced=10&mins=75
+const REVISION_TEST_RE = /^c(\d+)-(phy|chem|math)-revision$/i;
+const isRevisionTest = REVISION_TEST_RE.test(setKey || "");
+const REVISION_MIN_MINUTES = 30;
+const REVISION_MAX_MINUTES = 180;
+
+// A full exam sitting (one paper): "jm-2026-04-02-morning" (JEE Main) or
+// "ja-2025-p1" (JEE Advanced). Runs for 3 hours with the real paper's order.
+const JM_PAPER_RE = /^jm-(\d{4})-(\d{2})-(\d{2})-(morning|evening)$/i;
+const JA_PAPER_RE = /^ja-(\d{4})-p([12])$/i;
+const isPaperTest = JM_PAPER_RE.test(setKey || "") || JA_PAPER_RE.test(setKey || "");
+const PAPER_TEST_MINUTES = 180;
+
+const SUBJECT_NAMES = { phy: "Physics", chem: "Chemistry", math: "Mathematics" };
+const MONTH_NAMES = ["January", "February", "March", "April", "May", "June",
+  "July", "August", "September", "October", "November", "December"];
+
+// Title of a paper, worked out from its key alone.
+function getPaperTitle(key) {
+  const k = String(key || "").toLowerCase();
+  let m = k.match(JM_PAPER_RE);
+  if (m) {
+    const shift = m[4] === "morning" ? "Morning" : "Evening";
+    return `JEE Main ${m[1]} \u00b7 ${parseInt(m[3], 10)} ${MONTH_NAMES[parseInt(m[2], 10) - 1] || ""} \u00b7 ${shift} Shift`;
+  }
+  m = k.match(JA_PAPER_RE);
+  if (m) return `JEE Advanced ${m[1]} \u00b7 Paper ${m[2]}`;
+  return null;
+}
+
+// Both kinds span several chapters: fixed title, and the paper is saved so a
+// refresh or crash can be resumed.
+const isMultiChapterTest = isFullTest || isRevisionTest || isPaperTest;
+
+function getRevisionMinutes() {
+  const mins = parseInt(urlParams.get("mins"), 10);
+  if (!Number.isFinite(mins)) return DEFAULT_TEST_MINUTES;
+  return Math.min(Math.max(mins, REVISION_MIN_MINUTES), REVISION_MAX_MINUTES);
+}
+
+// Only the known builder fields are passed on to the server.
+function getRevisionQuery() {
+  if (!isRevisionTest) return "";
+  const out = new URLSearchParams();
+  ["chapters", "basic", "moderate", "advanced"].forEach(k => {
+    const v = urlParams.get(k);
+    if (v !== null) out.set(k, v);
+  });
+  const q = out.toString();
+  return q ? `?${q}` : "";
+}
+
+// Identifies one specific paper: the test plus (for revision) the chosen setup,
+// so two different custom setups never share a saved copy.
+const progressId = setKey + getRevisionQuery();
+
+function getTestDurationSeconds() {
+  if (isRevisionTest) return getRevisionMinutes() * 60;
+  if (isPaperTest) return PAPER_TEST_MINUTES * 60;
+  return (isFullTest ? FULL_TEST_MINUTES : DEFAULT_TEST_MINUTES) * 60;
+}
 
 // ===== Fast Click & Touch Handler Helper =====
 function bindFastClick(element, handler) {
@@ -16,27 +89,55 @@ function setDynamicExamTitle(key) {
   const examTitleEl = document.getElementById("exam-title");
   const normalizedKey = (key || "").toLowerCase();
 
-  let isAdvanced = normalizedKey.includes("adv") || normalizedKey.includes("advanced");
-  let examName = isAdvanced ? "JEE (Advanced)" : "JEE (Main)";
-
-  let formattedSubtitle = "";
-  if (paperParam) {
-    formattedSubtitle = paperParam
-      .replace(/[-_]/g, " ")
-      .replace(/\b\w/g, c => c.toUpperCase());
+  // Full Syllabus test: the title is known from the key alone, and must not be
+  // replaced later by the name of whichever chapter the first question is from.
+  const paperTitle = getPaperTitle(normalizedKey);
+  if (paperTitle) {
+    if (examTitleEl) examTitleEl.textContent = paperTitle;
+    document.title = `${paperTitle} - JEE Portal`;
+    return;
   }
 
+  const fullMatch = normalizedKey.match(FULL_TEST_RE);
+  if (fullMatch) {
+    const subjectName = SUBJECT_NAMES[fullMatch[2]] || "";
+    const fullTitle = `Class ${fullMatch[1]} ${subjectName} \u2014 Full Syllabus Test`;
+    if (examTitleEl) examTitleEl.textContent = fullTitle;
+    document.title = `${fullTitle} - JEE Portal`;
+    return;
+  }
+
+  const revisionMatch = normalizedKey.match(REVISION_TEST_RE);
+  if (revisionMatch) {
+    const subjectName = SUBJECT_NAMES[revisionMatch[2]] || "";
+    const revisionTitle = `Class ${revisionMatch[1]} ${subjectName} \u2014 Unit Test / Revision`;
+    if (examTitleEl) examTitleEl.textContent = revisionTitle;
+    document.title = `${revisionTitle} - JEE Portal`;
+    return;
+  }
+
+  let examName = "JEE Practice Arena";
+  if (normalizedKey.includes("c12")) examName = "Class 12 JEE Test";
+  else if (normalizedKey.includes("c11")) examName = "Class 11 JEE Test";
+
+  // Deliberately NOT guessing a chapter name from the raw key here — that
+  // guess is what used to flash on screen before the real chapter name
+  // (loaded from the DB a moment later) replaced it. A plain "loading"
+  // state has nothing wrong-looking to flash.
   if (examTitleEl) {
-    examTitleEl.textContent = formattedSubtitle 
-      ? `${examName} CBT - ${formattedSubtitle}` 
-      : `${examName} Computer Based Test (CBT)`;
+    examTitleEl.textContent = `${examName} — loading…`;
   }
 
-  document.title = `${examName} CBT Simulator - JEE Jeeto`;
+  document.title = `${examName} - JEE Portal`;
 }
 
-// ===== 75-Question Blueprint Generator =====
-function generateFull75Questions(loadedQuestions = []) {
+// ===== 75-Question JEE Blueprint Generator =====
+function generateFoundationQuestions(loadedQuestions = []) {
+  if (loadedQuestions.length > 0) {
+    return loadedQuestions;
+  }
+
+  // Fallback generator: 75 demo questions (Physics, Chemistry, Mathematics)
   const fullSet = [];
   const subjects = [
     { name: "Physics", start: 1, end: 25 },
@@ -46,26 +147,19 @@ function generateFull75Questions(loadedQuestions = []) {
 
   subjects.forEach(subj => {
     for (let i = subj.start; i <= subj.end; i++) {
-      const existing = loadedQuestions.find(q => q.subject === subj.name && (loadedQuestions.indexOf(q) + 1) === i) 
-                    || loadedQuestions[i - 1];
-
-      if (existing) {
-        fullSet.push({ ...existing, subject: subj.name, num: i });
-      } else {
-        fullSet.push({
-          subject: subj.name,
-          chapter: `${subj.name} Basics`,
-          num: i,
-          text: `[${subj.name} Q${i}] Evaluate the standard value and select the correct option for this problem: $\\int_{0}^{1} x^{${(i % 5) + 1}} \\, dx$`,
-          options: [
-            `Option A: $\\frac{1}{${(i % 5) + 2}}$`,
-            `Option B: $\\frac{2}{${(i % 5) + 3}}$`,
-            `Option C: $\\frac{3}{${(i % 5) + 4}}$`,
-            `Option D: None of these`
-          ],
-          correctIndex: 0
-        });
-      }
+      fullSet.push({
+        subject: subj.name,
+        chapter: `${subj.name} Basics`,
+        num: i,
+        text: `[${subj.name} Q${i}] Evaluate the basic concept and select the correct option for this problem.`,
+        options: [
+          `Option A: Basic Concept Solution 1`,
+          `Option B: Basic Concept Solution 2`,
+          `Option C: Basic Concept Solution 3`,
+          `Option D: None of these`
+        ],
+        correctIndex: 0
+      });
     }
   });
 
@@ -75,30 +169,59 @@ function generateFull75Questions(loadedQuestions = []) {
 // ===== Load Question Set from Server or Question Bank =====
 async function loadQuestionSet(key) {
   try {
-    const res = await fetch("/api/questions/" + encodeURIComponent(key), { credentials: "include" });
+    const res = await fetch("/api/questions/" + encodeURIComponent(key) + getRevisionQuery(), { credentials: "include" });
+
+    if (res.status === 401) {
+      // Not logged in (or session expired) — no test content should ever
+      // reach the page. Send them to log in, then straight back here.
+      const returnTo = encodeURIComponent(window.location.pathname + window.location.search);
+      window.location.href = `login.html?redirect=${returnTo}`;
+      return new Promise(() => {}); // halt here — navigation is in flight, nothing after this should run
+    }
+
     if (res.status === 403) {
       document.querySelector(".nta-main-layout").innerHTML = `
         <div style="flex:1; padding: 60px 20px; text-align: center; background:#fff;">
-          <h2 style="color:#0f388a; font-size:26px; margin-bottom:12px;">🔒 Paper Locked</h2>
+          <h2 style="color:#E11D48; font-size:26px; margin-bottom:12px;">🔒 Paper Locked</h2>
           <p style="font-size:15px; color:#555; max-width:480px; margin:0 auto 24px;">
-            This question paper requires an active subscription. Only the first mock/PYQ paper is available for free practice.
+            This paper requires an active subscription. If your 3-day free trial has ended, subscribe to keep practising.
           </p>
-          <a href="tests.html" class="nta-btn btn-save-next" style="display:inline-block; line-height:34px; padding:0 20px; text-decoration:none;">Browse Available Tests</a>
+          <a href="subscription.html" class="nta-btn btn-save-next" style="display:inline-block; line-height:34px; padding:0 20px; text-decoration:none; background:#F59E0B; color:#0F172A; border-radius:4px;">View Subscription Plans</a>
         </div>
       `;
-      return [];
+      return null; // nothing to run: the page below must not start a timer
+    }
+
+    // A custom paper that cannot be built (bad setup, or not enough questions yet)
+    if (res.status === 400 || res.status === 422) {
+      let message = "This test could not be created with those settings.";
+      try { message = (await res.json()).message || message; } catch (e) {}
+      const safeMessage = message.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
+      document.querySelector(".nta-main-layout").innerHTML = `
+        <div style="flex:1; padding: 60px 20px; text-align: center; background:#fff;">
+          <h2 style="color:#E11D48; font-size:24px; margin-bottom:12px;">Couldn't build this test</h2>
+          <p style="font-size:15px; color:#555; max-width:520px; margin:0 auto 24px; line-height:1.6;">${safeMessage}</p>
+          <a href="tests.html" class="nta-btn btn-save-next" style="display:inline-block; line-height:34px; padding:0 20px; text-decoration:none; background:#F59E0B; color:#0F172A; border-radius:4px;">Back to Tests</a>
+        </div>
+      `;
+      return null;
     }
 
     if (res.ok) {
       const rows = await res.json();
       if (rows.length > 0) {
         return rows.map((r, idx) => ({
+          id: r.id,
           subject: r.subject,
           chapter: r.chapter || `${r.subject} Unit`,
           text: r.question_text,
           image: r.image_path || undefined,
+          type: r.question_type === "numerical" ? "numerical" : "mcq",
           options: [r.option_a, r.option_b, r.option_c, r.option_d],
           correctIndex: r.correct_index,
+          correctValue: (r.correct_value !== null && r.correct_value !== undefined) ? Number(r.correct_value) : undefined,
+          correctRange: (r.correct_min !== null && r.correct_min !== undefined && r.correct_max !== null && r.correct_max !== undefined)
+            ? [Number(r.correct_min), Number(r.correct_max)] : undefined,
           explanation: r.explanation || null,
           num: idx + 1
         }));
@@ -143,19 +266,32 @@ function formatDuration(totalSec) {
 }
 
 // ===== Subject Switching =====
+// Jumps to the first question of a subject (works for any subject in the paper).
 function switchSubject(subjectName) {
-  document.querySelectorAll(".sub-tab-btn").forEach(btn => btn.classList.remove("active"));
-  
-  if (subjectName === "Physics") {
-    document.getElementById("tab-phy")?.classList.add("active");
-    goToQuestion(1);
-  } else if (subjectName === "Chemistry") {
-    document.getElementById("tab-chem")?.classList.add("active");
-    goToQuestion(26);
-  } else if (subjectName === "Mathematics") {
-    document.getElementById("tab-math")?.classList.add("active");
-    goToQuestion(51);
-  }
+  const idx = questions.findIndex(q => (q.subject || "").toLowerCase() === String(subjectName).toLowerCase());
+  if (idx >= 0) goToQuestion(idx + 1);
+}
+
+// Builds one tab per subject that is actually in this test, in paper order.
+function buildSubjectTabs() {
+  const bar = document.querySelector(".subject-nav-bar");
+  if (!bar) return;
+  bar.innerHTML = "";
+  const seen = [];
+  questions.forEach(q => {
+    const name = (q.subject || "").trim();
+    if (name && !seen.includes(name)) seen.push(name);
+  });
+  seen.forEach(name => {
+    const btn = document.createElement("button");
+    btn.type = "button";
+    btn.className = "sub-tab-btn";
+    btn.dataset.subject = name;
+    btn.textContent = name;
+    btn.addEventListener("click", () => switchSubject(name));
+    bar.appendChild(btn);
+  });
+  bar.style.display = seen.length > 1 ? "" : "none";
 }
 
 // ===== Update Live Legend Counts =====
@@ -192,14 +328,9 @@ function renderQuestion() {
   const qNumEl = document.getElementById("q-number");
   if (qNumEl) qNumEl.textContent = `Question No. ${currentQuestion} (${q.subject})`;
 
-  document.querySelectorAll(".sub-tab-btn").forEach(b => b.classList.remove("active"));
-  if (currentQuestion <= 25) {
-    document.getElementById("tab-phy")?.classList.add("active");
-  } else if (currentQuestion <= 50) {
-    document.getElementById("tab-chem")?.classList.add("active");
-  } else {
-    document.getElementById("tab-math")?.classList.add("active");
-  }
+  document.querySelectorAll(".sub-tab-btn").forEach(b => {
+    b.classList.toggle("active", (b.dataset.subject || "").toLowerCase() === (q.subject || "").toLowerCase());
+  });
 
   const qTextEl = document.getElementById("q-text");
   if (qTextEl) qTextEl.innerHTML = q.text;
@@ -217,7 +348,38 @@ function renderQuestion() {
   }
 
   const optionsDiv = document.getElementById("q-options");
-  if (optionsDiv) {
+  if (optionsDiv && q.type === "numerical") {
+    // Numerical-answer question: a typed answer instead of options
+    optionsDiv.innerHTML = "";
+    const wrap = document.createElement("div");
+    wrap.className = "numerical-answer";
+    const label = document.createElement("label");
+    label.htmlFor = "numerical-input";
+    label.textContent = "Enter your answer (numerical value)";
+    const input = document.createElement("input");
+    input.type = "text";
+    input.id = "numerical-input";
+    input.inputMode = "decimal";
+    input.autocomplete = "off";
+    input.placeholder = "Type your answer";
+    if (answers[currentQuestion] !== undefined) input.value = answers[currentQuestion];
+    input.oninput = () => {
+      const cleaned = input.value.replace(/[^0-9.\-]/g, "");
+      if (cleaned !== input.value) input.value = cleaned;
+      if (cleaned === "") {
+        delete answers[currentQuestion];
+      } else {
+        if (answers[currentQuestion] !== undefined && answers[currentQuestion] !== cleaned) {
+          answerChangedFlags[currentQuestion] = true;
+        }
+        answers[currentQuestion] = cleaned;
+      }
+      persistProgress();
+    };
+    wrap.appendChild(label);
+    wrap.appendChild(input);
+    optionsDiv.appendChild(wrap);
+  } else if (optionsDiv) {
     optionsDiv.innerHTML = "";
     q.options.forEach((optText, i) => {
       const label = document.createElement("label");
@@ -234,6 +396,7 @@ function renderQuestion() {
           answerChangedFlags[currentQuestion] = true;
         }
         answers[currentQuestion] = i;
+        persistProgress();
       };
 
       const span = document.createElement("span");
@@ -252,7 +415,7 @@ function renderQuestion() {
   updateLegendCounts();
 }
 
-// ===== Render 75 Palette Buttons =====
+// ===== Render Palette Buttons =====
 function renderPalette() {
   const grid = document.getElementById("palette-grid");
   if (!grid) return;
@@ -266,6 +429,10 @@ function renderPalette() {
     bindFastClick(btn, () => goToQuestion(i));
     grid.appendChild(btn);
   }
+
+  // renderPalette runs after every status change (save, mark, clear, navigate),
+  // so this keeps the saved copy of a Full Syllabus test up to date.
+  persistProgress();
 }
 
 function goToQuestion(num) {
@@ -283,11 +450,16 @@ function goToPrevQuestion() {
   }
 }
 
-// ===== Countdown Timer (3 Hours) =====
-let secondsLeft = 3 * 60 * 60;
+// ===== Countdown Timer =====
+// The clock is based on a fixed END TIME rather than counting down once per
+// tick. Browsers slow timers in background tabs, so a tick-counting timer
+// would drift badly over a 3-hour test; an end time is always correct.
+let endsAt = 0;
 let timerHandle = null;
 
 function updateTimer() {
+  const secondsLeft = Math.max(0, Math.round((endsAt - Date.now()) / 1000));
+
   const h = String(Math.floor(secondsLeft / 3600)).padStart(2, "0");
   const m = String(Math.floor((secondsLeft % 3600) / 60)).padStart(2, "0");
   const s = String(secondsLeft % 60).padStart(2, "0");
@@ -297,12 +469,82 @@ function updateTimer() {
     timerEl.textContent = `${h}:${m}:${s}`;
   }
 
-  if (secondsLeft > 0) {
-    secondsLeft--;
-  } else {
+  if (secondsLeft <= 0) {
     clearInterval(timerHandle);
-    submitTest();
+    if (!testIsSubmitted) submitTest();
   }
+}
+
+// ===== Saved progress for the Full Syllabus test =====
+// A 3-hour paper must survive a refresh, a dropped connection or a closed tab:
+// same questions, same end time, same answers. Only used for "-full" tests.
+let progressKey = null;
+let persistEnabled = false;
+
+function persistProgress() {
+  if (!persistEnabled || testIsSubmitted || !progressKey) return;
+  try {
+    localStorage.setItem(progressKey, JSON.stringify({
+      v: 1,
+      testKey: progressId,
+      endsAt,
+      currentQuestion,
+      // explanations are not needed during the test and can be large
+      questions: questions.map(({ explanation, ...rest }) => rest),
+      answers,
+      questionStatus,
+      markedHistory,
+      answerChangedFlags,
+      timeSpent
+    }));
+  } catch (e) {
+    persistEnabled = false; // storage full or blocked: carry on without resume
+  }
+}
+
+function loadSavedProgress() {
+  try {
+    const raw = localStorage.getItem(progressKey);
+    if (!raw) return null;
+    const saved = JSON.parse(raw);
+    if (saved && saved.v === 1 && saved.testKey === progressId &&
+        Array.isArray(saved.questions) && saved.questions.length > 0 &&
+        typeof saved.endsAt === "number") {
+      return saved;
+    }
+  } catch (e) { /* corrupted entry: ignore it */ }
+  return null;
+}
+
+function clearSavedProgress() {
+  try { if (progressKey) localStorage.removeItem(progressKey); } catch (e) {}
+}
+
+// ===== Current answer on screen =====
+// MCQ: the chosen option index. Numerical: the typed text. undefined = nothing entered.
+function readCurrentSelection() {
+  const q = questions[currentQuestion - 1];
+  if (q && q.type === "numerical") {
+    const el = document.getElementById("numerical-input");
+    const v = el ? el.value.trim() : "";
+    return v === "" ? undefined : v;
+  }
+  const selected = document.querySelector('input[name="nta_option"]:checked');
+  return selected ? parseInt(selected.value, 10) : undefined;
+}
+
+// Is a typed numerical answer correct? A window (correctRange) is used when the
+// question has one, otherwise the single exact value.
+function isNumericalCorrect(q, typed) {
+  const n = Number(typed);
+  if (typed === undefined || typed === "" || !Number.isFinite(n)) return false;
+  if (Array.isArray(q.correctRange) && q.correctRange.length === 2) {
+    return n >= q.correctRange[0] && n <= q.correctRange[1];
+  }
+  if (typeof q.correctValue === "number" && Number.isFinite(q.correctValue)) {
+    return Math.abs(n - q.correctValue) <= 1e-9 * Math.max(1, Math.abs(q.correctValue));
+  }
+  return false;
 }
 
 // ===== Direct Action Handlers with Fast-Click =====
@@ -314,12 +556,12 @@ function initActionHandlers() {
   const submitBtn = document.getElementById("submitBtn");
 
   bindFastClick(saveBtn, () => {
-    const selected = document.querySelector('input[name="nta_option"]:checked');
-    if (selected) {
-      if (answers[currentQuestion] !== undefined && answers[currentQuestion] !== parseInt(selected.value, 10)) {
+    const selected = readCurrentSelection();
+    if (selected !== undefined) {
+      if (answers[currentQuestion] !== undefined && answers[currentQuestion] !== selected) {
         answerChangedFlags[currentQuestion] = true;
       }
-      answers[currentQuestion] = parseInt(selected.value, 10);
+      answers[currentQuestion] = selected;
       questionStatus[currentQuestion] = "answered";
     } else if (answers[currentQuestion] !== undefined) {
       questionStatus[currentQuestion] = "answered";
@@ -337,12 +579,12 @@ function initActionHandlers() {
 
   bindFastClick(markBtn, () => {
     markedHistory[currentQuestion] = true;
-    const selected = document.querySelector('input[name="nta_option"]:checked');
-    if (selected) {
-      if (answers[currentQuestion] !== undefined && answers[currentQuestion] !== parseInt(selected.value, 10)) {
+    const selected = readCurrentSelection();
+    if (selected !== undefined) {
+      if (answers[currentQuestion] !== undefined && answers[currentQuestion] !== selected) {
         answerChangedFlags[currentQuestion] = true;
       }
-      answers[currentQuestion] = parseInt(selected.value, 10);
+      answers[currentQuestion] = selected;
       questionStatus[currentQuestion] = "answered-marked";
     } else if (answers[currentQuestion] !== undefined) {
       questionStatus[currentQuestion] = "answered-marked";
@@ -362,6 +604,8 @@ function initActionHandlers() {
     delete answers[currentQuestion];
     questionStatus[currentQuestion] = "not-answered";
     document.querySelectorAll('input[name="nta_option"]').forEach(el => (el.checked = false));
+    const numInput = document.getElementById("numerical-input");
+    if (numInput) numInput.value = "";
     renderPalette();
     updateLegendCounts();
   });
@@ -383,26 +627,33 @@ async function submitTest() {
   testIsSubmitted = true;
   if (timerHandle) clearInterval(timerHandle);
 
-  let correct = 0, wrong = 0, unattempted = 0;
+  // Marking: MCQ +4 / -1, numerical +4 / 0
+  let correct = 0, wrong = 0, unattempted = 0, mcqWrong = 0;
   const responsesPayload = [];
 
   questions.forEach((q, i) => {
     const qNum = i + 1;
     const userChoice = answers[qNum];
     const qTime = timeSpent[qNum] || 0;
+    const isNum = q.type === "numerical";
     const isAtt = userChoice !== undefined;
-    const isCorr = isAtt && userChoice === q.correctIndex;
+    const isCorr = isAtt && (isNum ? isNumericalCorrect(q, userChoice) : userChoice === q.correctIndex);
 
     if (!isAtt) unattempted++;
     else if (isCorr) correct++;
-    else wrong++;
+    else { wrong++; if (!isNum) mcqWrong++; }
 
     responsesPayload.push({
+      questionId: q.id || null,
       questionNum: qNum,
+      questionType: isNum ? "numerical" : "mcq",
       subject: q.subject,
       chapter: q.chapter || `${q.subject} General`,
-      selectedOption: userChoice !== undefined ? userChoice : null,
-      correctOption: q.correctIndex,
+      selectedOption: (!isNum && userChoice !== undefined) ? userChoice : null,
+      correctOption: isNum ? null : q.correctIndex,
+      selectedValue: (isNum && userChoice !== undefined) ? String(userChoice) : null,
+      correctValue: isNum && typeof q.correctValue === "number" ? q.correctValue : null,
+      correctRange: isNum && Array.isArray(q.correctRange) ? q.correctRange : null,
       isCorrect: isCorr,
       timeSpent: qTime,
       markedForReview: !!markedHistory[qNum],
@@ -410,7 +661,8 @@ async function submitTest() {
     });
   });
 
-  const totalScore = (correct * 4) - (wrong * 1);
+  const totalScore = (correct * 4) - (mcqWrong * 1);
+  const maxPossibleScore = totalQuestions * 4;
 
   // 1. Hide Top Navigation Bars
   const subNav = document.querySelector(".subject-nav-bar");
@@ -423,21 +675,21 @@ async function submitTest() {
   if (container) {
     container.innerHTML = `
       <div style="width:100%; height:100%; padding: 60px 20px; text-align: center; background:#fff; overflow-y:auto; display:flex; flex-direction:column; align-items:center; justify-content:center;">
-        <div style="width:64px; height:64px; background:#dcfce7; color:#16a34a; border-radius:50%; display:flex; align-items:center; justify-content:center; font-size:30px; margin-bottom:16px;">✓</div>
-        <h2 style="color:#173b6c; font-size:26px; margin-bottom:6px;">Test Submitted Successfully</h2>
-        <p style="font-size:14px; color:#64748b; margin-bottom:24px;">Your attempt has been saved to your account profile.</p>
+        <div style="width:64px; height:64px; background:#FEF3C7; color:#D97706; border-radius:50%; display:flex; align-items:center; justify-content:center; font-size:30px; margin-bottom:16px;">✓</div>
+        <h2 style="color:#0F172A; font-size:26px; margin-bottom:6px;">Test Submitted Successfully</h2>
+        <p style="font-size:14px; color:#64748b; margin-bottom:24px;">Your attempt has been saved to your JEE Portal profile.</p>
 
-        <div style="width:100%; max-width:440px; margin: 0 auto 28px; background:#f8fafc; border:1px solid #e2e8f0; border-radius:10px; padding:20px; text-align:left;">
+        <div style="width:100%; max-width:440px; margin: 0 auto 28px; background:#F8FAFC; border:1px solid #e2e8f0; border-radius:10px; padding:20px; text-align:left;">
           <div style="font-size:20px; font-weight:800; color:#0f172a; margin-bottom:12px; display:flex; justify-content:space-between;">
             <span>Total Score:</span>
-            <span style="color:#16a34a;">${totalScore} <span style="font-size:13px; color:#64748b;">/ 300</span></span>
+            <span style="color:#D97706;">${totalScore} <span style="font-size:13px; color:#64748b;">/ ${maxPossibleScore}</span></span>
           </div>
           <div style="display:flex; justify-content:space-between; margin-bottom:8px; font-size:13.5px;">
             <span>Correct (+4):</span>
             <strong style="color:#16a34a;">${correct}</strong>
           </div>
           <div style="display:flex; justify-content:space-between; margin-bottom:8px; font-size:13.5px;">
-            <span>Incorrect (-1):</span>
+            <span>Incorrect (-1 MCQ, 0 numerical):</span>
             <strong style="color:#dc2626;">${wrong}</strong>
           </div>
           <div style="display:flex; justify-content:space-between; font-size:13.5px;">
@@ -447,8 +699,8 @@ async function submitTest() {
         </div>
 
         <div style="display:flex; justify-content:center; gap:12px;" id="submissionActionButtons">
-          <a href="profile.html#recent-tests" id="viewProfileAnalysisBtn" class="nta-btn" style="background:#0f172a; color:#fff; display:inline-block; line-height:36px; padding:0 20px; text-decoration:none; border-radius:4px; font-size:13px; font-weight:700;">View Detailed Analysis</a>
-          <a href="tests.html" class="nta-btn btn-save-next" style="display:inline-block; line-height:36px; padding:0 20px; text-decoration:none; font-size:13px; font-weight:700;">Back to Test Series</a>
+          <a href="profile.html#recent-tests" id="viewProfileAnalysisBtn" class="nta-btn" style="background:#0F172A; color:#fff; display:inline-block; line-height:36px; padding:0 20px; text-decoration:none; border-radius:4px; font-size:13px; font-weight:700;">View Detailed Analysis</a>
+          <a href="tests.html" class="nta-btn btn-save-next" style="display:inline-block; line-height:36px; padding:0 20px; text-decoration:none; font-size:13px; font-weight:700; background:#F59E0B; color:#0F172A; border-radius:4px;">Back to Tests</a>
         </div>
       </div>
     `;
@@ -471,6 +723,7 @@ async function submitTest() {
     });
     
     if (res.ok) {
+      clearSavedProgress();
       const data = await res.json();
       const analysisLink = document.getElementById("viewProfileAnalysisBtn");
       if (analysisLink && data.attemptId) {
@@ -495,35 +748,114 @@ async function loadCandidateProfile() {
         const fullName = data.user.fullName || data.user.name || "Student";
         if (nameEl) nameEl.textContent = fullName;
         if (avatarEl) avatarEl.textContent = fullName.charAt(0).toUpperCase();
-        return;
+        // Used to keep one student's saved test separate from another's
+        return String(data.user.id ?? data.user.userId ?? data.user.email ?? fullName);
       }
     }
   } catch (err) {
     console.warn("Could not load candidate profile:", err);
   }
 
-  if (nameEl) nameEl.textContent = "Candidate";
-  if (avatarEl) avatarEl.textContent = "C";
+  if (nameEl) nameEl.textContent = "Student";
+  if (avatarEl) avatarEl.textContent = "S";
+  return "";
 }
 
 // ===== Initialization =====
 (async () => {
   initActionHandlers();
   setDynamicExamTitle(setKey);
-  loadCandidateProfile();
+  const profilePromise = loadCandidateProfile();
 
-  const rawQuestions = await loadQuestionSet(setKey);
-  questions = generateFull75Questions(rawQuestions);
+  const timerEl = document.getElementById("timer");
+  if (timerEl) timerEl.textContent = "--:--:--";
+
+  // Full Syllabus test: pick up an unfinished paper if there is one.
+  let resumed = null;
+  if (isMultiChapterTest) {
+    const ownerId = await profilePromise;
+    progressKey = `jeeportal:fulltest:v1:${ownerId || "anon"}:${progressId}`;
+    resumed = loadSavedProgress();
+
+    if (resumed && resumed.endsAt > Date.now()) {
+      const minsLeft = Math.max(1, Math.ceil((resumed.endsAt - Date.now()) / 60000));
+      const keepGoing = confirm(
+        `You have an unfinished test with about ${minsLeft} minute(s) left.\n\n` +
+        `OK = resume it\nCancel = discard it and start a new paper`
+      );
+      if (!keepGoing) {
+        clearSavedProgress();
+        resumed = null;
+      }
+    }
+    // If the saved paper's time ran out while the student was away, it is
+    // restored as-is and the timer below submits it straight away.
+  }
+
+  let rawQuestions = [];
+  if (resumed) {
+    questions = resumed.questions;
+  } else {
+    rawQuestions = await loadQuestionSet(setKey);
+    if (rawQuestions === null) return; // locked / could not be built: error panel is already showing
+    questions = generateFoundationQuestions(rawQuestions);
+  }
   totalQuestions = questions.length;
 
-  for (let i = 1; i <= totalQuestions; i++) {
-    questionStatus[i] = "not-visited";
-    timeSpent[i] = 0;
+  // Once real questions are in, prefer the actual chapter name (from the
+  // DB's `chapter` column, same source the profile analysis views use)
+  // over the guessed title setDynamicExamTitle() built from the raw key.
+  // (Full Syllabus tests keep their own title: they span every chapter.)
+  const examTitleEl = document.getElementById("exam-title");
+  if (!isMultiChapterTest) {
+    const realChapterName = rawQuestions.find(q => q.chapter)?.chapter;
+    if (realChapterName) {
+      if (examTitleEl) examTitleEl.textContent = realChapterName;
+      document.title = `${realChapterName} - JEE Portal`;
+    } else if (examTitleEl) {
+      // No chapter data came back at all (e.g. fallback demo questions) —
+      // don't leave the header stuck on "loading...".
+      examTitleEl.textContent = "Practice Test";
+    }
   }
-  questionStatus[1] = "not-answered";
+
+  // A chapter (or subject-wide) test only ever has ONE subject throughout —
+  // the tab bar would let you "switch" to a subject with no questions in
+  // it, which is meaningless. Only real mixed tests (mocks) show it.
+  // The tabs are built from the subjects actually in this paper (Physics,
+  // Chemistry, Mathematics); the bar stays hidden when there is only one.
+  buildSubjectTabs();
+
+  if (resumed) {
+    Object.assign(answers, resumed.answers);
+    Object.assign(questionStatus, resumed.questionStatus);
+    Object.assign(markedHistory, resumed.markedHistory);
+    Object.assign(answerChangedFlags, resumed.answerChangedFlags);
+    Object.assign(timeSpent, resumed.timeSpent);
+    currentQuestion = Math.min(Math.max(parseInt(resumed.currentQuestion, 10) || 1, 1), totalQuestions);
+    endsAt = resumed.endsAt;
+  } else {
+    for (let i = 1; i <= totalQuestions; i++) {
+      questionStatus[i] = "not-visited";
+      timeSpent[i] = 0;
+    }
+    questionStatus[1] = "not-answered";
+    endsAt = Date.now() + getTestDurationSeconds() * 1000;
+  }
+
+  // Only a real, server-built paper is worth saving (not the demo fallback).
+  persistEnabled = isMultiChapterTest && !!progressKey && (!!resumed || rawQuestions.length > 0);
 
   renderQuestion();
   renderPalette();
   updateTimer();
   timerHandle = setInterval(updateTimer, 1000);
+
+  if (persistEnabled) {
+    setInterval(persistProgress, 15000); // also captures time spent per question
+    window.addEventListener("pagehide", persistProgress);
+    document.addEventListener("visibilitychange", () => {
+      if (document.visibilityState === "hidden") persistProgress();
+    });
+  }
 })();

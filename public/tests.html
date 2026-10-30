@@ -3,8 +3,46 @@
 <head>
   <meta charset="UTF-8">
   <!-- <meta name="viewport" content="width=device-width, initial-scale=1.0"> -->
-  <title>Choose Test - JEE Jeeto</title>
+  <title>Choose Test - LaunchITJEE</title>
   <link rel="stylesheet" href="css/test.css">
+  <style>
+    /* Year divider (shown in "All years" view) */
+    .year-divider {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      margin: 28px 0 20px;
+      font-size: 0.95rem;
+      font-weight: 600;
+      color: #666;
+    }
+    .year-divider::before,
+    .year-divider::after {
+      content: "";
+      flex: 1;
+      height: 1px;
+      background: currentColor;
+      opacity: 0.25;
+    }
+    .year-divider .yd-label {
+      padding: 6px 18px;
+      border: 1px solid rgba(128, 128, 128, 0.35);
+      border-radius: 999px;
+      white-space: nowrap;
+    }
+    .year-divider .yd-label b { color: inherit; font-weight: 800; }
+
+    /* Free trial banner */
+    .trial-banner {
+      margin: 0 0 18px;
+      padding: 12px 18px;
+      border-radius: 10px;
+      border: 1px solid rgba(245, 158, 11, 0.5);
+      background: rgba(245, 158, 11, 0.12);
+      font-weight: 600;
+      font-size: 0.95rem;
+    }
+  </style>
   <script defer src="/_vercel/speed-insights/script.js"></script>
 </head>
 <body>
@@ -13,12 +51,13 @@
   ========================================================== -->
   <header class="topbar">
     <div class="logo">
-      JEE<span>Jeeto</span>
+      Launch<span>ITJEE</span>
     </div>
     <div class="nav-group">
       <nav>
         <a href="index.html">Home</a>
         <a href="notes.html">Browse Notes</a>
+        <a href="tests.html">PYQs</a>
         <a href="subscription.html">Subscription</a>
         <a href="login.html" id="navLoginBtn">Login</a>
       </nav>
@@ -148,143 +187,1595 @@
         </div>
 
         <span class="paper-count" id="paperCount">
-          2026
+          2015 – 2026
         </span>
       </div>
 
-      <!-- =====================================================
-           JEE MAIN PAPERS
-      ====================================================== -->
-      <div class="paper-panel active" id="mains">
-        <!-- ===================================================
-             2026 APRIL 02
-        ==================================================== -->
-        <div class="paper-date-group">
-          <div class="paper-group-heading">
-            <span>2026</span>
-            <strong>April 02</strong>
-          </div>
-          <div class="shift-row">
-            <!-- April 02 Shift 2 (FREE) -->
-            <article class="paper-card">
-              <div class="paper-date">
-                <span class="paper-year">2026</span>
-                <strong>April 02</strong>
-              </div>
-              <div class="paper-info">
-                <h3>JEE Main 2026</h3>
-                <p>
-                  April 02, 2026 &nbsp;•&nbsp; Shift 2
-                </p>
-              </div>
-              <a href="attempt-test.html?paper=main-2024-jan-shift1" class="paper-btn">Attempt</a>
-            </article>
-
-            <!-- April 02 Shift 1 (LOCKED) -->
-            <article class="paper-card">
-              <div class="paper-date">
-                <span class="paper-year">2026</span>
-                <strong>April 02</strong>
-              </div>
-              <div class="paper-info">
-                <h3>JEE Main 2026</h3>
-                <p>
-                  April 02, 2026 &nbsp;•&nbsp; Shift 1
-                </p>
-              </div>
-
-              <a href="attempt-test.html?paper=jee-main-2026-apr-02-shift-1" class="paper-btn">Attempt</a>
-            </article>
-          </div>
-        </div>
-
-        <!-- ===================================================
-             2026 APRIL 01
-        ==================================================== -->
-        <div class="paper-date-group">
-          <div class="paper-group-heading">
-            <span>2026</span>
-            <strong>April 01</strong>
-          </div>
-          <div class="shift-row">
-            <!-- April 01 Shift 2 (LOCKED) -->
-            <article class="paper-card">
-              <div class="paper-date">
-                <span class="paper-year">2026</span>
-                <strong>April 01</strong>
-              </div>
-              <div class="paper-info">
-                <h3>JEE Main 2026</h3>
-                <p>
-                  April 01, 2026 &nbsp;•&nbsp; Shift 2
-                </p>
-              </div>
-
-              <a href="attempt-test.html?paper=jee-main-2026-apr-01-shift-2" class="paper-btn">Attempt</a>
-            </article>
-
-            <!-- April 01 Shift 1 (LOCKED) -->
-            <article class="paper-card">
-              <div class="paper-date">
-                <span class="paper-year">2026</span>
-                <strong>April 01</strong>
-              </div>
-              <div class="paper-info">
-                <h3>JEE Main 2026</h3>
-                <p>
-                  April 01, 2026 &nbsp;•&nbsp; Shift 1
-                </p>
-              </div>
-
-              <a href="attempt-test.html?paper=jee-main-2026-apr-01-shift-1" class="paper-btn">Attempt</a>
-            </article>
-          </div>
-        </div>
+      <!-- Year filter: every date group below carries data-year="YYYY" -->
+      <div class="year-filter" id="yearFilter">
+        <button type="button" class="year-chip active" data-year="all">All years</button>
+        <button type="button" class="year-chip" data-year="2026">2026</button>
+        <button type="button" class="year-chip" data-year="2025">2025</button>
+        <button type="button" class="year-chip" data-year="2024">2024</button>
+        <button type="button" class="year-chip" data-year="2023">2023</button>
+        <button type="button" class="year-chip" data-year="2022">2022</button>
+        <button type="button" class="year-chip" data-year="2021">2021</button>
+        <button type="button" class="year-chip" data-year="2020">2020</button>
+        <button type="button" class="year-chip" data-year="2019">2019</button>
+        <button type="button" class="year-chip" data-year="2018">2018</button>
+        <button type="button" class="year-chip" data-year="2017">2017</button>
+        <button type="button" class="year-chip" data-year="2016">2016</button>
+        <button type="button" class="year-chip" data-year="2015">2015</button>
       </div>
 
-      <!-- =====================================================
-           JEE ADVANCED PAPERS
-      ====================================================== -->
+      <!-- JEE MAIN PAPERS. Make a card free: add data-free="true" to its <article>. Remove a card: delete its <article>. -->
+      <div class="paper-panel active" id="mains">
+
+      <!-- ================= JEE MAIN 2026 ================= -->
+      <div class="paper-date-group" data-year="2026"><div class="shift-row">
+        <!-- April 08 Shift 2 (LOCKED) -->
+        <article class="paper-card">
+          <div class="paper-date"><span class="paper-year">2026</span><strong>April 08</strong></div>
+          <div class="paper-info"><h3>JEE Main 2026</h3><p>April 08, 2026 &nbsp;•&nbsp; Shift 2</p></div>
+          <a href="attempt-test.html?paper=jm-2026-04-08-evening" class="paper-btn">Attempt</a>
+        </article>
+      </div></div>
+      <div class="paper-date-group" data-year="2026"><div class="shift-row">
+        <!-- April 06 Shift 2 (LOCKED) -->
+        <article class="paper-card">
+          <div class="paper-date"><span class="paper-year">2026</span><strong>April 06</strong></div>
+          <div class="paper-info"><h3>JEE Main 2026</h3><p>April 06, 2026 &nbsp;•&nbsp; Shift 2</p></div>
+          <a href="attempt-test.html?paper=jm-2026-04-06-evening" class="paper-btn">Attempt</a>
+        </article>
+        <!-- April 06 Shift 1 (LOCKED) -->
+        <article class="paper-card">
+          <div class="paper-date"><span class="paper-year">2026</span><strong>April 06</strong></div>
+          <div class="paper-info"><h3>JEE Main 2026</h3><p>April 06, 2026 &nbsp;•&nbsp; Shift 1</p></div>
+          <a href="attempt-test.html?paper=jm-2026-04-06-morning" class="paper-btn">Attempt</a>
+        </article>
+      </div></div>
+      <div class="paper-date-group" data-year="2026"><div class="shift-row">
+        <!-- April 05 Shift 2 (LOCKED) -->
+        <article class="paper-card">
+          <div class="paper-date"><span class="paper-year">2026</span><strong>April 05</strong></div>
+          <div class="paper-info"><h3>JEE Main 2026</h3><p>April 05, 2026 &nbsp;•&nbsp; Shift 2</p></div>
+          <a href="attempt-test.html?paper=jm-2026-04-05-evening" class="paper-btn">Attempt</a>
+        </article>
+        <!-- April 05 Shift 1 (LOCKED) -->
+        <article class="paper-card">
+          <div class="paper-date"><span class="paper-year">2026</span><strong>April 05</strong></div>
+          <div class="paper-info"><h3>JEE Main 2026</h3><p>April 05, 2026 &nbsp;•&nbsp; Shift 1</p></div>
+          <a href="attempt-test.html?paper=jm-2026-04-05-morning" class="paper-btn">Attempt</a>
+        </article>
+      </div></div>
+      <div class="paper-date-group" data-year="2026"><div class="shift-row">
+        <!-- April 04 Shift 2 (LOCKED) -->
+        <article class="paper-card">
+          <div class="paper-date"><span class="paper-year">2026</span><strong>April 04</strong></div>
+          <div class="paper-info"><h3>JEE Main 2026</h3><p>April 04, 2026 &nbsp;•&nbsp; Shift 2</p></div>
+          <a href="attempt-test.html?paper=jm-2026-04-04-evening" class="paper-btn">Attempt</a>
+        </article>
+        <!-- April 04 Shift 1 (LOCKED) -->
+        <article class="paper-card">
+          <div class="paper-date"><span class="paper-year">2026</span><strong>April 04</strong></div>
+          <div class="paper-info"><h3>JEE Main 2026</h3><p>April 04, 2026 &nbsp;•&nbsp; Shift 1</p></div>
+          <a href="attempt-test.html?paper=jm-2026-04-04-morning" class="paper-btn">Attempt</a>
+        </article>
+      </div></div>
+      <div class="paper-date-group" data-year="2026"><div class="shift-row">
+        <!-- April 02 Shift 2 (LOCKED) -->
+        <article class="paper-card">
+          <div class="paper-date"><span class="paper-year">2026</span><strong>April 02</strong></div>
+          <div class="paper-info"><h3>JEE Main 2026</h3><p>April 02, 2026 &nbsp;•&nbsp; Shift 2</p></div>
+          <a href="attempt-test.html?paper=jm-2026-04-02-evening" class="paper-btn">Attempt</a>
+        </article>
+        <!-- April 02 Shift 1 (LOCKED) -->
+        <article class="paper-card">
+          <div class="paper-date"><span class="paper-year">2026</span><strong>April 02</strong></div>
+          <div class="paper-info"><h3>JEE Main 2026</h3><p>April 02, 2026 &nbsp;•&nbsp; Shift 1</p></div>
+          <a href="attempt-test.html?paper=jm-2026-04-02-morning" class="paper-btn">Attempt</a>
+        </article>
+      </div></div>
+      <div class="paper-date-group" data-year="2026"><div class="shift-row">
+        <!-- January 28 Shift 2 (LOCKED) -->
+        <article class="paper-card">
+          <div class="paper-date"><span class="paper-year">2026</span><strong>January 28</strong></div>
+          <div class="paper-info"><h3>JEE Main 2026</h3><p>January 28, 2026 &nbsp;•&nbsp; Shift 2</p></div>
+          <a href="attempt-test.html?paper=jm-2026-01-28-evening" class="paper-btn">Attempt</a>
+        </article>
+        <!-- January 28 Shift 1 (LOCKED) -->
+        <article class="paper-card">
+          <div class="paper-date"><span class="paper-year">2026</span><strong>January 28</strong></div>
+          <div class="paper-info"><h3>JEE Main 2026</h3><p>January 28, 2026 &nbsp;•&nbsp; Shift 1</p></div>
+          <a href="attempt-test.html?paper=jm-2026-01-28-morning" class="paper-btn">Attempt</a>
+        </article>
+      </div></div>
+      <div class="paper-date-group" data-year="2026"><div class="shift-row">
+        <!-- January 24 Shift 2 (LOCKED) -->
+        <article class="paper-card">
+          <div class="paper-date"><span class="paper-year">2026</span><strong>January 24</strong></div>
+          <div class="paper-info"><h3>JEE Main 2026</h3><p>January 24, 2026 &nbsp;•&nbsp; Shift 2</p></div>
+          <a href="attempt-test.html?paper=jm-2026-01-24-evening" class="paper-btn">Attempt</a>
+        </article>
+        <!-- January 24 Shift 1 (LOCKED) -->
+        <article class="paper-card">
+          <div class="paper-date"><span class="paper-year">2026</span><strong>January 24</strong></div>
+          <div class="paper-info"><h3>JEE Main 2026</h3><p>January 24, 2026 &nbsp;•&nbsp; Shift 1</p></div>
+          <a href="attempt-test.html?paper=jm-2026-01-24-morning" class="paper-btn">Attempt</a>
+        </article>
+      </div></div>
+      <div class="paper-date-group" data-year="2026"><div class="shift-row">
+        <!-- January 23 Shift 2 (LOCKED) -->
+        <article class="paper-card">
+          <div class="paper-date"><span class="paper-year">2026</span><strong>January 23</strong></div>
+          <div class="paper-info"><h3>JEE Main 2026</h3><p>January 23, 2026 &nbsp;•&nbsp; Shift 2</p></div>
+          <a href="attempt-test.html?paper=jm-2026-01-23-evening" class="paper-btn">Attempt</a>
+        </article>
+        <!-- January 23 Shift 1 (LOCKED) -->
+        <article class="paper-card">
+          <div class="paper-date"><span class="paper-year">2026</span><strong>January 23</strong></div>
+          <div class="paper-info"><h3>JEE Main 2026</h3><p>January 23, 2026 &nbsp;•&nbsp; Shift 1</p></div>
+          <a href="attempt-test.html?paper=jm-2026-01-23-morning" class="paper-btn">Attempt</a>
+        </article>
+      </div></div>
+      <div class="paper-date-group" data-year="2026"><div class="shift-row">
+        <!-- January 22 Shift 2 (LOCKED) -->
+        <article class="paper-card">
+          <div class="paper-date"><span class="paper-year">2026</span><strong>January 22</strong></div>
+          <div class="paper-info"><h3>JEE Main 2026</h3><p>January 22, 2026 &nbsp;•&nbsp; Shift 2</p></div>
+          <a href="attempt-test.html?paper=jm-2026-01-22-evening" class="paper-btn">Attempt</a>
+        </article>
+        <!-- January 22 Shift 1 (LOCKED) -->
+        <article class="paper-card">
+          <div class="paper-date"><span class="paper-year">2026</span><strong>January 22</strong></div>
+          <div class="paper-info"><h3>JEE Main 2026</h3><p>January 22, 2026 &nbsp;•&nbsp; Shift 1</p></div>
+          <a href="attempt-test.html?paper=jm-2026-01-22-morning" class="paper-btn">Attempt</a>
+        </article>
+      </div></div>
+      <div class="paper-date-group" data-year="2026"><div class="shift-row">
+        <!-- January 21 Shift 2 (LOCKED) -->
+        <article class="paper-card">
+          <div class="paper-date"><span class="paper-year">2026</span><strong>January 21</strong></div>
+          <div class="paper-info"><h3>JEE Main 2026</h3><p>January 21, 2026 &nbsp;•&nbsp; Shift 2</p></div>
+          <a href="attempt-test.html?paper=jm-2026-01-21-evening" class="paper-btn">Attempt</a>
+        </article>
+        <!-- January 21 Shift 1 (LOCKED) -->
+        <article class="paper-card">
+          <div class="paper-date"><span class="paper-year">2026</span><strong>January 21</strong></div>
+          <div class="paper-info"><h3>JEE Main 2026</h3><p>January 21, 2026 &nbsp;•&nbsp; Shift 1</p></div>
+          <a href="attempt-test.html?paper=jm-2026-01-21-morning" class="paper-btn">Attempt</a>
+        </article>
+      </div></div>
+
+      <!-- ================= JEE MAIN 2025 ================= -->
+      <div class="paper-date-group" data-year="2025"><div class="shift-row">
+        <!-- April 08 Shift 2 (LOCKED) -->
+        <article class="paper-card">
+          <div class="paper-date"><span class="paper-year">2025</span><strong>April 08</strong></div>
+          <div class="paper-info"><h3>JEE Main 2025</h3><p>April 08, 2025 &nbsp;•&nbsp; Shift 2</p></div>
+          <a href="attempt-test.html?paper=jm-2025-04-08-evening" class="paper-btn">Attempt</a>
+        </article>
+        <!-- April 08 Shift 1 (LOCKED) -->
+        <article class="paper-card">
+          <div class="paper-date"><span class="paper-year">2025</span><strong>April 08</strong></div>
+          <div class="paper-info"><h3>JEE Main 2025</h3><p>April 08, 2025 &nbsp;•&nbsp; Shift 1</p></div>
+          <a href="attempt-test.html?paper=jm-2025-04-08-morning" class="paper-btn">Attempt</a>
+        </article>
+      </div></div>
+      <div class="paper-date-group" data-year="2025"><div class="shift-row">
+        <!-- April 07 Shift 2 (LOCKED) -->
+        <article class="paper-card">
+          <div class="paper-date"><span class="paper-year">2025</span><strong>April 07</strong></div>
+          <div class="paper-info"><h3>JEE Main 2025</h3><p>April 07, 2025 &nbsp;•&nbsp; Shift 2</p></div>
+          <a href="attempt-test.html?paper=jm-2025-04-07-evening" class="paper-btn">Attempt</a>
+        </article>
+        <!-- April 07 Shift 1 (LOCKED) -->
+        <article class="paper-card">
+          <div class="paper-date"><span class="paper-year">2025</span><strong>April 07</strong></div>
+          <div class="paper-info"><h3>JEE Main 2025</h3><p>April 07, 2025 &nbsp;•&nbsp; Shift 1</p></div>
+          <a href="attempt-test.html?paper=jm-2025-04-07-morning" class="paper-btn">Attempt</a>
+        </article>
+      </div></div>
+      <div class="paper-date-group" data-year="2025"><div class="shift-row">
+        <!-- April 04 Shift 2 (LOCKED) -->
+        <article class="paper-card">
+          <div class="paper-date"><span class="paper-year">2025</span><strong>April 04</strong></div>
+          <div class="paper-info"><h3>JEE Main 2025</h3><p>April 04, 2025 &nbsp;•&nbsp; Shift 2</p></div>
+          <a href="attempt-test.html?paper=jm-2025-04-04-evening" class="paper-btn">Attempt</a>
+        </article>
+        <!-- April 04 Shift 1 (LOCKED) -->
+        <article class="paper-card">
+          <div class="paper-date"><span class="paper-year">2025</span><strong>April 04</strong></div>
+          <div class="paper-info"><h3>JEE Main 2025</h3><p>April 04, 2025 &nbsp;•&nbsp; Shift 1</p></div>
+          <a href="attempt-test.html?paper=jm-2025-04-04-morning" class="paper-btn">Attempt</a>
+        </article>
+      </div></div>
+      <div class="paper-date-group" data-year="2025"><div class="shift-row">
+        <!-- April 03 Shift 2 (LOCKED) -->
+        <article class="paper-card">
+          <div class="paper-date"><span class="paper-year">2025</span><strong>April 03</strong></div>
+          <div class="paper-info"><h3>JEE Main 2025</h3><p>April 03, 2025 &nbsp;•&nbsp; Shift 2</p></div>
+          <a href="attempt-test.html?paper=jm-2025-04-03-evening" class="paper-btn">Attempt</a>
+        </article>
+        <!-- April 03 Shift 1 (LOCKED) -->
+        <article class="paper-card">
+          <div class="paper-date"><span class="paper-year">2025</span><strong>April 03</strong></div>
+          <div class="paper-info"><h3>JEE Main 2025</h3><p>April 03, 2025 &nbsp;•&nbsp; Shift 1</p></div>
+          <a href="attempt-test.html?paper=jm-2025-04-03-morning" class="paper-btn">Attempt</a>
+        </article>
+      </div></div>
+      <div class="paper-date-group" data-year="2025"><div class="shift-row">
+        <!-- April 02 Shift 2 (LOCKED) -->
+        <article class="paper-card">
+          <div class="paper-date"><span class="paper-year">2025</span><strong>April 02</strong></div>
+          <div class="paper-info"><h3>JEE Main 2025</h3><p>April 02, 2025 &nbsp;•&nbsp; Shift 2</p></div>
+          <a href="attempt-test.html?paper=jm-2025-04-02-evening" class="paper-btn">Attempt</a>
+        </article>
+        <!-- April 02 Shift 1 (LOCKED) -->
+        <article class="paper-card">
+          <div class="paper-date"><span class="paper-year">2025</span><strong>April 02</strong></div>
+          <div class="paper-info"><h3>JEE Main 2025</h3><p>April 02, 2025 &nbsp;•&nbsp; Shift 1</p></div>
+          <a href="attempt-test.html?paper=jm-2025-04-02-morning" class="paper-btn">Attempt</a>
+        </article>
+      </div></div>
+      <div class="paper-date-group" data-year="2025"><div class="shift-row">
+        <!-- January 29 Shift 2 (LOCKED) -->
+        <article class="paper-card">
+          <div class="paper-date"><span class="paper-year">2025</span><strong>January 29</strong></div>
+          <div class="paper-info"><h3>JEE Main 2025</h3><p>January 29, 2025 &nbsp;•&nbsp; Shift 2</p></div>
+          <a href="attempt-test.html?paper=jm-2025-01-29-evening" class="paper-btn">Attempt</a>
+        </article>
+        <!-- January 29 Shift 1 (LOCKED) -->
+        <article class="paper-card">
+          <div class="paper-date"><span class="paper-year">2025</span><strong>January 29</strong></div>
+          <div class="paper-info"><h3>JEE Main 2025</h3><p>January 29, 2025 &nbsp;•&nbsp; Shift 1</p></div>
+          <a href="attempt-test.html?paper=jm-2025-01-29-morning" class="paper-btn">Attempt</a>
+        </article>
+      </div></div>
+      <div class="paper-date-group" data-year="2025"><div class="shift-row">
+        <!-- January 28 Shift 2 (LOCKED) -->
+        <article class="paper-card">
+          <div class="paper-date"><span class="paper-year">2025</span><strong>January 28</strong></div>
+          <div class="paper-info"><h3>JEE Main 2025</h3><p>January 28, 2025 &nbsp;•&nbsp; Shift 2</p></div>
+          <a href="attempt-test.html?paper=jm-2025-01-28-evening" class="paper-btn">Attempt</a>
+        </article>
+        <!-- January 28 Shift 1 (LOCKED) -->
+        <article class="paper-card">
+          <div class="paper-date"><span class="paper-year">2025</span><strong>January 28</strong></div>
+          <div class="paper-info"><h3>JEE Main 2025</h3><p>January 28, 2025 &nbsp;•&nbsp; Shift 1</p></div>
+          <a href="attempt-test.html?paper=jm-2025-01-28-morning" class="paper-btn">Attempt</a>
+        </article>
+      </div></div>
+      <div class="paper-date-group" data-year="2025"><div class="shift-row">
+        <!-- January 24 Shift 2 (LOCKED) -->
+        <article class="paper-card">
+          <div class="paper-date"><span class="paper-year">2025</span><strong>January 24</strong></div>
+          <div class="paper-info"><h3>JEE Main 2025</h3><p>January 24, 2025 &nbsp;•&nbsp; Shift 2</p></div>
+          <a href="attempt-test.html?paper=jm-2025-01-24-evening" class="paper-btn">Attempt</a>
+        </article>
+        <!-- January 24 Shift 1 (LOCKED) -->
+        <article class="paper-card">
+          <div class="paper-date"><span class="paper-year">2025</span><strong>January 24</strong></div>
+          <div class="paper-info"><h3>JEE Main 2025</h3><p>January 24, 2025 &nbsp;•&nbsp; Shift 1</p></div>
+          <a href="attempt-test.html?paper=jm-2025-01-24-morning" class="paper-btn">Attempt</a>
+        </article>
+      </div></div>
+      <div class="paper-date-group" data-year="2025"><div class="shift-row">
+        <!-- January 23 Shift 2 (LOCKED) -->
+        <article class="paper-card">
+          <div class="paper-date"><span class="paper-year">2025</span><strong>January 23</strong></div>
+          <div class="paper-info"><h3>JEE Main 2025</h3><p>January 23, 2025 &nbsp;•&nbsp; Shift 2</p></div>
+          <a href="attempt-test.html?paper=jm-2025-01-23-evening" class="paper-btn">Attempt</a>
+        </article>
+        <!-- January 23 Shift 1 (LOCKED) -->
+        <article class="paper-card">
+          <div class="paper-date"><span class="paper-year">2025</span><strong>January 23</strong></div>
+          <div class="paper-info"><h3>JEE Main 2025</h3><p>January 23, 2025 &nbsp;•&nbsp; Shift 1</p></div>
+          <a href="attempt-test.html?paper=jm-2025-01-23-morning" class="paper-btn">Attempt</a>
+        </article>
+      </div></div>
+      <div class="paper-date-group" data-year="2025"><div class="shift-row">
+        <!-- January 22 Shift 2 (LOCKED) -->
+        <article class="paper-card">
+          <div class="paper-date"><span class="paper-year">2025</span><strong>January 22</strong></div>
+          <div class="paper-info"><h3>JEE Main 2025</h3><p>January 22, 2025 &nbsp;•&nbsp; Shift 2</p></div>
+          <a href="attempt-test.html?paper=jm-2025-01-22-evening" class="paper-btn">Attempt</a>
+        </article>
+        <!-- January 22 Shift 1 (LOCKED) -->
+        <article class="paper-card">
+          <div class="paper-date"><span class="paper-year">2025</span><strong>January 22</strong></div>
+          <div class="paper-info"><h3>JEE Main 2025</h3><p>January 22, 2025 &nbsp;•&nbsp; Shift 1</p></div>
+          <a href="attempt-test.html?paper=jm-2025-01-22-morning" class="paper-btn">Attempt</a>
+        </article>
+      </div></div>
+
+      <!-- ================= JEE MAIN 2024 ================= -->
+      <div class="paper-date-group" data-year="2024"><div class="shift-row">
+        <!-- April 09 Shift 2 (LOCKED) -->
+        <article class="paper-card">
+          <div class="paper-date"><span class="paper-year">2024</span><strong>April 09</strong></div>
+          <div class="paper-info"><h3>JEE Main 2024</h3><p>April 09, 2024 &nbsp;•&nbsp; Shift 2</p></div>
+          <a href="attempt-test.html?paper=jm-2024-04-09-evening" class="paper-btn">Attempt</a>
+        </article>
+        <!-- April 09 Shift 1 (LOCKED) -->
+        <article class="paper-card">
+          <div class="paper-date"><span class="paper-year">2024</span><strong>April 09</strong></div>
+          <div class="paper-info"><h3>JEE Main 2024</h3><p>April 09, 2024 &nbsp;•&nbsp; Shift 1</p></div>
+          <a href="attempt-test.html?paper=jm-2024-04-09-morning" class="paper-btn">Attempt</a>
+        </article>
+      </div></div>
+      <div class="paper-date-group" data-year="2024"><div class="shift-row">
+        <!-- April 08 Shift 2 (LOCKED) -->
+        <article class="paper-card">
+          <div class="paper-date"><span class="paper-year">2024</span><strong>April 08</strong></div>
+          <div class="paper-info"><h3>JEE Main 2024</h3><p>April 08, 2024 &nbsp;•&nbsp; Shift 2</p></div>
+          <a href="attempt-test.html?paper=jm-2024-04-08-evening" class="paper-btn">Attempt</a>
+        </article>
+        <!-- April 08 Shift 1 (LOCKED) -->
+        <article class="paper-card">
+          <div class="paper-date"><span class="paper-year">2024</span><strong>April 08</strong></div>
+          <div class="paper-info"><h3>JEE Main 2024</h3><p>April 08, 2024 &nbsp;•&nbsp; Shift 1</p></div>
+          <a href="attempt-test.html?paper=jm-2024-04-08-morning" class="paper-btn">Attempt</a>
+        </article>
+      </div></div>
+      <div class="paper-date-group" data-year="2024"><div class="shift-row">
+        <!-- April 06 Shift 2 (LOCKED) -->
+        <article class="paper-card">
+          <div class="paper-date"><span class="paper-year">2024</span><strong>April 06</strong></div>
+          <div class="paper-info"><h3>JEE Main 2024</h3><p>April 06, 2024 &nbsp;•&nbsp; Shift 2</p></div>
+          <a href="attempt-test.html?paper=jm-2024-04-06-evening" class="paper-btn">Attempt</a>
+        </article>
+        <!-- April 06 Shift 1 (LOCKED) -->
+        <article class="paper-card">
+          <div class="paper-date"><span class="paper-year">2024</span><strong>April 06</strong></div>
+          <div class="paper-info"><h3>JEE Main 2024</h3><p>April 06, 2024 &nbsp;•&nbsp; Shift 1</p></div>
+          <a href="attempt-test.html?paper=jm-2024-04-06-morning" class="paper-btn">Attempt</a>
+        </article>
+      </div></div>
+      <div class="paper-date-group" data-year="2024"><div class="shift-row">
+        <!-- April 05 Shift 2 (LOCKED) -->
+        <article class="paper-card">
+          <div class="paper-date"><span class="paper-year">2024</span><strong>April 05</strong></div>
+          <div class="paper-info"><h3>JEE Main 2024</h3><p>April 05, 2024 &nbsp;•&nbsp; Shift 2</p></div>
+          <a href="attempt-test.html?paper=jm-2024-04-05-evening" class="paper-btn">Attempt</a>
+        </article>
+        <!-- April 05 Shift 1 (LOCKED) -->
+        <article class="paper-card">
+          <div class="paper-date"><span class="paper-year">2024</span><strong>April 05</strong></div>
+          <div class="paper-info"><h3>JEE Main 2024</h3><p>April 05, 2024 &nbsp;•&nbsp; Shift 1</p></div>
+          <a href="attempt-test.html?paper=jm-2024-04-05-morning" class="paper-btn">Attempt</a>
+        </article>
+      </div></div>
+      <div class="paper-date-group" data-year="2024"><div class="shift-row">
+        <!-- April 04 Shift 2 (LOCKED) -->
+        <article class="paper-card">
+          <div class="paper-date"><span class="paper-year">2024</span><strong>April 04</strong></div>
+          <div class="paper-info"><h3>JEE Main 2024</h3><p>April 04, 2024 &nbsp;•&nbsp; Shift 2</p></div>
+          <a href="attempt-test.html?paper=jm-2024-04-04-evening" class="paper-btn">Attempt</a>
+        </article>
+        <!-- April 04 Shift 1 (LOCKED) -->
+        <article class="paper-card">
+          <div class="paper-date"><span class="paper-year">2024</span><strong>April 04</strong></div>
+          <div class="paper-info"><h3>JEE Main 2024</h3><p>April 04, 2024 &nbsp;•&nbsp; Shift 1</p></div>
+          <a href="attempt-test.html?paper=jm-2024-04-04-morning" class="paper-btn">Attempt</a>
+        </article>
+      </div></div>
+      <div class="paper-date-group" data-year="2024"><div class="shift-row">
+        <!-- February 01 Shift 2 (LOCKED) -->
+        <article class="paper-card">
+          <div class="paper-date"><span class="paper-year">2024</span><strong>February 01</strong></div>
+          <div class="paper-info"><h3>JEE Main 2024</h3><p>February 01, 2024 &nbsp;•&nbsp; Shift 2</p></div>
+          <a href="attempt-test.html?paper=jm-2024-02-01-evening" class="paper-btn">Attempt</a>
+        </article>
+        <!-- February 01 Shift 1 (LOCKED) -->
+        <article class="paper-card">
+          <div class="paper-date"><span class="paper-year">2024</span><strong>February 01</strong></div>
+          <div class="paper-info"><h3>JEE Main 2024</h3><p>February 01, 2024 &nbsp;•&nbsp; Shift 1</p></div>
+          <a href="attempt-test.html?paper=jm-2024-02-01-morning" class="paper-btn">Attempt</a>
+        </article>
+      </div></div>
+      <div class="paper-date-group" data-year="2024"><div class="shift-row">
+        <!-- January 31 Shift 2 (LOCKED) -->
+        <article class="paper-card">
+          <div class="paper-date"><span class="paper-year">2024</span><strong>January 31</strong></div>
+          <div class="paper-info"><h3>JEE Main 2024</h3><p>January 31, 2024 &nbsp;•&nbsp; Shift 2</p></div>
+          <a href="attempt-test.html?paper=jm-2024-01-31-evening" class="paper-btn">Attempt</a>
+        </article>
+        <!-- January 31 Shift 1 (LOCKED) -->
+        <article class="paper-card">
+          <div class="paper-date"><span class="paper-year">2024</span><strong>January 31</strong></div>
+          <div class="paper-info"><h3>JEE Main 2024</h3><p>January 31, 2024 &nbsp;•&nbsp; Shift 1</p></div>
+          <a href="attempt-test.html?paper=jm-2024-01-31-morning" class="paper-btn">Attempt</a>
+        </article>
+      </div></div>
+      <div class="paper-date-group" data-year="2024"><div class="shift-row">
+        <!-- January 30 Shift 2 (LOCKED) -->
+        <article class="paper-card">
+          <div class="paper-date"><span class="paper-year">2024</span><strong>January 30</strong></div>
+          <div class="paper-info"><h3>JEE Main 2024</h3><p>January 30, 2024 &nbsp;•&nbsp; Shift 2</p></div>
+          <a href="attempt-test.html?paper=jm-2024-01-30-evening" class="paper-btn">Attempt</a>
+        </article>
+        <!-- January 30 Shift 1 (LOCKED) -->
+        <article class="paper-card">
+          <div class="paper-date"><span class="paper-year">2024</span><strong>January 30</strong></div>
+          <div class="paper-info"><h3>JEE Main 2024</h3><p>January 30, 2024 &nbsp;•&nbsp; Shift 1</p></div>
+          <a href="attempt-test.html?paper=jm-2024-01-30-morning" class="paper-btn">Attempt</a>
+        </article>
+      </div></div>
+      <div class="paper-date-group" data-year="2024"><div class="shift-row">
+        <!-- January 29 Shift 2 (LOCKED) -->
+        <article class="paper-card">
+          <div class="paper-date"><span class="paper-year">2024</span><strong>January 29</strong></div>
+          <div class="paper-info"><h3>JEE Main 2024</h3><p>January 29, 2024 &nbsp;•&nbsp; Shift 2</p></div>
+          <a href="attempt-test.html?paper=jm-2024-01-29-evening" class="paper-btn">Attempt</a>
+        </article>
+        <!-- January 29 Shift 1 (LOCKED) -->
+        <article class="paper-card">
+          <div class="paper-date"><span class="paper-year">2024</span><strong>January 29</strong></div>
+          <div class="paper-info"><h3>JEE Main 2024</h3><p>January 29, 2024 &nbsp;•&nbsp; Shift 1</p></div>
+          <a href="attempt-test.html?paper=jm-2024-01-29-morning" class="paper-btn">Attempt</a>
+        </article>
+      </div></div>
+      <div class="paper-date-group" data-year="2024"><div class="shift-row">
+        <!-- January 27 Shift 2 (LOCKED) -->
+        <article class="paper-card">
+          <div class="paper-date"><span class="paper-year">2024</span><strong>January 27</strong></div>
+          <div class="paper-info"><h3>JEE Main 2024</h3><p>January 27, 2024 &nbsp;•&nbsp; Shift 2</p></div>
+          <a href="attempt-test.html?paper=jm-2024-01-27-evening" class="paper-btn">Attempt</a>
+        </article>
+        <!-- January 27 Shift 1 (LOCKED) -->
+        <article class="paper-card">
+          <div class="paper-date"><span class="paper-year">2024</span><strong>January 27</strong></div>
+          <div class="paper-info"><h3>JEE Main 2024</h3><p>January 27, 2024 &nbsp;•&nbsp; Shift 1</p></div>
+          <a href="attempt-test.html?paper=jm-2024-01-27-morning" class="paper-btn">Attempt</a>
+        </article>
+      </div></div>
+
+      <!-- ================= JEE MAIN 2023 ================= -->
+      <div class="paper-date-group" data-year="2023"><div class="shift-row">
+        <!-- April 15 Shift 2 (LOCKED) -->
+        <article class="paper-card">
+          <div class="paper-date"><span class="paper-year">2023</span><strong>April 15</strong></div>
+          <div class="paper-info"><h3>JEE Main 2023</h3><p>April 15, 2023 &nbsp;•&nbsp; Shift 2</p></div>
+          <a href="attempt-test.html?paper=jm-2023-04-15-evening" class="paper-btn">Attempt</a>
+        </article>
+        <!-- April 15 Shift 1 (LOCKED) -->
+        <article class="paper-card">
+          <div class="paper-date"><span class="paper-year">2023</span><strong>April 15</strong></div>
+          <div class="paper-info"><h3>JEE Main 2023</h3><p>April 15, 2023 &nbsp;•&nbsp; Shift 1</p></div>
+          <a href="attempt-test.html?paper=jm-2023-04-15-morning" class="paper-btn">Attempt</a>
+        </article>
+      </div></div>
+      <div class="paper-date-group" data-year="2023"><div class="shift-row">
+        <!-- April 13 Shift 2 (LOCKED) -->
+        <article class="paper-card">
+          <div class="paper-date"><span class="paper-year">2023</span><strong>April 13</strong></div>
+          <div class="paper-info"><h3>JEE Main 2023</h3><p>April 13, 2023 &nbsp;•&nbsp; Shift 2</p></div>
+          <a href="attempt-test.html?paper=jm-2023-04-13-evening" class="paper-btn">Attempt</a>
+        </article>
+        <!-- April 13 Shift 1 (LOCKED) -->
+        <article class="paper-card">
+          <div class="paper-date"><span class="paper-year">2023</span><strong>April 13</strong></div>
+          <div class="paper-info"><h3>JEE Main 2023</h3><p>April 13, 2023 &nbsp;•&nbsp; Shift 1</p></div>
+          <a href="attempt-test.html?paper=jm-2023-04-13-morning" class="paper-btn">Attempt</a>
+        </article>
+      </div></div>
+      <div class="paper-date-group" data-year="2023"><div class="shift-row">
+        <!-- April 12 Shift 2 (LOCKED) -->
+        <article class="paper-card">
+          <div class="paper-date"><span class="paper-year">2023</span><strong>April 12</strong></div>
+          <div class="paper-info"><h3>JEE Main 2023</h3><p>April 12, 2023 &nbsp;•&nbsp; Shift 2</p></div>
+          <a href="attempt-test.html?paper=jm-2023-04-12-evening" class="paper-btn">Attempt</a>
+        </article>
+        <!-- April 12 Shift 1 (LOCKED) -->
+        <article class="paper-card">
+          <div class="paper-date"><span class="paper-year">2023</span><strong>April 12</strong></div>
+          <div class="paper-info"><h3>JEE Main 2023</h3><p>April 12, 2023 &nbsp;•&nbsp; Shift 1</p></div>
+          <a href="attempt-test.html?paper=jm-2023-04-12-morning" class="paper-btn">Attempt</a>
+        </article>
+      </div></div>
+      <div class="paper-date-group" data-year="2023"><div class="shift-row">
+        <!-- April 11 Shift 2 (LOCKED) -->
+        <article class="paper-card">
+          <div class="paper-date"><span class="paper-year">2023</span><strong>April 11</strong></div>
+          <div class="paper-info"><h3>JEE Main 2023</h3><p>April 11, 2023 &nbsp;•&nbsp; Shift 2</p></div>
+          <a href="attempt-test.html?paper=jm-2023-04-11-evening" class="paper-btn">Attempt</a>
+        </article>
+        <!-- April 11 Shift 1 (LOCKED) -->
+        <article class="paper-card">
+          <div class="paper-date"><span class="paper-year">2023</span><strong>April 11</strong></div>
+          <div class="paper-info"><h3>JEE Main 2023</h3><p>April 11, 2023 &nbsp;•&nbsp; Shift 1</p></div>
+          <a href="attempt-test.html?paper=jm-2023-04-11-morning" class="paper-btn">Attempt</a>
+        </article>
+      </div></div>
+      <div class="paper-date-group" data-year="2023"><div class="shift-row">
+        <!-- April 10 Shift 2 (LOCKED) -->
+        <article class="paper-card">
+          <div class="paper-date"><span class="paper-year">2023</span><strong>April 10</strong></div>
+          <div class="paper-info"><h3>JEE Main 2023</h3><p>April 10, 2023 &nbsp;•&nbsp; Shift 2</p></div>
+          <a href="attempt-test.html?paper=jm-2023-04-10-evening" class="paper-btn">Attempt</a>
+        </article>
+        <!-- April 10 Shift 1 (LOCKED) -->
+        <article class="paper-card">
+          <div class="paper-date"><span class="paper-year">2023</span><strong>April 10</strong></div>
+          <div class="paper-info"><h3>JEE Main 2023</h3><p>April 10, 2023 &nbsp;•&nbsp; Shift 1</p></div>
+          <a href="attempt-test.html?paper=jm-2023-04-10-morning" class="paper-btn">Attempt</a>
+        </article>
+      </div></div>
+      <div class="paper-date-group" data-year="2023"><div class="shift-row">
+        <!-- April 08 Shift 2 (LOCKED) -->
+        <article class="paper-card">
+          <div class="paper-date"><span class="paper-year">2023</span><strong>April 08</strong></div>
+          <div class="paper-info"><h3>JEE Main 2023</h3><p>April 08, 2023 &nbsp;•&nbsp; Shift 2</p></div>
+          <a href="attempt-test.html?paper=jm-2023-04-08-evening" class="paper-btn">Attempt</a>
+        </article>
+        <!-- April 08 Shift 1 (LOCKED) -->
+        <article class="paper-card">
+          <div class="paper-date"><span class="paper-year">2023</span><strong>April 08</strong></div>
+          <div class="paper-info"><h3>JEE Main 2023</h3><p>April 08, 2023 &nbsp;•&nbsp; Shift 1</p></div>
+          <a href="attempt-test.html?paper=jm-2023-04-08-morning" class="paper-btn">Attempt</a>
+        </article>
+      </div></div>
+      <div class="paper-date-group" data-year="2023"><div class="shift-row">
+        <!-- April 06 Shift 2 (LOCKED) -->
+        <article class="paper-card">
+          <div class="paper-date"><span class="paper-year">2023</span><strong>April 06</strong></div>
+          <div class="paper-info"><h3>JEE Main 2023</h3><p>April 06, 2023 &nbsp;•&nbsp; Shift 2</p></div>
+          <a href="attempt-test.html?paper=jm-2023-04-06-evening" class="paper-btn">Attempt</a>
+        </article>
+        <!-- April 06 Shift 1 (LOCKED) -->
+        <article class="paper-card">
+          <div class="paper-date"><span class="paper-year">2023</span><strong>April 06</strong></div>
+          <div class="paper-info"><h3>JEE Main 2023</h3><p>April 06, 2023 &nbsp;•&nbsp; Shift 1</p></div>
+          <a href="attempt-test.html?paper=jm-2023-04-06-morning" class="paper-btn">Attempt</a>
+        </article>
+      </div></div>
+      <div class="paper-date-group" data-year="2023"><div class="shift-row">
+        <!-- February 01 Shift 2 (LOCKED) -->
+        <article class="paper-card">
+          <div class="paper-date"><span class="paper-year">2023</span><strong>February 01</strong></div>
+          <div class="paper-info"><h3>JEE Main 2023</h3><p>February 01, 2023 &nbsp;•&nbsp; Shift 2</p></div>
+          <a href="attempt-test.html?paper=jm-2023-02-01-evening" class="paper-btn">Attempt</a>
+        </article>
+        <!-- February 01 Shift 1 (LOCKED) -->
+        <article class="paper-card">
+          <div class="paper-date"><span class="paper-year">2023</span><strong>February 01</strong></div>
+          <div class="paper-info"><h3>JEE Main 2023</h3><p>February 01, 2023 &nbsp;•&nbsp; Shift 1</p></div>
+          <a href="attempt-test.html?paper=jm-2023-02-01-morning" class="paper-btn">Attempt</a>
+        </article>
+      </div></div>
+      <div class="paper-date-group" data-year="2023"><div class="shift-row">
+        <!-- January 31 Shift 2 (LOCKED) -->
+        <article class="paper-card">
+          <div class="paper-date"><span class="paper-year">2023</span><strong>January 31</strong></div>
+          <div class="paper-info"><h3>JEE Main 2023</h3><p>January 31, 2023 &nbsp;•&nbsp; Shift 2</p></div>
+          <a href="attempt-test.html?paper=jm-2023-01-31-evening" class="paper-btn">Attempt</a>
+        </article>
+        <!-- January 31 Shift 1 (LOCKED) -->
+        <article class="paper-card">
+          <div class="paper-date"><span class="paper-year">2023</span><strong>January 31</strong></div>
+          <div class="paper-info"><h3>JEE Main 2023</h3><p>January 31, 2023 &nbsp;•&nbsp; Shift 1</p></div>
+          <a href="attempt-test.html?paper=jm-2023-01-31-morning" class="paper-btn">Attempt</a>
+        </article>
+      </div></div>
+      <div class="paper-date-group" data-year="2023"><div class="shift-row">
+        <!-- January 30 Shift 2 (LOCKED) -->
+        <article class="paper-card">
+          <div class="paper-date"><span class="paper-year">2023</span><strong>January 30</strong></div>
+          <div class="paper-info"><h3>JEE Main 2023</h3><p>January 30, 2023 &nbsp;•&nbsp; Shift 2</p></div>
+          <a href="attempt-test.html?paper=jm-2023-01-30-evening" class="paper-btn">Attempt</a>
+        </article>
+        <!-- January 30 Shift 1 (LOCKED) -->
+        <article class="paper-card">
+          <div class="paper-date"><span class="paper-year">2023</span><strong>January 30</strong></div>
+          <div class="paper-info"><h3>JEE Main 2023</h3><p>January 30, 2023 &nbsp;•&nbsp; Shift 1</p></div>
+          <a href="attempt-test.html?paper=jm-2023-01-30-morning" class="paper-btn">Attempt</a>
+        </article>
+      </div></div>
+      <div class="paper-date-group" data-year="2023"><div class="shift-row">
+        <!-- January 29 Shift 2 (LOCKED) -->
+        <article class="paper-card">
+          <div class="paper-date"><span class="paper-year">2023</span><strong>January 29</strong></div>
+          <div class="paper-info"><h3>JEE Main 2023</h3><p>January 29, 2023 &nbsp;•&nbsp; Shift 2</p></div>
+          <a href="attempt-test.html?paper=jm-2023-01-29-evening" class="paper-btn">Attempt</a>
+        </article>
+        <!-- January 29 Shift 1 (LOCKED) -->
+        <article class="paper-card">
+          <div class="paper-date"><span class="paper-year">2023</span><strong>January 29</strong></div>
+          <div class="paper-info"><h3>JEE Main 2023</h3><p>January 29, 2023 &nbsp;•&nbsp; Shift 1</p></div>
+          <a href="attempt-test.html?paper=jm-2023-01-29-morning" class="paper-btn">Attempt</a>
+        </article>
+      </div></div>
+      <div class="paper-date-group" data-year="2023"><div class="shift-row">
+        <!-- January 25 Shift 2 (LOCKED) -->
+        <article class="paper-card">
+          <div class="paper-date"><span class="paper-year">2023</span><strong>January 25</strong></div>
+          <div class="paper-info"><h3>JEE Main 2023</h3><p>January 25, 2023 &nbsp;•&nbsp; Shift 2</p></div>
+          <a href="attempt-test.html?paper=jm-2023-01-25-evening" class="paper-btn">Attempt</a>
+        </article>
+        <!-- January 25 Shift 1 (LOCKED) -->
+        <article class="paper-card">
+          <div class="paper-date"><span class="paper-year">2023</span><strong>January 25</strong></div>
+          <div class="paper-info"><h3>JEE Main 2023</h3><p>January 25, 2023 &nbsp;•&nbsp; Shift 1</p></div>
+          <a href="attempt-test.html?paper=jm-2023-01-25-morning" class="paper-btn">Attempt</a>
+        </article>
+      </div></div>
+      <div class="paper-date-group" data-year="2023"><div class="shift-row">
+        <!-- January 24 Shift 2 (LOCKED) -->
+        <article class="paper-card">
+          <div class="paper-date"><span class="paper-year">2023</span><strong>January 24</strong></div>
+          <div class="paper-info"><h3>JEE Main 2023</h3><p>January 24, 2023 &nbsp;•&nbsp; Shift 2</p></div>
+          <a href="attempt-test.html?paper=jm-2023-01-24-evening" class="paper-btn">Attempt</a>
+        </article>
+        <!-- January 24 Shift 1 (LOCKED) -->
+        <article class="paper-card">
+          <div class="paper-date"><span class="paper-year">2023</span><strong>January 24</strong></div>
+          <div class="paper-info"><h3>JEE Main 2023</h3><p>January 24, 2023 &nbsp;•&nbsp; Shift 1</p></div>
+          <a href="attempt-test.html?paper=jm-2023-01-24-morning" class="paper-btn">Attempt</a>
+        </article>
+      </div></div>
+
+      <!-- ================= JEE MAIN 2022 ================= -->
+      <div class="paper-date-group" data-year="2022"><div class="shift-row">
+        <!-- July 29 Shift 2 (LOCKED) -->
+        <article class="paper-card">
+          <div class="paper-date"><span class="paper-year">2022</span><strong>July 29</strong></div>
+          <div class="paper-info"><h3>JEE Main 2022</h3><p>July 29, 2022 &nbsp;•&nbsp; Shift 2</p></div>
+          <a href="attempt-test.html?paper=jm-2022-07-29-evening" class="paper-btn">Attempt</a>
+        </article>
+        <!-- July 29 Shift 1 (LOCKED) -->
+        <article class="paper-card">
+          <div class="paper-date"><span class="paper-year">2022</span><strong>July 29</strong></div>
+          <div class="paper-info"><h3>JEE Main 2022</h3><p>July 29, 2022 &nbsp;•&nbsp; Shift 1</p></div>
+          <a href="attempt-test.html?paper=jm-2022-07-29-morning" class="paper-btn">Attempt</a>
+        </article>
+      </div></div>
+      <div class="paper-date-group" data-year="2022"><div class="shift-row">
+        <!-- July 28 Shift 2 (LOCKED) -->
+        <article class="paper-card">
+          <div class="paper-date"><span class="paper-year">2022</span><strong>July 28</strong></div>
+          <div class="paper-info"><h3>JEE Main 2022</h3><p>July 28, 2022 &nbsp;•&nbsp; Shift 2</p></div>
+          <a href="attempt-test.html?paper=jm-2022-07-28-evening" class="paper-btn">Attempt</a>
+        </article>
+        <!-- July 28 Shift 1 (LOCKED) -->
+        <article class="paper-card">
+          <div class="paper-date"><span class="paper-year">2022</span><strong>July 28</strong></div>
+          <div class="paper-info"><h3>JEE Main 2022</h3><p>July 28, 2022 &nbsp;•&nbsp; Shift 1</p></div>
+          <a href="attempt-test.html?paper=jm-2022-07-28-morning" class="paper-btn">Attempt</a>
+        </article>
+      </div></div>
+      <div class="paper-date-group" data-year="2022"><div class="shift-row">
+        <!-- July 27 Shift 2 (LOCKED) -->
+        <article class="paper-card">
+          <div class="paper-date"><span class="paper-year">2022</span><strong>July 27</strong></div>
+          <div class="paper-info"><h3>JEE Main 2022</h3><p>July 27, 2022 &nbsp;•&nbsp; Shift 2</p></div>
+          <a href="attempt-test.html?paper=jm-2022-07-27-evening" class="paper-btn">Attempt</a>
+        </article>
+        <!-- July 27 Shift 1 (LOCKED) -->
+        <article class="paper-card">
+          <div class="paper-date"><span class="paper-year">2022</span><strong>July 27</strong></div>
+          <div class="paper-info"><h3>JEE Main 2022</h3><p>July 27, 2022 &nbsp;•&nbsp; Shift 1</p></div>
+          <a href="attempt-test.html?paper=jm-2022-07-27-morning" class="paper-btn">Attempt</a>
+        </article>
+      </div></div>
+      <div class="paper-date-group" data-year="2022"><div class="shift-row">
+        <!-- July 26 Shift 2 (LOCKED) -->
+        <article class="paper-card">
+          <div class="paper-date"><span class="paper-year">2022</span><strong>July 26</strong></div>
+          <div class="paper-info"><h3>JEE Main 2022</h3><p>July 26, 2022 &nbsp;•&nbsp; Shift 2</p></div>
+          <a href="attempt-test.html?paper=jm-2022-07-26-evening" class="paper-btn">Attempt</a>
+        </article>
+        <!-- July 26 Shift 1 (LOCKED) -->
+        <article class="paper-card">
+          <div class="paper-date"><span class="paper-year">2022</span><strong>July 26</strong></div>
+          <div class="paper-info"><h3>JEE Main 2022</h3><p>July 26, 2022 &nbsp;•&nbsp; Shift 1</p></div>
+          <a href="attempt-test.html?paper=jm-2022-07-26-morning" class="paper-btn">Attempt</a>
+        </article>
+      </div></div>
+      <div class="paper-date-group" data-year="2022"><div class="shift-row">
+        <!-- July 25 Shift 2 (LOCKED) -->
+        <article class="paper-card">
+          <div class="paper-date"><span class="paper-year">2022</span><strong>July 25</strong></div>
+          <div class="paper-info"><h3>JEE Main 2022</h3><p>July 25, 2022 &nbsp;•&nbsp; Shift 2</p></div>
+          <a href="attempt-test.html?paper=jm-2022-07-25-evening" class="paper-btn">Attempt</a>
+        </article>
+        <!-- July 25 Shift 1 (LOCKED) -->
+        <article class="paper-card">
+          <div class="paper-date"><span class="paper-year">2022</span><strong>July 25</strong></div>
+          <div class="paper-info"><h3>JEE Main 2022</h3><p>July 25, 2022 &nbsp;•&nbsp; Shift 1</p></div>
+          <a href="attempt-test.html?paper=jm-2022-07-25-morning" class="paper-btn">Attempt</a>
+        </article>
+      </div></div>
+      <div class="paper-date-group" data-year="2022"><div class="shift-row">
+        <!-- June 29 Shift 2 (LOCKED) -->
+        <article class="paper-card">
+          <div class="paper-date"><span class="paper-year">2022</span><strong>June 29</strong></div>
+          <div class="paper-info"><h3>JEE Main 2022</h3><p>June 29, 2022 &nbsp;•&nbsp; Shift 2</p></div>
+          <a href="attempt-test.html?paper=jm-2022-06-29-evening" class="paper-btn">Attempt</a>
+        </article>
+        <!-- June 29 Shift 1 (LOCKED) -->
+        <article class="paper-card">
+          <div class="paper-date"><span class="paper-year">2022</span><strong>June 29</strong></div>
+          <div class="paper-info"><h3>JEE Main 2022</h3><p>June 29, 2022 &nbsp;•&nbsp; Shift 1</p></div>
+          <a href="attempt-test.html?paper=jm-2022-06-29-morning" class="paper-btn">Attempt</a>
+        </article>
+      </div></div>
+      <div class="paper-date-group" data-year="2022"><div class="shift-row">
+        <!-- June 28 Shift 2 (LOCKED) -->
+        <article class="paper-card">
+          <div class="paper-date"><span class="paper-year">2022</span><strong>June 28</strong></div>
+          <div class="paper-info"><h3>JEE Main 2022</h3><p>June 28, 2022 &nbsp;•&nbsp; Shift 2</p></div>
+          <a href="attempt-test.html?paper=jm-2022-06-28-evening" class="paper-btn">Attempt</a>
+        </article>
+        <!-- June 28 Shift 1 (LOCKED) -->
+        <article class="paper-card">
+          <div class="paper-date"><span class="paper-year">2022</span><strong>June 28</strong></div>
+          <div class="paper-info"><h3>JEE Main 2022</h3><p>June 28, 2022 &nbsp;•&nbsp; Shift 1</p></div>
+          <a href="attempt-test.html?paper=jm-2022-06-28-morning" class="paper-btn">Attempt</a>
+        </article>
+      </div></div>
+      <div class="paper-date-group" data-year="2022"><div class="shift-row">
+        <!-- June 27 Shift 2 (LOCKED) -->
+        <article class="paper-card">
+          <div class="paper-date"><span class="paper-year">2022</span><strong>June 27</strong></div>
+          <div class="paper-info"><h3>JEE Main 2022</h3><p>June 27, 2022 &nbsp;•&nbsp; Shift 2</p></div>
+          <a href="attempt-test.html?paper=jm-2022-06-27-evening" class="paper-btn">Attempt</a>
+        </article>
+        <!-- June 27 Shift 1 (LOCKED) -->
+        <article class="paper-card">
+          <div class="paper-date"><span class="paper-year">2022</span><strong>June 27</strong></div>
+          <div class="paper-info"><h3>JEE Main 2022</h3><p>June 27, 2022 &nbsp;•&nbsp; Shift 1</p></div>
+          <a href="attempt-test.html?paper=jm-2022-06-27-morning" class="paper-btn">Attempt</a>
+        </article>
+      </div></div>
+      <div class="paper-date-group" data-year="2022"><div class="shift-row">
+        <!-- June 26 Shift 2 (LOCKED) -->
+        <article class="paper-card">
+          <div class="paper-date"><span class="paper-year">2022</span><strong>June 26</strong></div>
+          <div class="paper-info"><h3>JEE Main 2022</h3><p>June 26, 2022 &nbsp;•&nbsp; Shift 2</p></div>
+          <a href="attempt-test.html?paper=jm-2022-06-26-evening" class="paper-btn">Attempt</a>
+        </article>
+        <!-- June 26 Shift 1 (LOCKED) -->
+        <article class="paper-card">
+          <div class="paper-date"><span class="paper-year">2022</span><strong>June 26</strong></div>
+          <div class="paper-info"><h3>JEE Main 2022</h3><p>June 26, 2022 &nbsp;•&nbsp; Shift 1</p></div>
+          <a href="attempt-test.html?paper=jm-2022-06-26-morning" class="paper-btn">Attempt</a>
+        </article>
+      </div></div>
+      <div class="paper-date-group" data-year="2022"><div class="shift-row">
+        <!-- June 25 Shift 2 (LOCKED) -->
+        <article class="paper-card">
+          <div class="paper-date"><span class="paper-year">2022</span><strong>June 25</strong></div>
+          <div class="paper-info"><h3>JEE Main 2022</h3><p>June 25, 2022 &nbsp;•&nbsp; Shift 2</p></div>
+          <a href="attempt-test.html?paper=jm-2022-06-25-evening" class="paper-btn">Attempt</a>
+        </article>
+        <!-- June 25 Shift 1 (LOCKED) -->
+        <article class="paper-card">
+          <div class="paper-date"><span class="paper-year">2022</span><strong>June 25</strong></div>
+          <div class="paper-info"><h3>JEE Main 2022</h3><p>June 25, 2022 &nbsp;•&nbsp; Shift 1</p></div>
+          <a href="attempt-test.html?paper=jm-2022-06-25-morning" class="paper-btn">Attempt</a>
+        </article>
+      </div></div>
+      <div class="paper-date-group" data-year="2022"><div class="shift-row">
+        <!-- June 24 Shift 2 (LOCKED) -->
+        <article class="paper-card">
+          <div class="paper-date"><span class="paper-year">2022</span><strong>June 24</strong></div>
+          <div class="paper-info"><h3>JEE Main 2022</h3><p>June 24, 2022 &nbsp;•&nbsp; Shift 2</p></div>
+          <a href="attempt-test.html?paper=jm-2022-06-24-evening" class="paper-btn">Attempt</a>
+        </article>
+        <!-- June 24 Shift 1 (LOCKED) -->
+        <article class="paper-card">
+          <div class="paper-date"><span class="paper-year">2022</span><strong>June 24</strong></div>
+          <div class="paper-info"><h3>JEE Main 2022</h3><p>June 24, 2022 &nbsp;•&nbsp; Shift 1</p></div>
+          <a href="attempt-test.html?paper=jm-2022-06-24-morning" class="paper-btn">Attempt</a>
+        </article>
+      </div></div>
+      <div class="paper-date-group" data-year="2022"><div class="shift-row">
+        <!-- June 23 Shift 2 (LOCKED) -->
+        <article class="paper-card">
+          <div class="paper-date"><span class="paper-year">2022</span><strong>June 23</strong></div>
+          <div class="paper-info"><h3>JEE Main 2022</h3><p>June 23, 2022 &nbsp;•&nbsp; Shift 2</p></div>
+          <a href="attempt-test.html?paper=jm-2022-06-23-evening" class="paper-btn">Attempt</a>
+        </article>
+        <!-- June 23 Shift 1 (LOCKED) -->
+        <article class="paper-card">
+          <div class="paper-date"><span class="paper-year">2022</span><strong>June 23</strong></div>
+          <div class="paper-info"><h3>JEE Main 2022</h3><p>June 23, 2022 &nbsp;•&nbsp; Shift 1</p></div>
+          <a href="attempt-test.html?paper=jm-2022-06-23-morning" class="paper-btn">Attempt</a>
+        </article>
+      </div></div>
+
+      <!-- ================= JEE MAIN 2021 ================= -->
+      <div class="paper-date-group" data-year="2021"><div class="shift-row">
+        <!-- September 02 Shift 2 (LOCKED) -->
+        <article class="paper-card">
+          <div class="paper-date"><span class="paper-year">2021</span><strong>September 02</strong></div>
+          <div class="paper-info"><h3>JEE Main 2021</h3><p>September 02, 2021 &nbsp;•&nbsp; Shift 2</p></div>
+          <a href="attempt-test.html?paper=jm-2021-09-02-evening" class="paper-btn">Attempt</a>
+        </article>
+        <!-- September 02 Shift 1 (LOCKED) -->
+        <article class="paper-card">
+          <div class="paper-date"><span class="paper-year">2021</span><strong>September 02</strong></div>
+          <div class="paper-info"><h3>JEE Main 2021</h3><p>September 02, 2021 &nbsp;•&nbsp; Shift 1</p></div>
+          <a href="attempt-test.html?paper=jm-2021-09-02-morning" class="paper-btn">Attempt</a>
+        </article>
+      </div></div>
+      <div class="paper-date-group" data-year="2021"><div class="shift-row">
+        <!-- September 01 Shift 2 (LOCKED) -->
+        <article class="paper-card">
+          <div class="paper-date"><span class="paper-year">2021</span><strong>September 01</strong></div>
+          <div class="paper-info"><h3>JEE Main 2021</h3><p>September 01, 2021 &nbsp;•&nbsp; Shift 2</p></div>
+          <a href="attempt-test.html?paper=jm-2021-09-01-evening" class="paper-btn">Attempt</a>
+        </article>
+        <!-- September 01 Shift 1 (LOCKED) -->
+        <article class="paper-card">
+          <div class="paper-date"><span class="paper-year">2021</span><strong>September 01</strong></div>
+          <div class="paper-info"><h3>JEE Main 2021</h3><p>September 01, 2021 &nbsp;•&nbsp; Shift 1</p></div>
+          <a href="attempt-test.html?paper=jm-2021-09-01-morning" class="paper-btn">Attempt</a>
+        </article>
+      </div></div>
+      <div class="paper-date-group" data-year="2021"><div class="shift-row">
+        <!-- August 31 Shift 2 (LOCKED) -->
+        <article class="paper-card">
+          <div class="paper-date"><span class="paper-year">2021</span><strong>August 31</strong></div>
+          <div class="paper-info"><h3>JEE Main 2021</h3><p>August 31, 2021 &nbsp;•&nbsp; Shift 2</p></div>
+          <a href="attempt-test.html?paper=jm-2021-08-31-evening" class="paper-btn">Attempt</a>
+        </article>
+        <!-- August 31 Shift 1 (LOCKED) -->
+        <article class="paper-card">
+          <div class="paper-date"><span class="paper-year">2021</span><strong>August 31</strong></div>
+          <div class="paper-info"><h3>JEE Main 2021</h3><p>August 31, 2021 &nbsp;•&nbsp; Shift 1</p></div>
+          <a href="attempt-test.html?paper=jm-2021-08-31-morning" class="paper-btn">Attempt</a>
+        </article>
+      </div></div>
+      <div class="paper-date-group" data-year="2021"><div class="shift-row">
+        <!-- August 27 Shift 2 (LOCKED) -->
+        <article class="paper-card">
+          <div class="paper-date"><span class="paper-year">2021</span><strong>August 27</strong></div>
+          <div class="paper-info"><h3>JEE Main 2021</h3><p>August 27, 2021 &nbsp;•&nbsp; Shift 2</p></div>
+          <a href="attempt-test.html?paper=jm-2021-08-27-evening" class="paper-btn">Attempt</a>
+        </article>
+        <!-- August 27 Shift 1 (LOCKED) -->
+        <article class="paper-card">
+          <div class="paper-date"><span class="paper-year">2021</span><strong>August 27</strong></div>
+          <div class="paper-info"><h3>JEE Main 2021</h3><p>August 27, 2021 &nbsp;•&nbsp; Shift 1</p></div>
+          <a href="attempt-test.html?paper=jm-2021-08-27-morning" class="paper-btn">Attempt</a>
+        </article>
+      </div></div>
+      <div class="paper-date-group" data-year="2021"><div class="shift-row">
+        <!-- August 26 Shift 2 (LOCKED) -->
+        <article class="paper-card">
+          <div class="paper-date"><span class="paper-year">2021</span><strong>August 26</strong></div>
+          <div class="paper-info"><h3>JEE Main 2021</h3><p>August 26, 2021 &nbsp;•&nbsp; Shift 2</p></div>
+          <a href="attempt-test.html?paper=jm-2021-08-26-evening" class="paper-btn">Attempt</a>
+        </article>
+        <!-- August 26 Shift 1 (LOCKED) -->
+        <article class="paper-card">
+          <div class="paper-date"><span class="paper-year">2021</span><strong>August 26</strong></div>
+          <div class="paper-info"><h3>JEE Main 2021</h3><p>August 26, 2021 &nbsp;•&nbsp; Shift 1</p></div>
+          <a href="attempt-test.html?paper=jm-2021-08-26-morning" class="paper-btn">Attempt</a>
+        </article>
+      </div></div>
+      <div class="paper-date-group" data-year="2021"><div class="shift-row">
+        <!-- July 27 Shift 2 (LOCKED) -->
+        <article class="paper-card">
+          <div class="paper-date"><span class="paper-year">2021</span><strong>July 27</strong></div>
+          <div class="paper-info"><h3>JEE Main 2021</h3><p>July 27, 2021 &nbsp;•&nbsp; Shift 2</p></div>
+          <a href="attempt-test.html?paper=jm-2021-07-27-evening" class="paper-btn">Attempt</a>
+        </article>
+        <!-- July 27 Shift 1 (LOCKED) -->
+        <article class="paper-card">
+          <div class="paper-date"><span class="paper-year">2021</span><strong>July 27</strong></div>
+          <div class="paper-info"><h3>JEE Main 2021</h3><p>July 27, 2021 &nbsp;•&nbsp; Shift 1</p></div>
+          <a href="attempt-test.html?paper=jm-2021-07-27-morning" class="paper-btn">Attempt</a>
+        </article>
+      </div></div>
+      <div class="paper-date-group" data-year="2021"><div class="shift-row">
+        <!-- July 25 Shift 2 (LOCKED) -->
+        <article class="paper-card">
+          <div class="paper-date"><span class="paper-year">2021</span><strong>July 25</strong></div>
+          <div class="paper-info"><h3>JEE Main 2021</h3><p>July 25, 2021 &nbsp;•&nbsp; Shift 2</p></div>
+          <a href="attempt-test.html?paper=jm-2021-07-25-evening" class="paper-btn">Attempt</a>
+        </article>
+        <!-- July 25 Shift 1 (LOCKED) -->
+        <article class="paper-card">
+          <div class="paper-date"><span class="paper-year">2021</span><strong>July 25</strong></div>
+          <div class="paper-info"><h3>JEE Main 2021</h3><p>July 25, 2021 &nbsp;•&nbsp; Shift 1</p></div>
+          <a href="attempt-test.html?paper=jm-2021-07-25-morning" class="paper-btn">Attempt</a>
+        </article>
+      </div></div>
+      <div class="paper-date-group" data-year="2021"><div class="shift-row">
+        <!-- July 22 Shift 2 (LOCKED) -->
+        <article class="paper-card">
+          <div class="paper-date"><span class="paper-year">2021</span><strong>July 22</strong></div>
+          <div class="paper-info"><h3>JEE Main 2021</h3><p>July 22, 2021 &nbsp;•&nbsp; Shift 2</p></div>
+          <a href="attempt-test.html?paper=jm-2021-07-22-evening" class="paper-btn">Attempt</a>
+        </article>
+        <!-- July 22 Shift 1 (LOCKED) -->
+        <article class="paper-card">
+          <div class="paper-date"><span class="paper-year">2021</span><strong>July 22</strong></div>
+          <div class="paper-info"><h3>JEE Main 2021</h3><p>July 22, 2021 &nbsp;•&nbsp; Shift 1</p></div>
+          <a href="attempt-test.html?paper=jm-2021-07-22-morning" class="paper-btn">Attempt</a>
+        </article>
+      </div></div>
+      <div class="paper-date-group" data-year="2021"><div class="shift-row">
+        <!-- July 20 Shift 2 (LOCKED) -->
+        <article class="paper-card">
+          <div class="paper-date"><span class="paper-year">2021</span><strong>July 20</strong></div>
+          <div class="paper-info"><h3>JEE Main 2021</h3><p>July 20, 2021 &nbsp;•&nbsp; Shift 2</p></div>
+          <a href="attempt-test.html?paper=jm-2021-07-20-evening" class="paper-btn">Attempt</a>
+        </article>
+        <!-- July 20 Shift 1 (LOCKED) -->
+        <article class="paper-card">
+          <div class="paper-date"><span class="paper-year">2021</span><strong>July 20</strong></div>
+          <div class="paper-info"><h3>JEE Main 2021</h3><p>July 20, 2021 &nbsp;•&nbsp; Shift 1</p></div>
+          <a href="attempt-test.html?paper=jm-2021-07-20-morning" class="paper-btn">Attempt</a>
+        </article>
+      </div></div>
+      <div class="paper-date-group" data-year="2021"><div class="shift-row">
+        <!-- March 18 Shift 2 (LOCKED) -->
+        <article class="paper-card">
+          <div class="paper-date"><span class="paper-year">2021</span><strong>March 18</strong></div>
+          <div class="paper-info"><h3>JEE Main 2021</h3><p>March 18, 2021 &nbsp;•&nbsp; Shift 2</p></div>
+          <a href="attempt-test.html?paper=jm-2021-03-18-evening" class="paper-btn">Attempt</a>
+        </article>
+        <!-- March 18 Shift 1 (LOCKED) -->
+        <article class="paper-card">
+          <div class="paper-date"><span class="paper-year">2021</span><strong>March 18</strong></div>
+          <div class="paper-info"><h3>JEE Main 2021</h3><p>March 18, 2021 &nbsp;•&nbsp; Shift 1</p></div>
+          <a href="attempt-test.html?paper=jm-2021-03-18-morning" class="paper-btn">Attempt</a>
+        </article>
+      </div></div>
+      <div class="paper-date-group" data-year="2021"><div class="shift-row">
+        <!-- March 17 Shift 2 (LOCKED) -->
+        <article class="paper-card">
+          <div class="paper-date"><span class="paper-year">2021</span><strong>March 17</strong></div>
+          <div class="paper-info"><h3>JEE Main 2021</h3><p>March 17, 2021 &nbsp;•&nbsp; Shift 2</p></div>
+          <a href="attempt-test.html?paper=jm-2021-03-17-evening" class="paper-btn">Attempt</a>
+        </article>
+        <!-- March 17 Shift 1 (LOCKED) -->
+        <article class="paper-card">
+          <div class="paper-date"><span class="paper-year">2021</span><strong>March 17</strong></div>
+          <div class="paper-info"><h3>JEE Main 2021</h3><p>March 17, 2021 &nbsp;•&nbsp; Shift 1</p></div>
+          <a href="attempt-test.html?paper=jm-2021-03-17-morning" class="paper-btn">Attempt</a>
+        </article>
+      </div></div>
+      <div class="paper-date-group" data-year="2021"><div class="shift-row">
+        <!-- March 16 Shift 2 (LOCKED) -->
+        <article class="paper-card">
+          <div class="paper-date"><span class="paper-year">2021</span><strong>March 16</strong></div>
+          <div class="paper-info"><h3>JEE Main 2021</h3><p>March 16, 2021 &nbsp;•&nbsp; Shift 2</p></div>
+          <a href="attempt-test.html?paper=jm-2021-03-16-evening" class="paper-btn">Attempt</a>
+        </article>
+        <!-- March 16 Shift 1 (LOCKED) -->
+        <article class="paper-card">
+          <div class="paper-date"><span class="paper-year">2021</span><strong>March 16</strong></div>
+          <div class="paper-info"><h3>JEE Main 2021</h3><p>March 16, 2021 &nbsp;•&nbsp; Shift 1</p></div>
+          <a href="attempt-test.html?paper=jm-2021-03-16-morning" class="paper-btn">Attempt</a>
+        </article>
+      </div></div>
+      <div class="paper-date-group" data-year="2021"><div class="shift-row">
+        <!-- February 26 Shift 2 (LOCKED) -->
+        <article class="paper-card">
+          <div class="paper-date"><span class="paper-year">2021</span><strong>February 26</strong></div>
+          <div class="paper-info"><h3>JEE Main 2021</h3><p>February 26, 2021 &nbsp;•&nbsp; Shift 2</p></div>
+          <a href="attempt-test.html?paper=jm-2021-02-26-evening" class="paper-btn">Attempt</a>
+        </article>
+        <!-- February 26 Shift 1 (LOCKED) -->
+        <article class="paper-card">
+          <div class="paper-date"><span class="paper-year">2021</span><strong>February 26</strong></div>
+          <div class="paper-info"><h3>JEE Main 2021</h3><p>February 26, 2021 &nbsp;•&nbsp; Shift 1</p></div>
+          <a href="attempt-test.html?paper=jm-2021-02-26-morning" class="paper-btn">Attempt</a>
+        </article>
+      </div></div>
+      <div class="paper-date-group" data-year="2021"><div class="shift-row">
+        <!-- February 25 Shift 2 (LOCKED) -->
+        <article class="paper-card">
+          <div class="paper-date"><span class="paper-year">2021</span><strong>February 25</strong></div>
+          <div class="paper-info"><h3>JEE Main 2021</h3><p>February 25, 2021 &nbsp;•&nbsp; Shift 2</p></div>
+          <a href="attempt-test.html?paper=jm-2021-02-25-evening" class="paper-btn">Attempt</a>
+        </article>
+        <!-- February 25 Shift 1 (LOCKED) -->
+        <article class="paper-card">
+          <div class="paper-date"><span class="paper-year">2021</span><strong>February 25</strong></div>
+          <div class="paper-info"><h3>JEE Main 2021</h3><p>February 25, 2021 &nbsp;•&nbsp; Shift 1</p></div>
+          <a href="attempt-test.html?paper=jm-2021-02-25-morning" class="paper-btn">Attempt</a>
+        </article>
+      </div></div>
+      <div class="paper-date-group" data-year="2021"><div class="shift-row">
+        <!-- February 24 Shift 2 (LOCKED) -->
+        <article class="paper-card">
+          <div class="paper-date"><span class="paper-year">2021</span><strong>February 24</strong></div>
+          <div class="paper-info"><h3>JEE Main 2021</h3><p>February 24, 2021 &nbsp;•&nbsp; Shift 2</p></div>
+          <a href="attempt-test.html?paper=jm-2021-02-24-evening" class="paper-btn">Attempt</a>
+        </article>
+        <!-- February 24 Shift 1 (LOCKED) -->
+        <article class="paper-card">
+          <div class="paper-date"><span class="paper-year">2021</span><strong>February 24</strong></div>
+          <div class="paper-info"><h3>JEE Main 2021</h3><p>February 24, 2021 &nbsp;•&nbsp; Shift 1</p></div>
+          <a href="attempt-test.html?paper=jm-2021-02-24-morning" class="paper-btn">Attempt</a>
+        </article>
+      </div></div>
+      <div class="paper-date-group" data-year="2021"><div class="shift-row">
+        <!-- February 23 Shift 2 (LOCKED) -->
+        <article class="paper-card">
+          <div class="paper-date"><span class="paper-year">2021</span><strong>February 23</strong></div>
+          <div class="paper-info"><h3>JEE Main 2021</h3><p>February 23, 2021 &nbsp;•&nbsp; Shift 2</p></div>
+          <a href="attempt-test.html?paper=jm-2021-02-23-evening" class="paper-btn">Attempt</a>
+        </article>
+        <!-- February 23 Shift 1 (LOCKED) -->
+        <article class="paper-card">
+          <div class="paper-date"><span class="paper-year">2021</span><strong>February 23</strong></div>
+          <div class="paper-info"><h3>JEE Main 2021</h3><p>February 23, 2021 &nbsp;•&nbsp; Shift 1</p></div>
+          <a href="attempt-test.html?paper=jm-2021-02-23-morning" class="paper-btn">Attempt</a>
+        </article>
+      </div></div>
+
+      <!-- ================= JEE MAIN 2020 ================= -->
+      <div class="paper-date-group" data-year="2020"><div class="shift-row">
+        <!-- September 06 Shift 2 (LOCKED) -->
+        <article class="paper-card">
+          <div class="paper-date"><span class="paper-year">2020</span><strong>September 06</strong></div>
+          <div class="paper-info"><h3>JEE Main 2020</h3><p>September 06, 2020 &nbsp;•&nbsp; Shift 2</p></div>
+          <a href="attempt-test.html?paper=jm-2020-09-06-evening" class="paper-btn">Attempt</a>
+        </article>
+        <!-- September 06 Shift 1 (LOCKED) -->
+        <article class="paper-card">
+          <div class="paper-date"><span class="paper-year">2020</span><strong>September 06</strong></div>
+          <div class="paper-info"><h3>JEE Main 2020</h3><p>September 06, 2020 &nbsp;•&nbsp; Shift 1</p></div>
+          <a href="attempt-test.html?paper=jm-2020-09-06-morning" class="paper-btn">Attempt</a>
+        </article>
+      </div></div>
+      <div class="paper-date-group" data-year="2020"><div class="shift-row">
+        <!-- September 05 Shift 2 (LOCKED) -->
+        <article class="paper-card">
+          <div class="paper-date"><span class="paper-year">2020</span><strong>September 05</strong></div>
+          <div class="paper-info"><h3>JEE Main 2020</h3><p>September 05, 2020 &nbsp;•&nbsp; Shift 2</p></div>
+          <a href="attempt-test.html?paper=jm-2020-09-05-evening" class="paper-btn">Attempt</a>
+        </article>
+        <!-- September 05 Shift 1 (LOCKED) -->
+        <article class="paper-card">
+          <div class="paper-date"><span class="paper-year">2020</span><strong>September 05</strong></div>
+          <div class="paper-info"><h3>JEE Main 2020</h3><p>September 05, 2020 &nbsp;•&nbsp; Shift 1</p></div>
+          <a href="attempt-test.html?paper=jm-2020-09-05-morning" class="paper-btn">Attempt</a>
+        </article>
+      </div></div>
+      <div class="paper-date-group" data-year="2020"><div class="shift-row">
+        <!-- September 04 Shift 2 (LOCKED) -->
+        <article class="paper-card">
+          <div class="paper-date"><span class="paper-year">2020</span><strong>September 04</strong></div>
+          <div class="paper-info"><h3>JEE Main 2020</h3><p>September 04, 2020 &nbsp;•&nbsp; Shift 2</p></div>
+          <a href="attempt-test.html?paper=jm-2020-09-04-evening" class="paper-btn">Attempt</a>
+        </article>
+        <!-- September 04 Shift 1 (LOCKED) -->
+        <article class="paper-card">
+          <div class="paper-date"><span class="paper-year">2020</span><strong>September 04</strong></div>
+          <div class="paper-info"><h3>JEE Main 2020</h3><p>September 04, 2020 &nbsp;•&nbsp; Shift 1</p></div>
+          <a href="attempt-test.html?paper=jm-2020-09-04-morning" class="paper-btn">Attempt</a>
+        </article>
+      </div></div>
+      <div class="paper-date-group" data-year="2020"><div class="shift-row">
+        <!-- September 03 Shift 2 (LOCKED) -->
+        <article class="paper-card">
+          <div class="paper-date"><span class="paper-year">2020</span><strong>September 03</strong></div>
+          <div class="paper-info"><h3>JEE Main 2020</h3><p>September 03, 2020 &nbsp;•&nbsp; Shift 2</p></div>
+          <a href="attempt-test.html?paper=jm-2020-09-03-evening" class="paper-btn">Attempt</a>
+        </article>
+        <!-- September 03 Shift 1 (LOCKED) -->
+        <article class="paper-card">
+          <div class="paper-date"><span class="paper-year">2020</span><strong>September 03</strong></div>
+          <div class="paper-info"><h3>JEE Main 2020</h3><p>September 03, 2020 &nbsp;•&nbsp; Shift 1</p></div>
+          <a href="attempt-test.html?paper=jm-2020-09-03-morning" class="paper-btn">Attempt</a>
+        </article>
+      </div></div>
+      <div class="paper-date-group" data-year="2020"><div class="shift-row">
+        <!-- September 02 Shift 2 (LOCKED) -->
+        <article class="paper-card">
+          <div class="paper-date"><span class="paper-year">2020</span><strong>September 02</strong></div>
+          <div class="paper-info"><h3>JEE Main 2020</h3><p>September 02, 2020 &nbsp;•&nbsp; Shift 2</p></div>
+          <a href="attempt-test.html?paper=jm-2020-09-02-evening" class="paper-btn">Attempt</a>
+        </article>
+        <!-- September 02 Shift 1 (LOCKED) -->
+        <article class="paper-card">
+          <div class="paper-date"><span class="paper-year">2020</span><strong>September 02</strong></div>
+          <div class="paper-info"><h3>JEE Main 2020</h3><p>September 02, 2020 &nbsp;•&nbsp; Shift 1</p></div>
+          <a href="attempt-test.html?paper=jm-2020-09-02-morning" class="paper-btn">Attempt</a>
+        </article>
+      </div></div>
+      <div class="paper-date-group" data-year="2020"><div class="shift-row">
+        <!-- January 09 Shift 2 (LOCKED) -->
+        <article class="paper-card">
+          <div class="paper-date"><span class="paper-year">2020</span><strong>January 09</strong></div>
+          <div class="paper-info"><h3>JEE Main 2020</h3><p>January 09, 2020 &nbsp;•&nbsp; Shift 2</p></div>
+          <a href="attempt-test.html?paper=jm-2020-01-09-evening" class="paper-btn">Attempt</a>
+        </article>
+        <!-- January 09 Shift 1 (LOCKED) -->
+        <article class="paper-card">
+          <div class="paper-date"><span class="paper-year">2020</span><strong>January 09</strong></div>
+          <div class="paper-info"><h3>JEE Main 2020</h3><p>January 09, 2020 &nbsp;•&nbsp; Shift 1</p></div>
+          <a href="attempt-test.html?paper=jm-2020-01-09-morning" class="paper-btn">Attempt</a>
+        </article>
+      </div></div>
+      <div class="paper-date-group" data-year="2020"><div class="shift-row">
+        <!-- January 08 Shift 2 (LOCKED) -->
+        <article class="paper-card">
+          <div class="paper-date"><span class="paper-year">2020</span><strong>January 08</strong></div>
+          <div class="paper-info"><h3>JEE Main 2020</h3><p>January 08, 2020 &nbsp;•&nbsp; Shift 2</p></div>
+          <a href="attempt-test.html?paper=jm-2020-01-08-evening" class="paper-btn">Attempt</a>
+        </article>
+        <!-- January 08 Shift 1 (LOCKED) -->
+        <article class="paper-card">
+          <div class="paper-date"><span class="paper-year">2020</span><strong>January 08</strong></div>
+          <div class="paper-info"><h3>JEE Main 2020</h3><p>January 08, 2020 &nbsp;•&nbsp; Shift 1</p></div>
+          <a href="attempt-test.html?paper=jm-2020-01-08-morning" class="paper-btn">Attempt</a>
+        </article>
+      </div></div>
+      <div class="paper-date-group" data-year="2020"><div class="shift-row">
+        <!-- January 07 Shift 2 (LOCKED) -->
+        <article class="paper-card">
+          <div class="paper-date"><span class="paper-year">2020</span><strong>January 07</strong></div>
+          <div class="paper-info"><h3>JEE Main 2020</h3><p>January 07, 2020 &nbsp;•&nbsp; Shift 2</p></div>
+          <a href="attempt-test.html?paper=jm-2020-01-07-evening" class="paper-btn">Attempt</a>
+        </article>
+        <!-- January 07 Shift 1 (LOCKED) -->
+        <article class="paper-card">
+          <div class="paper-date"><span class="paper-year">2020</span><strong>January 07</strong></div>
+          <div class="paper-info"><h3>JEE Main 2020</h3><p>January 07, 2020 &nbsp;•&nbsp; Shift 1</p></div>
+          <a href="attempt-test.html?paper=jm-2020-01-07-morning" class="paper-btn">Attempt</a>
+        </article>
+      </div></div>
+
+      <!-- ================= JEE MAIN 2019 ================= -->
+      <div class="paper-date-group" data-year="2019"><div class="shift-row">
+        <!-- April 12 Shift 2 (LOCKED) -->
+        <article class="paper-card">
+          <div class="paper-date"><span class="paper-year">2019</span><strong>April 12</strong></div>
+          <div class="paper-info"><h3>JEE Main 2019</h3><p>April 12, 2019 &nbsp;•&nbsp; Shift 2</p></div>
+          <a href="attempt-test.html?paper=jm-2019-04-12-evening" class="paper-btn">Attempt</a>
+        </article>
+        <!-- April 12 Shift 1 (LOCKED) -->
+        <article class="paper-card">
+          <div class="paper-date"><span class="paper-year">2019</span><strong>April 12</strong></div>
+          <div class="paper-info"><h3>JEE Main 2019</h3><p>April 12, 2019 &nbsp;•&nbsp; Shift 1</p></div>
+          <a href="attempt-test.html?paper=jm-2019-04-12-morning" class="paper-btn">Attempt</a>
+        </article>
+      </div></div>
+      <div class="paper-date-group" data-year="2019"><div class="shift-row">
+        <!-- April 10 Shift 2 (LOCKED) -->
+        <article class="paper-card">
+          <div class="paper-date"><span class="paper-year">2019</span><strong>April 10</strong></div>
+          <div class="paper-info"><h3>JEE Main 2019</h3><p>April 10, 2019 &nbsp;•&nbsp; Shift 2</p></div>
+          <a href="attempt-test.html?paper=jm-2019-04-10-evening" class="paper-btn">Attempt</a>
+        </article>
+        <!-- April 10 Shift 1 (LOCKED) -->
+        <article class="paper-card">
+          <div class="paper-date"><span class="paper-year">2019</span><strong>April 10</strong></div>
+          <div class="paper-info"><h3>JEE Main 2019</h3><p>April 10, 2019 &nbsp;•&nbsp; Shift 1</p></div>
+          <a href="attempt-test.html?paper=jm-2019-04-10-morning" class="paper-btn">Attempt</a>
+        </article>
+      </div></div>
+      <div class="paper-date-group" data-year="2019"><div class="shift-row">
+        <!-- April 09 Shift 2 (LOCKED) -->
+        <article class="paper-card">
+          <div class="paper-date"><span class="paper-year">2019</span><strong>April 09</strong></div>
+          <div class="paper-info"><h3>JEE Main 2019</h3><p>April 09, 2019 &nbsp;•&nbsp; Shift 2</p></div>
+          <a href="attempt-test.html?paper=jm-2019-04-09-evening" class="paper-btn">Attempt</a>
+        </article>
+        <!-- April 09 Shift 1 (LOCKED) -->
+        <article class="paper-card">
+          <div class="paper-date"><span class="paper-year">2019</span><strong>April 09</strong></div>
+          <div class="paper-info"><h3>JEE Main 2019</h3><p>April 09, 2019 &nbsp;•&nbsp; Shift 1</p></div>
+          <a href="attempt-test.html?paper=jm-2019-04-09-morning" class="paper-btn">Attempt</a>
+        </article>
+      </div></div>
+      <div class="paper-date-group" data-year="2019"><div class="shift-row">
+        <!-- April 08 Shift 2 (LOCKED) -->
+        <article class="paper-card">
+          <div class="paper-date"><span class="paper-year">2019</span><strong>April 08</strong></div>
+          <div class="paper-info"><h3>JEE Main 2019</h3><p>April 08, 2019 &nbsp;•&nbsp; Shift 2</p></div>
+          <a href="attempt-test.html?paper=jm-2019-04-08-evening" class="paper-btn">Attempt</a>
+        </article>
+        <!-- April 08 Shift 1 (LOCKED) -->
+        <article class="paper-card">
+          <div class="paper-date"><span class="paper-year">2019</span><strong>April 08</strong></div>
+          <div class="paper-info"><h3>JEE Main 2019</h3><p>April 08, 2019 &nbsp;•&nbsp; Shift 1</p></div>
+          <a href="attempt-test.html?paper=jm-2019-04-08-morning" class="paper-btn">Attempt</a>
+        </article>
+      </div></div>
+      <div class="paper-date-group" data-year="2019"><div class="shift-row">
+        <!-- January 12 Shift 2 (LOCKED) -->
+        <article class="paper-card">
+          <div class="paper-date"><span class="paper-year">2019</span><strong>January 12</strong></div>
+          <div class="paper-info"><h3>JEE Main 2019</h3><p>January 12, 2019 &nbsp;•&nbsp; Shift 2</p></div>
+          <a href="attempt-test.html?paper=jm-2019-01-12-evening" class="paper-btn">Attempt</a>
+        </article>
+        <!-- January 12 Shift 1 (LOCKED) -->
+        <article class="paper-card">
+          <div class="paper-date"><span class="paper-year">2019</span><strong>January 12</strong></div>
+          <div class="paper-info"><h3>JEE Main 2019</h3><p>January 12, 2019 &nbsp;•&nbsp; Shift 1</p></div>
+          <a href="attempt-test.html?paper=jm-2019-01-12-morning" class="paper-btn">Attempt</a>
+        </article>
+      </div></div>
+      <div class="paper-date-group" data-year="2019"><div class="shift-row">
+        <!-- January 11 Shift 2 (LOCKED) -->
+        <article class="paper-card">
+          <div class="paper-date"><span class="paper-year">2019</span><strong>January 11</strong></div>
+          <div class="paper-info"><h3>JEE Main 2019</h3><p>January 11, 2019 &nbsp;•&nbsp; Shift 2</p></div>
+          <a href="attempt-test.html?paper=jm-2019-01-11-evening" class="paper-btn">Attempt</a>
+        </article>
+        <!-- January 11 Shift 1 (LOCKED) -->
+        <article class="paper-card">
+          <div class="paper-date"><span class="paper-year">2019</span><strong>January 11</strong></div>
+          <div class="paper-info"><h3>JEE Main 2019</h3><p>January 11, 2019 &nbsp;•&nbsp; Shift 1</p></div>
+          <a href="attempt-test.html?paper=jm-2019-01-11-morning" class="paper-btn">Attempt</a>
+        </article>
+      </div></div>
+      <div class="paper-date-group" data-year="2019"><div class="shift-row">
+        <!-- January 10 Shift 2 (LOCKED) -->
+        <article class="paper-card">
+          <div class="paper-date"><span class="paper-year">2019</span><strong>January 10</strong></div>
+          <div class="paper-info"><h3>JEE Main 2019</h3><p>January 10, 2019 &nbsp;•&nbsp; Shift 2</p></div>
+          <a href="attempt-test.html?paper=jm-2019-01-10-evening" class="paper-btn">Attempt</a>
+        </article>
+        <!-- January 10 Shift 1 (LOCKED) -->
+        <article class="paper-card">
+          <div class="paper-date"><span class="paper-year">2019</span><strong>January 10</strong></div>
+          <div class="paper-info"><h3>JEE Main 2019</h3><p>January 10, 2019 &nbsp;•&nbsp; Shift 1</p></div>
+          <a href="attempt-test.html?paper=jm-2019-01-10-morning" class="paper-btn">Attempt</a>
+        </article>
+      </div></div>
+      <div class="paper-date-group" data-year="2019"><div class="shift-row">
+        <!-- January 09 Shift 2 (LOCKED) -->
+        <article class="paper-card">
+          <div class="paper-date"><span class="paper-year">2019</span><strong>January 09</strong></div>
+          <div class="paper-info"><h3>JEE Main 2019</h3><p>January 09, 2019 &nbsp;•&nbsp; Shift 2</p></div>
+          <a href="attempt-test.html?paper=jm-2019-01-09-evening" class="paper-btn">Attempt</a>
+        </article>
+        <!-- January 09 Shift 1 (LOCKED) -->
+        <article class="paper-card">
+          <div class="paper-date"><span class="paper-year">2019</span><strong>January 09</strong></div>
+          <div class="paper-info"><h3>JEE Main 2019</h3><p>January 09, 2019 &nbsp;•&nbsp; Shift 1</p></div>
+          <a href="attempt-test.html?paper=jm-2019-01-09-morning" class="paper-btn">Attempt</a>
+        </article>
+      </div></div>
+
+      <!-- ================= JEE MAIN 2018 ================= -->
+      <div class="paper-date-group" data-year="2018"><div class="shift-row">
+        <!-- CHECK: date confirmed, shift count not. Delete a card if that shift did not run. -->
+        <!-- April 16 Shift 1 (LOCKED) -->
+        <article class="paper-card">
+          <div class="paper-date"><span class="paper-year">2018</span><strong>April 16</strong></div>
+          <div class="paper-info"><h3>JEE Main 2018</h3><p>April 16, 2018 &nbsp;•&nbsp; Shift 1</p></div>
+          <a href="attempt-test.html?paper=jm-2018-04-16-morning" class="paper-btn">Attempt</a>
+        </article>
+      </div></div>
+      <div class="paper-date-group" data-year="2018"><div class="shift-row">
+        <!-- CHECK: date confirmed, shift count not. Delete a card if that shift did not run. -->
+        <!-- April 15 Shift 2 (LOCKED) -->
+        <article class="paper-card">
+          <div class="paper-date"><span class="paper-year">2018</span><strong>April 15</strong></div>
+          <div class="paper-info"><h3>JEE Main 2018</h3><p>April 15, 2018 &nbsp;•&nbsp; Shift 2</p></div>
+          <a href="attempt-test.html?paper=jm-2018-04-15-evening" class="paper-btn">Attempt</a>
+        </article>
+        <!-- April 15 Shift 1 (LOCKED) -->
+        <article class="paper-card">
+          <div class="paper-date"><span class="paper-year">2018</span><strong>April 15</strong></div>
+          <div class="paper-info"><h3>JEE Main 2018</h3><p>April 15, 2018 &nbsp;•&nbsp; Shift 1</p></div>
+          <a href="attempt-test.html?paper=jm-2018-04-15-morning" class="paper-btn">Attempt</a>
+        </article>
+      </div></div>
+      <div class="paper-date-group" data-year="2018"><div class="shift-row">
+        <!-- April 08 Offline paper (LOCKED) -->
+        <article class="paper-card">
+          <div class="paper-date"><span class="paper-year">2018</span><strong>April 08</strong></div>
+          <div class="paper-info"><h3>JEE Main 2018</h3><p>April 08, 2018 &nbsp;•&nbsp; Offline paper</p></div>
+          <a href="attempt-test.html?paper=jm-2018-04-08-morning" class="paper-btn">Attempt</a>
+        </article>
+      </div></div>
+
+      <!-- ================= JEE MAIN 2017 ================= -->
+      <div class="paper-date-group" data-year="2017"><div class="shift-row">
+        <!-- CHECK: date confirmed, shift count not. Delete a card if that shift did not run. -->
+        <!-- April 09 Shift 2 (LOCKED) -->
+        <article class="paper-card">
+          <div class="paper-date"><span class="paper-year">2017</span><strong>April 09</strong></div>
+          <div class="paper-info"><h3>JEE Main 2017</h3><p>April 09, 2017 &nbsp;•&nbsp; Shift 2</p></div>
+          <a href="attempt-test.html?paper=jm-2017-04-09-evening" class="paper-btn">Attempt</a>
+        </article>
+        <!-- April 09 Shift 1 (LOCKED) -->
+        <article class="paper-card">
+          <div class="paper-date"><span class="paper-year">2017</span><strong>April 09</strong></div>
+          <div class="paper-info"><h3>JEE Main 2017</h3><p>April 09, 2017 &nbsp;•&nbsp; Shift 1</p></div>
+          <a href="attempt-test.html?paper=jm-2017-04-09-morning" class="paper-btn">Attempt</a>
+        </article>
+      </div></div>
+      <div class="paper-date-group" data-year="2017"><div class="shift-row">
+        <!-- CHECK: date confirmed, shift count not. Delete a card if that shift did not run. -->
+        <!-- April 08 Shift 2 (LOCKED) -->
+        <article class="paper-card">
+          <div class="paper-date"><span class="paper-year">2017</span><strong>April 08</strong></div>
+          <div class="paper-info"><h3>JEE Main 2017</h3><p>April 08, 2017 &nbsp;•&nbsp; Shift 2</p></div>
+          <a href="attempt-test.html?paper=jm-2017-04-08-evening" class="paper-btn">Attempt</a>
+        </article>
+        <!-- April 08 Shift 1 (LOCKED) -->
+        <article class="paper-card">
+          <div class="paper-date"><span class="paper-year">2017</span><strong>April 08</strong></div>
+          <div class="paper-info"><h3>JEE Main 2017</h3><p>April 08, 2017 &nbsp;•&nbsp; Shift 1</p></div>
+          <a href="attempt-test.html?paper=jm-2017-04-08-morning" class="paper-btn">Attempt</a>
+        </article>
+      </div></div>
+      <div class="paper-date-group" data-year="2017"><div class="shift-row">
+        <!-- April 02 Offline paper (LOCKED) -->
+        <article class="paper-card">
+          <div class="paper-date"><span class="paper-year">2017</span><strong>April 02</strong></div>
+          <div class="paper-info"><h3>JEE Main 2017</h3><p>April 02, 2017 &nbsp;•&nbsp; Offline paper</p></div>
+          <a href="attempt-test.html?paper=jm-2017-04-02-morning" class="paper-btn">Attempt</a>
+        </article>
+      </div></div>
+
+      <!-- ================= JEE MAIN 2016 ================= -->
+      <div class="paper-date-group" data-year="2016"><div class="shift-row">
+        <!-- CHECK: date confirmed, shift count not. Delete a card if that shift did not run. -->
+        <!-- April 10 Shift 2 (LOCKED) -->
+        <article class="paper-card">
+          <div class="paper-date"><span class="paper-year">2016</span><strong>April 10</strong></div>
+          <div class="paper-info"><h3>JEE Main 2016</h3><p>April 10, 2016 &nbsp;•&nbsp; Shift 2</p></div>
+          <a href="attempt-test.html?paper=jm-2016-04-10-evening" class="paper-btn">Attempt</a>
+        </article>
+        <!-- April 10 Shift 1 (LOCKED) -->
+        <article class="paper-card">
+          <div class="paper-date"><span class="paper-year">2016</span><strong>April 10</strong></div>
+          <div class="paper-info"><h3>JEE Main 2016</h3><p>April 10, 2016 &nbsp;•&nbsp; Shift 1</p></div>
+          <a href="attempt-test.html?paper=jm-2016-04-10-morning" class="paper-btn">Attempt</a>
+        </article>
+      </div></div>
+      <div class="paper-date-group" data-year="2016"><div class="shift-row">
+        <!-- CHECK: date confirmed, shift count not. Delete a card if that shift did not run. -->
+        <!-- April 09 Shift 2 (LOCKED) -->
+        <article class="paper-card">
+          <div class="paper-date"><span class="paper-year">2016</span><strong>April 09</strong></div>
+          <div class="paper-info"><h3>JEE Main 2016</h3><p>April 09, 2016 &nbsp;•&nbsp; Shift 2</p></div>
+          <a href="attempt-test.html?paper=jm-2016-04-09-evening" class="paper-btn">Attempt</a>
+        </article>
+        <!-- April 09 Shift 1 (LOCKED) -->
+        <article class="paper-card">
+          <div class="paper-date"><span class="paper-year">2016</span><strong>April 09</strong></div>
+          <div class="paper-info"><h3>JEE Main 2016</h3><p>April 09, 2016 &nbsp;•&nbsp; Shift 1</p></div>
+          <a href="attempt-test.html?paper=jm-2016-04-09-morning" class="paper-btn">Attempt</a>
+        </article>
+      </div></div>
+      <div class="paper-date-group" data-year="2016"><div class="shift-row">
+        <!-- April 03 Offline paper (LOCKED) -->
+        <article class="paper-card">
+          <div class="paper-date"><span class="paper-year">2016</span><strong>April 03</strong></div>
+          <div class="paper-info"><h3>JEE Main 2016</h3><p>April 03, 2016 &nbsp;•&nbsp; Offline paper</p></div>
+          <a href="attempt-test.html?paper=jm-2016-04-03-morning" class="paper-btn">Attempt</a>
+        </article>
+      </div></div>
+
+      <!-- ================= JEE MAIN 2015 ================= -->
+      <div class="paper-date-group" data-year="2015"><div class="shift-row">
+        <!-- CHECK: date confirmed, shift count not. Delete a card if that shift did not run. -->
+        <!-- April 11 Shift 1 (LOCKED) -->
+        <article class="paper-card">
+          <div class="paper-date"><span class="paper-year">2015</span><strong>April 11</strong></div>
+          <div class="paper-info"><h3>JEE Main 2015</h3><p>April 11, 2015 &nbsp;•&nbsp; Shift 1</p></div>
+          <a href="attempt-test.html?paper=jm-2015-04-11-morning" class="paper-btn">Attempt</a>
+        </article>
+      </div></div>
+      <div class="paper-date-group" data-year="2015"><div class="shift-row">
+        <!-- CHECK: date confirmed, shift count not. Delete a card if that shift did not run. -->
+        <!-- April 10 Shift 1 (LOCKED) -->
+        <article class="paper-card">
+          <div class="paper-date"><span class="paper-year">2015</span><strong>April 10</strong></div>
+          <div class="paper-info"><h3>JEE Main 2015</h3><p>April 10, 2015 &nbsp;•&nbsp; Shift 1</p></div>
+          <a href="attempt-test.html?paper=jm-2015-04-10-morning" class="paper-btn">Attempt</a>
+        </article>
+      </div></div>
+      <div class="paper-date-group" data-year="2015"><div class="shift-row">
+        <!-- April 04 Offline paper (LOCKED) -->
+        <article class="paper-card">
+          <div class="paper-date"><span class="paper-year">2015</span><strong>April 04</strong></div>
+          <div class="paper-info"><h3>JEE Main 2015</h3><p>April 04, 2015 &nbsp;•&nbsp; Offline paper</p></div>
+          <a href="attempt-test.html?paper=jm-2015-04-04-morning" class="paper-btn">Attempt</a>
+        </article>
+      </div></div>
+      </div>
+
+      <!-- JEE ADVANCED PAPERS -->
       <div class="paper-panel" id="advanced">
-        <!-- ===================================================
-             JEE ADVANCED 2026
-        ==================================================== -->
-        <div class="paper-date-group">
-          <div class="paper-group-heading">
-            <span>2026</span>
-            <strong>JEE Advanced</strong>
-          </div>
-          <div class="shift-row">
-            <!-- Paper 2 (LOCKED) -->
-            <article class="paper-card">
-              <div class="paper-date">
-                <span class="paper-year">2026</span>
-                <strong>Paper 2</strong>
-              </div>
-              <div class="paper-info">
-                <h3>JEE Advanced 2026</h3>
-                <p>
-                  Paper 2
-                </p>
-              </div>
-              <a href="attempt-test.html?paper=jee-advanced-2026-paper-2" class="paper-btn">Attempt</a>
-            </article>
-            <!-- Paper 1 (LOCKED) -->
-            <article class="paper-card">
-              <div class="paper-date">
-                <span class="paper-year">2026</span>
-                <strong>Paper 1</strong>
-              </div>
-              <div class="paper-info">
-                <h3>JEE Advanced 2026</h3>
-                <p>
-                  Paper 1
-                </p>
-              </div>
-              <a href="attempt-test.html?paper=jee-advanced-2026-paper-1" class="paper-btn">Attempt</a>
-            </article>
-          </div>
-        </div>
+
+      <!-- ================= JEE ADVANCED 2026 ================= -->
+      <div class="paper-date-group" data-year="2026"><div class="shift-row">
+        <!-- Paper 2 (LOCKED) -->
+        <article class="paper-card">
+          <div class="paper-date"><span class="paper-year">2026</span><strong>Paper 2</strong></div>
+          <div class="paper-info"><h3>JEE Advanced 2026</h3><p>Paper 2</p></div>
+          <a href="attempt-test.html?paper=ja-2026-p2" class="paper-btn">Attempt</a>
+        </article>
+        <!-- Paper 1 (LOCKED) -->
+        <article class="paper-card">
+          <div class="paper-date"><span class="paper-year">2026</span><strong>Paper 1</strong></div>
+          <div class="paper-info"><h3>JEE Advanced 2026</h3><p>Paper 1</p></div>
+          <a href="attempt-test.html?paper=ja-2026-p1" class="paper-btn">Attempt</a>
+        </article>
+      </div></div>
+
+      <!-- ================= JEE ADVANCED 2025 ================= -->
+      <div class="paper-date-group" data-year="2025"><div class="shift-row">
+        <!-- Paper 2 (LOCKED) -->
+        <article class="paper-card">
+          <div class="paper-date"><span class="paper-year">2025</span><strong>Paper 2</strong></div>
+          <div class="paper-info"><h3>JEE Advanced 2025</h3><p>Paper 2</p></div>
+          <a href="attempt-test.html?paper=ja-2025-p2" class="paper-btn">Attempt</a>
+        </article>
+        <!-- Paper 1 (LOCKED) -->
+        <article class="paper-card">
+          <div class="paper-date"><span class="paper-year">2025</span><strong>Paper 1</strong></div>
+          <div class="paper-info"><h3>JEE Advanced 2025</h3><p>Paper 1</p></div>
+          <a href="attempt-test.html?paper=ja-2025-p1" class="paper-btn">Attempt</a>
+        </article>
+      </div></div>
+
+      <!-- ================= JEE ADVANCED 2024 ================= -->
+      <div class="paper-date-group" data-year="2024"><div class="shift-row">
+        <!-- Paper 2 (LOCKED) -->
+        <article class="paper-card">
+          <div class="paper-date"><span class="paper-year">2024</span><strong>Paper 2</strong></div>
+          <div class="paper-info"><h3>JEE Advanced 2024</h3><p>Paper 2</p></div>
+          <a href="attempt-test.html?paper=ja-2024-p2" class="paper-btn">Attempt</a>
+        </article>
+        <!-- Paper 1 (LOCKED) -->
+        <article class="paper-card">
+          <div class="paper-date"><span class="paper-year">2024</span><strong>Paper 1</strong></div>
+          <div class="paper-info"><h3>JEE Advanced 2024</h3><p>Paper 1</p></div>
+          <a href="attempt-test.html?paper=ja-2024-p1" class="paper-btn">Attempt</a>
+        </article>
+      </div></div>
+
+      <!-- ================= JEE ADVANCED 2023 ================= -->
+      <div class="paper-date-group" data-year="2023"><div class="shift-row">
+        <!-- Paper 2 (LOCKED) -->
+        <article class="paper-card">
+          <div class="paper-date"><span class="paper-year">2023</span><strong>Paper 2</strong></div>
+          <div class="paper-info"><h3>JEE Advanced 2023</h3><p>Paper 2</p></div>
+          <a href="attempt-test.html?paper=ja-2023-p2" class="paper-btn">Attempt</a>
+        </article>
+        <!-- Paper 1 (LOCKED) -->
+        <article class="paper-card">
+          <div class="paper-date"><span class="paper-year">2023</span><strong>Paper 1</strong></div>
+          <div class="paper-info"><h3>JEE Advanced 2023</h3><p>Paper 1</p></div>
+          <a href="attempt-test.html?paper=ja-2023-p1" class="paper-btn">Attempt</a>
+        </article>
+      </div></div>
+
+      <!-- ================= JEE ADVANCED 2022 ================= -->
+      <div class="paper-date-group" data-year="2022"><div class="shift-row">
+        <!-- Paper 2 (LOCKED) -->
+        <article class="paper-card">
+          <div class="paper-date"><span class="paper-year">2022</span><strong>Paper 2</strong></div>
+          <div class="paper-info"><h3>JEE Advanced 2022</h3><p>Paper 2</p></div>
+          <a href="attempt-test.html?paper=ja-2022-p2" class="paper-btn">Attempt</a>
+        </article>
+        <!-- Paper 1 (LOCKED) -->
+        <article class="paper-card">
+          <div class="paper-date"><span class="paper-year">2022</span><strong>Paper 1</strong></div>
+          <div class="paper-info"><h3>JEE Advanced 2022</h3><p>Paper 1</p></div>
+          <a href="attempt-test.html?paper=ja-2022-p1" class="paper-btn">Attempt</a>
+        </article>
+      </div></div>
+
+      <!-- ================= JEE ADVANCED 2021 ================= -->
+      <div class="paper-date-group" data-year="2021"><div class="shift-row">
+        <!-- Paper 2 (LOCKED) -->
+        <article class="paper-card">
+          <div class="paper-date"><span class="paper-year">2021</span><strong>Paper 2</strong></div>
+          <div class="paper-info"><h3>JEE Advanced 2021</h3><p>Paper 2</p></div>
+          <a href="attempt-test.html?paper=ja-2021-p2" class="paper-btn">Attempt</a>
+        </article>
+        <!-- Paper 1 (LOCKED) -->
+        <article class="paper-card">
+          <div class="paper-date"><span class="paper-year">2021</span><strong>Paper 1</strong></div>
+          <div class="paper-info"><h3>JEE Advanced 2021</h3><p>Paper 1</p></div>
+          <a href="attempt-test.html?paper=ja-2021-p1" class="paper-btn">Attempt</a>
+        </article>
+      </div></div>
+
+      <!-- ================= JEE ADVANCED 2020 ================= -->
+      <div class="paper-date-group" data-year="2020"><div class="shift-row">
+        <!-- Paper 2 (LOCKED) -->
+        <article class="paper-card">
+          <div class="paper-date"><span class="paper-year">2020</span><strong>Paper 2</strong></div>
+          <div class="paper-info"><h3>JEE Advanced 2020</h3><p>Paper 2</p></div>
+          <a href="attempt-test.html?paper=ja-2020-p2" class="paper-btn">Attempt</a>
+        </article>
+        <!-- Paper 1 (LOCKED) -->
+        <article class="paper-card">
+          <div class="paper-date"><span class="paper-year">2020</span><strong>Paper 1</strong></div>
+          <div class="paper-info"><h3>JEE Advanced 2020</h3><p>Paper 1</p></div>
+          <a href="attempt-test.html?paper=ja-2020-p1" class="paper-btn">Attempt</a>
+        </article>
+      </div></div>
+
+      <!-- ================= JEE ADVANCED 2019 ================= -->
+      <div class="paper-date-group" data-year="2019"><div class="shift-row">
+        <!-- Paper 2 (LOCKED) -->
+        <article class="paper-card">
+          <div class="paper-date"><span class="paper-year">2019</span><strong>Paper 2</strong></div>
+          <div class="paper-info"><h3>JEE Advanced 2019</h3><p>Paper 2</p></div>
+          <a href="attempt-test.html?paper=ja-2019-p2" class="paper-btn">Attempt</a>
+        </article>
+        <!-- Paper 1 (LOCKED) -->
+        <article class="paper-card">
+          <div class="paper-date"><span class="paper-year">2019</span><strong>Paper 1</strong></div>
+          <div class="paper-info"><h3>JEE Advanced 2019</h3><p>Paper 1</p></div>
+          <a href="attempt-test.html?paper=ja-2019-p1" class="paper-btn">Attempt</a>
+        </article>
+      </div></div>
+
+      <!-- ================= JEE ADVANCED 2018 ================= -->
+      <div class="paper-date-group" data-year="2018"><div class="shift-row">
+        <!-- Paper 2 (LOCKED) -->
+        <article class="paper-card">
+          <div class="paper-date"><span class="paper-year">2018</span><strong>Paper 2</strong></div>
+          <div class="paper-info"><h3>JEE Advanced 2018</h3><p>Paper 2</p></div>
+          <a href="attempt-test.html?paper=ja-2018-p2" class="paper-btn">Attempt</a>
+        </article>
+        <!-- Paper 1 (LOCKED) -->
+        <article class="paper-card">
+          <div class="paper-date"><span class="paper-year">2018</span><strong>Paper 1</strong></div>
+          <div class="paper-info"><h3>JEE Advanced 2018</h3><p>Paper 1</p></div>
+          <a href="attempt-test.html?paper=ja-2018-p1" class="paper-btn">Attempt</a>
+        </article>
+      </div></div>
+
+      <!-- ================= JEE ADVANCED 2017 ================= -->
+      <div class="paper-date-group" data-year="2017"><div class="shift-row">
+        <!-- Paper 2 (LOCKED) -->
+        <article class="paper-card">
+          <div class="paper-date"><span class="paper-year">2017</span><strong>Paper 2</strong></div>
+          <div class="paper-info"><h3>JEE Advanced 2017</h3><p>Paper 2</p></div>
+          <a href="attempt-test.html?paper=ja-2017-p2" class="paper-btn">Attempt</a>
+        </article>
+        <!-- Paper 1 (LOCKED) -->
+        <article class="paper-card">
+          <div class="paper-date"><span class="paper-year">2017</span><strong>Paper 1</strong></div>
+          <div class="paper-info"><h3>JEE Advanced 2017</h3><p>Paper 1</p></div>
+          <a href="attempt-test.html?paper=ja-2017-p1" class="paper-btn">Attempt</a>
+        </article>
+      </div></div>
+
+      <!-- ================= JEE ADVANCED 2016 ================= -->
+      <div class="paper-date-group" data-year="2016"><div class="shift-row">
+        <!-- Paper 2 (LOCKED) -->
+        <article class="paper-card">
+          <div class="paper-date"><span class="paper-year">2016</span><strong>Paper 2</strong></div>
+          <div class="paper-info"><h3>JEE Advanced 2016</h3><p>Paper 2</p></div>
+          <a href="attempt-test.html?paper=ja-2016-p2" class="paper-btn">Attempt</a>
+        </article>
+        <!-- Paper 1 (LOCKED) -->
+        <article class="paper-card">
+          <div class="paper-date"><span class="paper-year">2016</span><strong>Paper 1</strong></div>
+          <div class="paper-info"><h3>JEE Advanced 2016</h3><p>Paper 1</p></div>
+          <a href="attempt-test.html?paper=ja-2016-p1" class="paper-btn">Attempt</a>
+        </article>
+      </div></div>
+
+      <!-- ================= JEE ADVANCED 2015 ================= -->
+      <div class="paper-date-group" data-year="2015"><div class="shift-row">
+        <!-- Paper 2 (LOCKED) -->
+        <article class="paper-card">
+          <div class="paper-date"><span class="paper-year">2015</span><strong>Paper 2</strong></div>
+          <div class="paper-info"><h3>JEE Advanced 2015</h3><p>Paper 2</p></div>
+          <a href="attempt-test.html?paper=ja-2015-p2" class="paper-btn">Attempt</a>
+        </article>
+        <!-- Paper 1 (LOCKED) -->
+        <article class="paper-card">
+          <div class="paper-date"><span class="paper-year">2015</span><strong>Paper 1</strong></div>
+          <div class="paper-info"><h3>JEE Advanced 2015</h3><p>Paper 1</p></div>
+          <a href="attempt-test.html?paper=ja-2015-p1" class="paper-btn">Attempt</a>
+        </article>
+      </div></div>
       </div>
     </section>
   </main>
@@ -296,20 +1787,20 @@
     <div class="footer-inner container">
       <div class="footer-brand">
         <div class="logo">
-          JEE<span>Jeeto</span>
+          Launch<span>ITJEE</span>
         </div>
         <p>
           Previous year JEE Main questions and 
           class-wise notes, in one place.
         </p>
       </div>
-      <a href="mailto:aashishraj0310@gmail.com?subject=Support%20Inquiry%20-%20JEE%20Jeeto" class="btn">Contact Us</a>
+      <a href="mailto:launchitjee.notry.@gmail.com?subject=Support%20Inquiry%20-%20JEE%20Jeeto" class="btn">Contact Us</a>
     </div>
 
     <div class="footer-bottom">
       <div class="footer-bottom-inner container">
         <span>
-          &copy; 2026 JEEJeeto. All rights reserved.
+          &copy; 2026 LaunchITJEE. All rights reserved.
         </span>
         <div class="footer-legal">
           <a href="privacy.html">Privacy Policy</a>
@@ -318,7 +1809,7 @@
         </div>
       </div>
       <div class="footer-disclaimer container">
-        JEEJeeto is an independent practice simulator and is not
+        LaunchITJEE is an independent practice simulator and is not
         affiliated with, authorized by, or endorsed by the National
         Testing Agency (NTA), the Ministry of Education, or any IIT.
       </div>
@@ -329,11 +1820,45 @@
        JAVASCRIPT
   ========================================================== -->
   <script>
-    // Tab switching logic (Mains vs Advanced)
+    // ----- Year filter (chips above the paper list) -----
+    const yearChips = document.querySelectorAll(".year-chip");
+    const paperCount = document.getElementById("paperCount");
+
+    // Adds a divider naming the year that starts next (All years view only)
+    function rebuildYearDividers(showDividers) {
+      document.querySelectorAll(".year-divider").forEach(d => d.remove());
+      if (!showDividers) return;
+
+      document.querySelectorAll(".paper-panel").forEach(panel => {
+        const groups = Array.from(panel.querySelectorAll(".paper-date-group"));
+        groups.forEach((group, i) => {
+          if (i === 0) return;
+          const prev = groups[i - 1];
+          if (prev.dataset.year !== group.dataset.year) {
+            const divider = document.createElement("div");
+            divider.className = "year-divider";
+            divider.innerHTML = `<span class="yd-label"><b>${group.dataset.year}</b></span>`;
+            group.before(divider);
+          }
+        });
+      });
+    }
+
+    function showYear(year) {
+      yearChips.forEach(c => c.classList.toggle("active", c.dataset.year === year));
+      document.querySelectorAll(".paper-date-group").forEach(g => {
+        g.hidden = !(year === "all" || g.dataset.year === year);
+      });
+      paperCount.textContent = year === "all" ? "2015 \u2013 2026" : year;
+      rebuildYearDividers(year === "all");
+    }
+    yearChips.forEach(c => c.addEventListener("click", () => showYear(c.dataset.year)));
+    showYear("all");
+
+    // ----- Tab switching logic (Mains vs Advanced) -----
     const examTabs = document.querySelectorAll(".exam-tab");
     const paperPanels = document.querySelectorAll(".paper-panel");
     const paperHeading = document.getElementById("paperHeading");
-    const paperCount = document.getElementById("paperCount");
 
     examTabs.forEach(tab => {
       tab.addEventListener("click", () => {
@@ -342,47 +1867,48 @@
         paperPanels.forEach(panel => panel.classList.remove("active"));
         tab.classList.add("active");
         document.getElementById(selectedExam).classList.add("active");
-
-        if (selectedExam === "mains") {
-          paperHeading.textContent = "JEE Main Papers";
-          paperCount.textContent = "2026";
-        } else {
-          paperHeading.textContent = "JEE Advanced Papers";
-          paperCount.textContent = "2026";
-        }
+        paperHeading.textContent = selectedExam === "mains" ? "JEE Main Papers" : "JEE Advanced Papers";
       });
     });
 
-    // Enforce Locking Logic
+    // ----- Enforce Locking Logic -----
     document.addEventListener('DOMContentLoaded', async () => {
       let isSubscriber = false;
 
       try {
         const res = await fetch('/api/payment/status');
         const data = await res.json();
-        if (data.subscription && new Date(data.subscription.expires_at) > new Date()) {
+        // Paid subscription OR active 3-day free trial unlocks everything
+        if (data.hasAccess) {
           isSubscriber = true;
+        } else if (data.subscription && new Date(data.subscription.expires_at) > new Date()) {
+          isSubscriber = true;
+        }
+
+        // Trial banner (only while on trial and not yet subscribed)
+        if (data.trial && data.trial.active && !data.subscribed) {
+          const banner = document.createElement('div');
+          banner.className = 'trial-banner';
+          const d = data.trial.daysLeft;
+          banner.textContent = '\uD83C\uDF81 Free trial: all papers unlocked \u2013 ' + d + (d === 1 ? ' day' : ' days') + ' left';
+          document.getElementById('yearFilter').before(banner);
         }
       } catch (e) {}
 
-      // The exact only free test paper
-      const freePaperParam = "paper=jee-main-2026-apr-02-shift-2";
-
-      // 1. Lock all Paper Cards except the first free one
+      // 1. Lock every paper card unless it has data-free="true" (or the user is a subscriber)
       document.querySelectorAll('.paper-card').forEach(card => {
         const btn = card.querySelector('.paper-btn');
         if (!btn) return;
 
-        const href = btn.getAttribute('href') || '';
-        const isFree = href.includes(freePaperParam);
+        const isFree = card.hasAttribute('data-free');
 
         if (!isFree && !isSubscriber) {
           card.classList.add('locked-paper');
           btn.classList.add('locked-btn');
-          btn.innerHTML = '🔒 Locked';
+          btn.innerHTML = '\uD83D\uDD12 Locked';
           btn.onclick = (e) => {
             e.preventDefault();
-            alert('🔒 This exam paper is locked. Only the first paper (April 02 Shift 2) is free.');
+            alert('\uD83D\uDD12 This exam paper is locked. Your free trial has ended \u2013 subscribe to unlock all papers.');
           };
         }
       });
@@ -396,7 +1922,7 @@
           if (btn) {
             btn.onclick = (e) => {
               e.preventDefault();
-              alert('🔒 This practice mode requires a subscription.');
+              alert('\uD83D\uDD12 This practice mode requires a subscription.');
             };
           }
         }

@@ -1,3 +1,87 @@
+// ===== Attempt titles & chapter lists (shared by the history cards and the analysis modal) =====
+function escapeHtml(value) {
+  return String(value ?? '')
+    .replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;').replace(/'/g, '&#39;');
+}
+
+// Title for an attempt. Whole-syllabus keys get a fixed label; everything else
+// is named after its chapter(s). Falls back to the formatted key for very old
+// attempts that have no chapter data stored at all.
+const JEE_MONTH_NAMES = ['January', 'February', 'March', 'April', 'May', 'June',
+  'July', 'August', 'September', 'October', 'November', 'December'];
+
+// A full exam sitting: "jm-2026-04-02-morning" or "ja-2025-p1".
+function getPaperTitleFromKey(key) {
+  let m = key.match(/^jm-(\d{4})-(\d{2})-(\d{2})-(morning|evening)$/);
+  if (m) {
+    const shift = m[4] === 'morning' ? 'Morning' : 'Evening';
+    return `JEE Main ${m[1]} \u00b7 ${parseInt(m[3], 10)} ${JEE_MONTH_NAMES[parseInt(m[2], 10) - 1] || ''} \u00b7 ${shift} Shift`;
+  }
+  m = key.match(/^ja-(\d{4})-p([12])$/);
+  if (m) return `JEE Advanced ${m[1]} \u00b7 Paper ${m[2]}`;
+  return null;
+}
+
+// Numerical-answer rows vs MCQ rows (the attempt analysis stores both).
+function isNumericalRow(r) { return r.question_type === 'numerical'; }
+function isAttempted(r) {
+  if (isNumericalRow(r)) {
+    return r.selected_value !== null && r.selected_value !== undefined && r.selected_value !== '';
+  }
+  return r.selected_option !== null && r.selected_option !== undefined;
+}
+// The accepted answer of a numerical question: a window if it has one, else the value.
+function formatCorrectAnswer(r) {
+  if (r.correct_min !== null && r.correct_min !== undefined && r.correct_max !== null && r.correct_max !== undefined) {
+    return `${r.correct_min} to ${r.correct_max}`;
+  }
+  return r.correct_value !== null && r.correct_value !== undefined ? String(r.correct_value) : '\u2014';
+}
+
+function getAttemptTitle(testKey, chapters) {
+  const key = String(testKey || '').toLowerCase();
+  const list = Array.isArray(chapters) ? chapters.filter(Boolean) : [];
+
+  const paperTitle = getPaperTitleFromKey(key);
+  if (paperTitle) return paperTitle;
+
+  let m = key.match(/^c(\d+)-(phy|chem|math)-(full|subject|revision)$/);
+  if (m) {
+    const subject = { phy: 'Physics', chem: 'Chemistry', math: 'Mathematics' }[m[2]];
+    const label = { full: 'Full Syllabus Test', subject: 'Subject Test', revision: 'Unit Test / Revision' }[m[3]];
+    return `Class ${m[1]} ${subject} \u2014 ${label}`;
+  }
+  m = key.match(/^c(\d+)-mock$/);
+  if (m) return `Class ${m[1]} \u2014 Mock Test`;
+
+  if (list.length === 1) return list[0];
+  if (list.length > 1) return 'Multi-chapter Test';
+  return key.replace(/-/g, ' ').toUpperCase();
+}
+
+// Chapters covered by an attempt row from GET /api/attempts. Uses the new
+// `chapters` list; older responses only had `chapter_name`.
+function getAttemptChapters(att) {
+  if (Array.isArray(att.chapters) && att.chapters.length > 0) return att.chapters.filter(Boolean);
+  return att.chapter_name ? [att.chapter_name] : [];
+}
+
+// The "chapters covered" line under an attempt's title: nothing for a
+// single-chapter test, names inline for up to 3, a tap-to-expand list beyond that.
+function renderAttemptChaptersHtml(att) {
+  const names = getAttemptChapters(att).map(escapeHtml);
+  if (names.length < 2) return '';
+  const list = names.join(' &bull; ');
+  if (names.length <= 3) {
+    return `<div style="font-size:12px; color:#475569; margin-top:3px; line-height:1.5;">${list}</div>`;
+  }
+  return `<details onclick="event.stopPropagation()" style="margin-top:4px; font-size:12px; color:#475569;">
+            <summary style="cursor:pointer; color:#D97706; font-weight:600;">${names.length} chapters covered</summary>
+            <div style="margin-top:4px; line-height:1.7;">${list}</div>
+          </details>`;
+}
+
 // ===== Duration Formatter =====
 function formatDuration(totalSec) {
   const m = Math.floor(totalSec / 60);
@@ -40,20 +124,25 @@ async function openTestAnalysis(attemptId) {
 
     const { attempt, responses } = await res.json();
 
-    // Populate Headers
-    if (modalTitle) modalTitle.textContent = attempt.test_key.replace(/-/g, ' ').toUpperCase();
+    // Whole-syllabus tests get a fixed label; chapter tests use the real chapter
+    // name (from the questions table, via the chapter column); the formatted key
+    // is only a fallback for older attempts with no chapter data stored.
+    const attemptChapters = [...new Set(responses.map(r => r.chapter).filter(Boolean))];
+    if (modalTitle) modalTitle.textContent = getAttemptTitle(attempt.test_key, attemptChapters);
     if (modalDate) modalDate.textContent = `Attempted on ${new Date(attempt.attempted_at).toLocaleString()}`;
 
     // Compute Metrics & Aggregations
     const totalQuestions = responses.length || 75;
+    const maxScore = totalQuestions * 4;
     let totalTimeSec = 0;
     let correctTimeSec = 0;
     let wrongTimeSec = 0;
 
+    // JEE Subject Groupings (wrongMcq = wrong MCQs only, since a wrong numerical costs 0)
     const subjectStats = {
-      Physics: { total: 0, attempted: 0, correct: 0, wrong: 0, time: 0 },
-      Chemistry: { total: 0, attempted: 0, correct: 0, wrong: 0, time: 0 },
-      Mathematics: { total: 0, attempted: 0, correct: 0, wrong: 0, time: 0 }
+      Physics: { total: 0, attempted: 0, correct: 0, wrong: 0, wrongMcq: 0, time: 0 },
+      Chemistry: { total: 0, attempted: 0, correct: 0, wrong: 0, wrongMcq: 0, time: 0 },
+      Mathematics: { total: 0, attempted: 0, correct: 0, wrong: 0, wrongMcq: 0, time: 0 }
     };
 
     const chapterStats = {};
@@ -62,25 +151,36 @@ async function openTestAnalysis(attemptId) {
       const qTime = r.time_spent_seconds || 0;
       totalTimeSec += qTime;
 
-      const isAtt = r.selected_option !== null && r.selected_option !== undefined;
+      const isAtt = isAttempted(r);
       if (isAtt) {
         if (r.is_correct) correctTimeSec += qTime;
         else wrongTimeSec += qTime;
       }
 
-      // Subject stats
-      if (subjectStats[r.subject]) {
-        subjectStats[r.subject].total++;
-        if (isAtt) subjectStats[r.subject].attempted++;
-        if (r.is_correct) subjectStats[r.subject].correct++;
-        else if (isAtt) subjectStats[r.subject].wrong++;
-        subjectStats[r.subject].time += qTime;
+      // Map subject name safely to Physics, Chemistry or Mathematics
+      let subjKey = r.subject || 'Physics';
+      const subjLower = subjKey.toLowerCase();
+      if (subjLower.includes('math')) subjKey = 'Mathematics';
+      else if (subjLower.includes('chem')) subjKey = 'Chemistry';
+      else if (subjLower.includes('phy')) subjKey = 'Physics';
+
+      if (!subjectStats[subjKey]) {
+        subjectStats[subjKey] = { total: 0, attempted: 0, correct: 0, wrong: 0, wrongMcq: 0, time: 0 };
       }
 
+      subjectStats[subjKey].total++;
+      if (isAtt) subjectStats[subjKey].attempted++;
+      if (r.is_correct) subjectStats[subjKey].correct++;
+      else if (isAtt) {
+        subjectStats[subjKey].wrong++;
+        if (!isNumericalRow(r)) subjectStats[subjKey].wrongMcq++;
+      }
+      subjectStats[subjKey].time += qTime;
+
       // Chapter stats
-      const chap = r.chapter || `${r.subject} Unit`;
+      const chap = r.chapter || `${subjKey} Unit`;
       if (!chapterStats[chap]) {
-        chapterStats[chap] = { subject: r.subject, total: 0, correct: 0, wrong: 0, time: 0 };
+        chapterStats[chap] = { subject: subjKey, total: 0, correct: 0, wrong: 0, time: 0 };
       }
       chapterStats[chap].total++;
       if (r.is_correct) chapterStats[chap].correct++;
@@ -98,7 +198,7 @@ async function openTestAnalysis(attemptId) {
     const subjectRowsHtml = Object.keys(subjectStats).map(subj => {
       const st = subjectStats[subj];
       const acc = st.attempted > 0 ? `${Math.round((st.correct / st.attempted) * 100)}%` : '0%';
-      const subScore = (st.correct * 4) - (st.wrong * 1);
+      const subScore = (st.correct * 4) - (st.wrongMcq * 1);
       return `
         <tr style="border-bottom: 1px solid #e2e8f0; font-size: 13px;">
           <td style="padding: 10px 14px; font-weight: 700; color: #0f172a;">${subj}</td>
@@ -136,13 +236,14 @@ async function openTestAnalysis(attemptId) {
     // 3. Question Cards
     const optionLetters = ['A', 'B', 'C', 'D'];
     const questionsListHtml = responses.map((r) => {
-      const isAtt = r.selected_option !== null && r.selected_option !== undefined;
+      const isAtt = isAttempted(r);
       const isCorr = r.is_correct;
       const isSkipped = !isAtt;
       const timeOnQ = formatDuration(r.time_spent_seconds || 0);
 
       let badgeClass = isCorr ? 'badge-correct' : (isSkipped ? 'badge-skipped' : 'badge-wrong');
-      let badgeText = isCorr ? 'Correct (+4)' : (isSkipped ? 'Skipped (0)' : 'Incorrect (-1)');
+      const isNumQ = isNumericalRow(r);
+      let badgeText = isCorr ? 'Correct (+4)' : (isSkipped ? 'Skipped (0)' : (isNumQ ? 'Incorrect (0)' : 'Incorrect (-1)'));
       let qOptions = [r.option_a, r.option_b, r.option_c, r.option_d];
 
       const optionsHtml = qOptions.map((opt, optIdx) => {
@@ -161,6 +262,14 @@ async function openTestAnalysis(attemptId) {
         return `<div style="${optStyle}">${optionLetters[optIdx]}. ${opt} ${tag}</div>`;
       }).join('');
 
+      const numericalHtml = `
+        <div style="padding: 8px 12px; border-radius: 4px; border: 1px solid ${isCorr ? '#16a34a' : '#dc2626'}; background: ${isCorr ? '#dcfce7' : '#fee2e2'}; margin-bottom: 6px; font-size: 13px;">
+          Your answer: <strong>${isSkipped ? 'Not attempted' : escapeHtml(r.selected_value)}</strong>
+        </div>
+        <div style="padding: 8px 12px; border-radius: 4px; border: 1px solid #16a34a; background: #dcfce7; color: #15803d; margin-bottom: 6px; font-size: 13px;">
+          Correct answer: <strong>${escapeHtml(formatCorrectAnswer(r))}</strong>
+        </div>`;
+
       return `
         <div class="analysis-q-card" style="background: #fff; border: 1px solid #e2e8f0; border-radius: 8px; padding: 16px; margin-bottom: 14px; text-align: left;">
           <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px; border-bottom: 1px solid #f1f5f9; padding-bottom: 6px; flex-wrap: wrap; gap: 8px;">
@@ -174,10 +283,10 @@ async function openTestAnalysis(attemptId) {
             </div>
           </div>
           <div style="font-size: 13.5px; color: #1e293b; margin-bottom: 12px; line-height: 1.55;">${r.question_text || `[Question No. ${r.question_num}]`}</div>
-          <div style="margin-bottom: 10px;">${optionsHtml}</div>
-          <div style="background: #f8fafc; border-left: 3px solid #0284c7; padding: 8px 12px; border-radius: 0 4px 4px 0;">
-            <strong style="font-size: 11.5px; color: #0369a1; display: block; margin-bottom: 2px;">Solution:</strong>
-            <div style="font-size: 12.5px; color: #334155;">${r.explanation || `The correct answer is Option ${optionLetters[r.correct_option] || 'A'}.`}</div>
+          <div style="margin-bottom: 10px;">${isNumQ ? numericalHtml : optionsHtml}</div>
+          <div style="background: #f8fafc; border-left: 3px solid #D97706; padding: 8px 12px; border-radius: 0 4px 4px 0;">
+            <strong style="font-size: 11.5px; color: #D97706; display: block; margin-bottom: 2px;">Solution:</strong>
+            <div style="font-size: 12.5px; color: #334155;">${r.explanation || (isNumQ ? `The correct answer is ${escapeHtml(formatCorrectAnswer(r))}.` : `The correct answer is Option ${optionLetters[r.correct_option] || 'A'}.`)}</div>
           </div>
         </div>
       `;
@@ -189,11 +298,11 @@ async function openTestAnalysis(attemptId) {
       <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(110px, 1fr)); gap: 10px; margin-bottom: 20px;">
         <div style="background: #f8fafc; padding: 12px; border-radius: 8px; border: 1px solid #e2e8f0; text-align: center;">
           <span style="font-size: 10.5px; color: #64748b; display: block;">Total Score</span>
-          <strong style="font-size: 18px; color: #16a34a;">${attempt.score} <span style="font-size: 11px; color: #64748b;">/ 300</span></strong>
+          <strong style="font-size: 18px; color: #D97706;">${attempt.score} <span style="font-size: 11px; color: #64748b;">/ ${maxScore}</span></strong>
         </div>
         <div style="background: #f8fafc; padding: 12px; border-radius: 8px; border: 1px solid #e2e8f0; text-align: center;">
           <span style="font-size: 10.5px; color: #64748b; display: block;">Accuracy</span>
-          <strong style="font-size: 18px; color: #0284c7;">${overallAccuracy}%</strong>
+          <strong style="font-size: 18px; color: #D97706;">${overallAccuracy}%</strong>
         </div>
         <div style="background: #f8fafc; padding: 12px; border-radius: 8px; border: 1px solid #e2e8f0; text-align: center;">
           <span style="font-size: 10.5px; color: #64748b; display: block;">Correct</span>
@@ -241,7 +350,7 @@ async function openTestAnalysis(attemptId) {
         <div style="background: #fff; border: 1px solid #e2e8f0; border-radius: 8px; padding: 14px 16px; text-align: left;">
           <strong style="font-size: 13px; color: #0f172a; display: block; margin-bottom: 10px;">Time Diagnostics</strong>
           <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 10px;">
-            <div style="background: #f8fafc; padding: 10px 12px; border-radius: 6px; border-left: 3px solid #0284c7;">
+            <div style="background: #f8fafc; padding: 10px 12px; border-radius: 6px; border-left: 3px solid #D97706;">
               <span style="font-size: 11px; color: #64748b; display: block;">Avg Time / Question</span>
               <strong style="font-size: 14px; color: #0f172a;">${avgTimePerQ}</strong>
             </div>

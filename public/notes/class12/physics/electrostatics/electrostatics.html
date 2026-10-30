@@ -1,0 +1,1245 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<!-- <meta name="viewport" content="width=device-width, initial-scale=1"> -->
+<title>Electrostatics – JEE Physics Notes</title>
+<link rel="stylesheet" href="/css/notes-content.css">
+<link rel="stylesheet" href="electrostatics.css">
+<script>
+window.MathJax = {
+  tex: { inlineMath: [['\\(', '\\)']], displayMath: [['\\[', '\\]']] },
+  svg: { fontCache: 'global' }
+};
+</script>
+<script async src="https://cdn.jsdelivr.net/npm/mathjax@3.2.2/es5/tex-svg.js"></script>
+</head>
+<body>
+
+<header class="notes-header">
+  <button class="toc-toggle" type="button" aria-controls="toc" aria-expanded="false">☰ Contents</button>
+  <div>
+    <h1 class="notes-title">Electrostatics</h1>
+    <p class="notes-sub">JEE Physics · Class 12 · Chapter Notes</p>
+  </div>
+</header>
+
+<div class="notes-layout">
+
+<nav class="toc" id="toc" aria-label="Table of contents">
+  <p class="toc-title">Contents</p>
+  <ul>
+    <li><a href="#electric-charge">Electric Charge</a>
+      <ul>
+        <li><a href="#types-of-charge">Types of charge</a></li>
+        <li><a href="#unit-of-charge">Unit and dimension</a></li>
+        <li><a href="#charge-quantisation">Fundamental charge and quantisation</a></li>
+        <li><a href="#properties-of-charge">Properties of charge</a></li>
+      </ul>
+    </li>
+    <li><a href="#conductors-semiconductors-insulators">Conductors, Semiconductors, Insulators</a></li>
+    <li><a href="#methods-of-charging">Methods of Charging</a>
+      <ul>
+        <li><a href="#charging-by-friction">By friction</a></li>
+        <li><a href="#charging-by-conduction">By conduction</a></li>
+        <li><a href="#charging-by-induction">By induction</a></li>
+      </ul>
+    </li>
+    <li><a href="#coulombs-law">Coulomb's Law</a>
+      <ul>
+        <li><a href="#coulombs-law-vacuum">In vacuum</a></li>
+        <li><a href="#coulombs-law-medium">In a material medium</a></li>
+        <li><a href="#coulombs-law-points">Important points</a></li>
+        <li><a href="#coulombs-law-vector">Vector form</a></li>
+        <li><a href="#coulombs-law-results">Standard results</a></li>
+      </ul>
+    </li>
+    <li><a href="#electric-field">Electric Field</a>
+      <ul>
+        <li><a href="#field-of-point-charge">Point charge</a></li>
+        <li><a href="#continuous-charge-distribution">Continuous charge distribution</a></li>
+        <li><a href="#field-of-line-charge">Uniform line charge</a></li>
+        <li><a href="#line-charge-special-cases">Special cases of a line charge</a></li>
+        <li><a href="#field-of-charged-arc">Charged arc</a></li>
+        <li><a href="#field-on-axis-of-ring">Axis of a ring</a></li>
+        <li><a href="#field-on-axis-of-disc">Axis of a disc</a></li>
+        <li><a href="#field-of-infinite-sheet">Infinite sheet</a></li>
+        <li><a href="#force-on-charge-in-field">Force on a charge in an external field</a></li>
+      </ul>
+    </li>
+    <li><a href="#electrostatic-potential-energy">Electrostatic Potential Energy</a>
+      <ul>
+        <li><a href="#work-energy-theorem">Work–energy theorem</a></li>
+        <li><a href="#pe-two-charges">System of two charges</a></li>
+        <li><a href="#pe-system-of-charges">System of n charges</a></li>
+      </ul>
+    </li>
+    <li><a href="#electric-potential">Electric Potential</a>
+      <ul>
+        <li><a href="#potential-point-charge">Point charge</a></li>
+        <li><a href="#potential-ring-axis">Axis of a ring</a></li>
+        <li><a href="#potential-results">Important results</a></li>
+        <li><a href="#potential-disc-axis">Axis of a disc</a></li>
+        <li><a href="#potential-line-charge">Infinite line charge</a></li>
+      </ul>
+    </li>
+    <li><a href="#field-potential-relation">Relation Between Field and Potential</a>
+      <ul>
+        <li><a href="#potential-difference-from-field">Potential change from a given field</a></li>
+        <li><a href="#field-from-potential">Field from a given potential</a></li>
+        <li><a href="#uniform-field-relation">Uniform electric field</a></li>
+      </ul>
+    </li>
+    <li><a href="#equipotential-surfaces">Equipotential Surfaces</a></li>
+    <li><a href="#electric-dipole">Electric Dipole</a>
+      <ul>
+        <li><a href="#dipole-moment">Dipole moment</a></li>
+        <li><a href="#dipole-field-potential">Field and potential of a dipole</a></li>
+        <li><a href="#dipole-in-uniform-field">Dipole in a uniform field</a></li>
+        <li><a href="#dipole-work-energy-oscillation">Work, energy and oscillation</a></li>
+        <li><a href="#dipole-nonuniform-field">Force in a non-uniform field</a></li>
+      </ul>
+    </li>
+    <li><a href="#electric-field-lines">Electric Field Lines</a></li>
+    <li><a href="#area-vector">Area Vector</a></li>
+    <li><a href="#electric-flux">Electric Flux</a>
+      <ul>
+        <li><a href="#flux-closed-surface-sign">Closed surfaces and sign</a></li>
+        <li><a href="#flux-cone-base">Base of a cone</a></li>
+        <li><a href="#flux-standard-cases">Standard cases</a></li>
+      </ul>
+    </li>
+    <li><a href="#gauss-law">Gauss's Law</a></li>
+    <li><a href="#applications-of-gauss-law">Applications of Gauss's Law</a>
+      <ul>
+        <li><a href="#gauss-line-sheet">Infinite line and sheet</a></li>
+        <li><a href="#gauss-spherical-shell">Spherical shell</a></li>
+        <li><a href="#gauss-solid-sphere">Solid sphere</a></li>
+        <li><a href="#potential-of-spheres">Potential of shell and sphere</a></li>
+        <li><a href="#gauss-cylinders">Long cylinders</a></li>
+        <li><a href="#gauss-thick-sheet">Thick non-conducting sheet</a></li>
+        <li><a href="#cavity-overlap">Cavity and overlapping spheres</a></li>
+        <li><a href="#charge-density-from-field">Charge density from field</a></li>
+      </ul>
+    </li>
+    <li><a href="#conductors-in-electrostatics">Conductors in Electrostatics</a>
+      <ul>
+        <li><a href="#conductor-properties">Properties</a></li>
+        <li><a href="#electrostatic-pressure">Electrostatic pressure</a></li>
+        <li><a href="#charge-density-curvature">Charge density and curvature</a></li>
+        <li><a href="#earthed-conductor">Earthed conductor and induced charges</a></li>
+        <li><a href="#cavity-in-conductor">Cavity within a conductor</a></li>
+        <li><a href="#parallel-plates">Charge on parallel plates</a></li>
+        <li><a href="#conductor-in-medium">Conductor in a medium or vacuum</a></li>
+      </ul>
+    </li>
+    <li><a href="#electrostatic-energy">Self Electrostatic Energy</a>
+      <ul>
+        <li><a href="#self-energy">Self energy</a></li>
+        <li><a href="#energy-density">Energy density</a></li>
+      </ul>
+    </li>
+    <li><a href="#capacitance-of-conductor">Capacitance of a Conductor</a>
+      <ul>
+        <li><a href="#capacitance-isolated-sphere">Isolated sphere and units</a></li>
+        <li><a href="#energy-of-charged-conductor">Energy of a charged conductor</a></li>
+        <li><a href="#sharing-of-charge">Sharing of charge</a></li>
+      </ul>
+    </li>
+  </ul>
+</nav>
+
+<main class="notes-main">
+
+<!-- ===================== ELECTRIC CHARGE ===================== -->
+<section class="topic">
+<h2 id="electric-charge">Electric Charge</h2>
+
+<div class="def-box"><span class="box-label">Definition</span>
+<p>Electric charge (\(q\) or \(Q\)) is a special property of matter that produces and experiences electric and magnetic effects. Because of it, particles attract or repel each other by an <b>electric force</b>, which is different from the gravitational force.</p>
+</div>
+<p><b>In simple words:</b> charge is to electric force what mass is to gravity. The big difference is that gravity only pulls, while electric force can also push.</p>
+<div class="note-box"><span class="box-label">Note</span>
+<p>Repulsion is the sure test of electrification. Attraction alone is not proof, because a charged body also attracts a neutral body.</p>
+</div>
+
+<h3 id="types-of-charge">Types of charge</h3>
+<table class="compare">
+<tr><th>Positive charge</th><th>Negative charge</th></tr>
+<tr><td>The body has a deficiency of electrons compared with protons.</td><td>The body has an excess of electrons compared with protons.</td></tr>
+</table>
+<p><b>Simple view:</b> only electrons move from body to body. Losing electrons makes a body positive and gaining electrons makes it negative.</p>
+
+<h3 id="unit-of-charge">Unit and dimension</h3>
+<ul>
+<li>Charge is a <b>scalar</b> quantity.</li>
+<li>SI unit: <b>coulomb (C)</b>. \(1\,\text{C} = 1\,\text{A·s}\), so \(q = it\).</li>
+<li>CGS unit: electrostatic unit (esu), with \(1\,\text{C} = 3\times10^{9}\,\text{esu}\).</li>
+<li>Dimension: \([q] = [\mathrm{A\,T}]\).</li>
+</ul>
+
+<h3 id="charge-quantisation">Fundamental charge and quantisation</h3>
+<p>The minimum charge that can exist freely in nature is the <b>fundamental charge</b> \(e = 1.6\times10^{-19}\,\text{C}\). An electron carries \(-e\) and a proton carries \(+e\).</p>
+<div class="formula-box"><span class="box-label">Quantisation of charge</span>
+\[ q = \pm\, n e \]
+<p>\(n\) is an integer: the number of electrons in excess (or deficiency) compared with the neutral state.</p>
+</div>
+<p><b>Simple view:</b> charge comes in whole packets of \(e\), like money that cannot be split below one coin.</p>
+<p><b>Quarks</b> (inside the proton, neutron and other particles) carry \(\pm e/3\) and \(\pm 2e/3\). For example, a proton has \(\tfrac{2e}{3}+\tfrac{2e}{3}-\tfrac{e}{3}=+e\). Free charge is always an integral multiple of \(e\).</p>
+
+<h3 id="properties-of-charge">Properties of charge</h3>
+<ul>
+<li><b>Like charges repel, unlike charges attract.</b></li>
+<li><b>Conservation.</b> Charge can neither be created nor destroyed; it can only be transferred from one body to another. For \(A + B \to C + D\): \(q_1 + q_2 = q_3 + q_4\).</li>
+<li><b>Charge cannot be converted into energy</b> (unlike mass). Charge never exists without mass, but mass can exist without charge.</li>
+<li><b>Charge is independent of the speed of the body.</b> Mass increases with speed as \(m = \dfrac{m_0}{\sqrt{1 - v^2/c^2}}\) while charge stays the same, so the specific charge \(e/m\) <i>decreases</i> as the speed increases.</li>
+<li>A <b>stationary</b> charge produces only an electric field.</li>
+<li>A charge moving with <b>constant velocity</b> (zero acceleration) produces an electric field and also a magnetic field in its surroundings.</li>
+<li>A charge moving with <b>variable velocity</b> produces electric and magnetic fields and also radiates energy as an electromagnetic wave.</li>
+</ul>
+</section>
+
+<!-- ===================== CONDUCTORS ===================== -->
+<section class="topic">
+<h2 id="conductors-semiconductors-insulators">Conductors, Semiconductors and Insulators</h2>
+<table class="compare">
+<tr><th>Type</th><th>Free electrons</th><th>Examples</th></tr>
+<tr><td>Conductor</td><td>Large number of free (conduction) electrons</td><td>All metals</td></tr>
+<tr><td>Semiconductor</td><td>Conductivity much lower than conductors but much higher than insulators</td><td>Silicon, germanium</td></tr>
+<tr><td>Insulator (dielectric)</td><td>No, or negligible, free electrons</td><td>—</td></tr>
+</table>
+<p><b>Simple view:</b> in a conductor the nuclei stay fixed while the outer (free) electrons wander through the material. A charged conductor therefore shows induced charges \(+q_i\) and \(-q_i\) of equal magnitude when placed near a charge.</p>
+</section>
+
+<!-- ===================== METHODS OF CHARGING ===================== -->
+<section class="topic">
+<h2 id="methods-of-charging">Methods of Charging a Body</h2>
+
+<h3 id="charging-by-friction">By friction</h3>
+<p>When two neutral bodies (at least one an insulator) are rubbed together and then separated, they become oppositely charged. The body with the <b>greater electron affinity</b> becomes negative. Both bodies get equal magnitudes of charge: \(|-q| = |+q|\).</p>
+
+<h3 id="charging-by-conduction">By conduction</h3>
+<p>A charged conductor is connected to a neutral conductor. Charge flows until the <b>potentials of the two connected bodies become the same</b>. By conservation of charge, \(Q_0 = q_1 + q_2\).</p>
+<div class="formula-box"><span class="box-label">Identical bodies</span>
+\[ q_1' = q_2' = \frac{q_1 + q_2}{2} \]
+<p>A charged body with \(Q_0\) touching an identical neutral body leaves \(Q_0/2\) on each.</p>
+</div>
+
+<h3 id="charging-by-induction">By induction</h3>
+<p>A charged body is brought near (without touching) a neutral conductor. The conductor is then earthed through a switch; electrons flow between the conductor and the earth. After the earth connection is removed and the charged body is taken away, the conductor is left with a charge <b>opposite</b> to that of the inducing body. A positive inducing charge makes a neutral conductor negatively charged.</p>
+<ul>
+<li>In any conducting material, charge always resides on the <b>surface</b>, not inside the body.</li>
+<li>A point charge near a <b>neutral</b> conductor is always attracted: the induced opposite charge is nearer, so the attraction \(F_1\) is larger than the repulsion \(F_2\).</li>
+<li>Near a <b>charged</b> conductor, attraction takes place when the attractive force from the induced charge outweighs the repulsion, i.e. \(F_1 > F_2 + F_3\).</li>
+</ul>
+</section>
+
+<!-- ===================== COULOMB'S LAW ===================== -->
+<section class="topic">
+<h2 id="coulombs-law">Coulomb's Law</h2>
+<div class="def-box"><span class="box-label">Statement</span>
+<p>The magnitude of the electric force between two point charges is directly proportional to the product of the charges and inversely proportional to the square of the distance between them.</p>
+</div>
+
+<h3 id="coulombs-law-vacuum">In vacuum</h3>
+<p>\(F_{el} \propto q_1 q_2\) and \(F_{el} \propto \dfrac{1}{r^2}\).</p>
+<div class="formula-box"><span class="box-label">Formula</span>
+\[ F_{el} = \frac{K q_1 q_2}{r^2}, \qquad K = \frac{1}{4\pi\varepsilon_0} \]
+</div>
+<table class="compare">
+<tr><th>System</th><th>Value of \(K\)</th></tr>
+<tr><td>SI</td><td>\(9\times10^{9}\ \text{N m}^2/\text{C}^2\)</td></tr>
+<tr><td>CGS</td><td>\(1\ \text{dyne cm}^2/\text{esu}^2\)</td></tr>
+</table>
+<p>\(\varepsilon_0 = 8.85\times10^{-12}\ \text{C}^2\,\text{N}^{-1}\text{m}^{-2}\) is the <b>permittivity of free space (vacuum)</b>.</p>
+
+<h3 id="coulombs-law-medium">In a material medium</h3>
+<p>Two point charges \(q_1, q_2\) are placed in a medium at separation \(r\).</p>
+<div class="formula-box"><span class="box-label">Formula</span>
+\[ (F_{el})_{medium} = \frac{1}{4\pi\varepsilon}\frac{q_1q_2}{r^2} = \frac{1}{4\pi\varepsilon_0\varepsilon_r}\frac{q_1q_2}{r^2} = \frac{1}{\varepsilon_r}(F_{el})_{vacuum} \]
+\[ \varepsilon = \varepsilon_0\,\varepsilon_r, \qquad \varepsilon_r = \frac{\varepsilon}{\varepsilon_0} \]
+</div>
+<ul>
+<li>\(\varepsilon\) is the <b>absolute permittivity</b> of the medium; \(\varepsilon_r\) is the <b>relative permittivity</b> (dielectric constant).</li>
+<li>\(1 \le \varepsilon_r < \infty\). \(\varepsilon_r = 1\) for vacuum or air, and \(\varepsilon_r \to \infty\) for a conducting medium.</li>
+<li>A medium simply reduces the force by the factor \(\varepsilon_r\).</li>
+</ul>
+
+<h3 id="coulombs-law-points">Important points</h3>
+<ul>
+<li>The law applies directly to <b>point charges</b> only. For extended charge distributions, calculate the force by <b>integration</b>.</li>
+<li>Electric force is a <b>central force</b>: it always acts along the line joining the two charges.</li>
+<li>Electrostatic force is a <b>conservative force</b>.</li>
+<li>The line of action of the force on \(q_2\) passes through \(q_1\), so the torque on \(q_2\) about \(q_1\) is zero. Hence the <b>angular momentum</b> of \(q_2\) about \(q_1\) is conserved.</li>
+</ul>
+
+<h3 id="coulombs-law-vector">Vector form</h3>
+<p>Take two point charges \(q_1\) and \(q_2\) <b>with their signs</b>, at position vectors \(\vec r_1\) and \(\vec r_2\). Let \(\vec F_{21}\) be the force on \(q_2\) due to \(q_1\).</p>
+<div class="formula-box"><span class="box-label">Formula</span>
+\[ \vec F_{21} = \frac{K q_1 q_2}{|\vec r_2 - \vec r_1|^2}\cdot\frac{(\vec r_2 - \vec r_1)}{|\vec r_2 - \vec r_1|} = \frac{K q_1 q_2}{|\vec r_2 - \vec r_1|^3}(\vec r_2 - \vec r_1) \]
+</div>
+<p><b>Simplified form:</b> if \(\vec r\) is the vector from the source charge \(q_1\) to the point where the force is wanted,</p>
+<div class="formula-box"><span class="box-label">Formula</span>
+\[ \vec F = \frac{K q_1 q_2}{r^3}\,\vec r = \frac{K q_1 q_2}{r^2}\,\hat r \]
+</div>
+<p>Charges are put in with their signs, so a positive result means repulsion (along \(\hat r\)) and a negative result means attraction.</p>
+
+<h3 id="coulombs-law-results">Standard results</h3>
+<div class="result-box"><span class="box-label">Key results</span>
+<ol>
+<li><b>Equilibrium of a third charge (charges \(q\) and \(4q\), separation \(d\)).</b> Balance the two forces on the third charge: \(\dfrac{Kqq_0}{x^2} = \dfrac{K\,4q\,q_0}{(d-x)^2}\) gives \(x = \dfrac{d}{3}\) from \(q\). For the whole system to be in equilibrium, the third charge must be opposite in sign to \(q\) and equal to \(Q = -\dfrac{4q}{9}\).</li>
+<li><b>Four equal charges \(q\) at the corners of a square.</b> A fifth charge at the centre keeps the entire system in equilibrium if \(Q = -\dfrac{q}{4}\left(1 + 2\sqrt2\right)\) (opposite sign to \(q\)).</li>
+<li><b>Eight equal charges \(q\) at the corners of a cube of side \(a\).</b> The net force on any one of them is directed along the body diagonal (away from the cube), with magnitude \[ F = \sqrt3\,\frac{Kq^2}{a^2}\left(1 + \frac{1}{\sqrt2} + \frac{1}{3\sqrt3}\right). \]</li>
+<li><b>Charge at the centre of a regular polygon</b> with equal like charges at all vertices: the net force is always <b>zero</b>.</li>
+<li><b>Circular motion around a fixed charge \(+q_0\)</b> (particle \(m, q\), radius \(r\), attraction provides the centripetal force): \[ v = \sqrt{\frac{Kqq_0}{mr}}, \qquad \omega = \frac{v}{r}, \qquad f = \frac{1}{2\pi}\sqrt{\frac{Kqq_0}{mr^3}}. \]</li>
+<li><b>Particle on the perpendicular line between two fixed charges \(+q\) at \((0,\pm a)\)</b> (particle \(m,\,-q_0\) at distance \(x\) along the axis): the vertical components cancel and \[ F_{net} = \frac{2Kqq_0\,x}{(a^2+x^2)^{3/2}}. \] The motion is oscillatory but <b>not SHM</b>, because \(F \not\propto x\). For \(x \ll a\), \(F \approx \dfrac{2Kqq_0}{a^3}x\), which is SHM with \[ T = 2\pi\sqrt{\frac{ma^3}{2Kqq_0}} = 2\pi\sqrt{\frac{2\pi\varepsilon_0 m a^3}{qq_0}}. \]</li>
+<li><b>Charge \(Q\) on the axis of a square</b> (side \(a\), centre at origin, four charges \(q\) at corners, \(Q\) at distance \(y\) along the axis): \[ F_{net} = \frac{4KqQ\,y}{\left(y^2 + a^2/2\right)^{3/2}} \] along the axis. If \(Q\) has the sign opposite to \(q\), it oscillates about the centre.</li>
+<li><b>Regular pentagon, charges \(q\) at all vertices, \(Q\) at the centre</b> (vertex distance \(r\)). Net force on \(Q\) when the vertex charge at C is: removed \(\to \dfrac{KqQ}{r^2}\); both C and D removed \(\to \dfrac{2KqQ}{r^2}\cos 36^\circ\); C replaced by \(-q \to \dfrac{2KqQ}{r^2}\); C replaced by \(+2q \to \dfrac{KqQ}{r^2}\).</li>
+</ol>
+</div>
+
+<h4>Two charged balls hanging from a common point</h4>
+<p>Two identical strings (length \(L\)) hold balls of mass \(m\) and charge \(q\); \(\theta\) is the angle of each string with the vertical.</p>
+<div class="result-box"><span class="box-label">Important results</span>
+<ul>
+<li>\(\tan\theta = \dfrac{F_{el}}{mg}\) with \(F_{el} = \dfrac{Kq^2}{4L^2\sin^2\theta}\).</li>
+<li>Equal masses with different charges: \(\tan\theta_1 = \tan\theta_2 = \dfrac{F_{el}}{mg}\), so \(\theta_1 = \theta_2\). The angle depends only on the masses, not on the charges.</li>
+<li>Different masses: \(\tan\theta_1 = \dfrac{F_{el}}{m_1 g}\), \(\tan\theta_2 = \dfrac{F_{el}}{m_2 g}\), so \(\theta \propto \dfrac{1}{\text{mass}}\); the lighter ball hangs at the larger angle.</li>
+<li><b>Whole set-up in a liquid</b> with the angle unchanged: balancing \(\tan\theta\) in air and in liquid gives \[ \varepsilon_r = \frac{1}{1 - \dfrac{1}{RD}} = \frac{\rho_s}{\rho_s - \rho_l}, \] where \(RD = \rho_s/\rho_l\) is the relative density, \(\rho_s\) the density of the balls and \(\rho_l\) that of the liquid.</li>
+</ul>
+</div>
+</section>
+
+<!-- ===================== ELECTRIC FIELD ===================== -->
+<section class="topic">
+<h2 id="electric-field">Electric Field</h2>
+<p>The electric field \(\vec E\) at a point is the force per unit positive test charge, so a charge \(q\) placed there feels \(\vec F = q\vec E\) (see <a class="xref" href="#force-on-charge-in-field">force on a charge in an external field</a>). Fields of several charges add as <b>vectors</b>.</p>
+
+<h3 id="field-of-point-charge">Point charge</h3>
+<div class="formula-box"><span class="box-label">Formula</span>
+\[ E = \frac{Kq}{r^2} \]
+</div>
+<ul>
+<li>For a <b>positive</b> point charge the field is directed <b>away</b> from the charge (radially outward).</li>
+<li>For a <b>negative</b> point charge the field is directed <b>towards</b> the charge (radially inward).</li>
+</ul>
+
+<figure class="fig">
+<svg viewBox="0 0 700 200" role="img" aria-label="Field lines of a positive charge, a negative charge and a dipole">
+<defs>
+<marker id="ah1" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0 0L10 5L0 10z" class="s-fill"/></marker>
+</defs>
+<g class="s-line" marker-end="url(#ah1)">
+<line x1="124" y1="100" x2="190" y2="100"/><line x1="96" y1="100" x2="30" y2="100"/>
+<line x1="110" y1="86" x2="110" y2="20"/><line x1="110" y1="114" x2="110" y2="180"/>
+<line x1="120" y1="90" x2="167" y2="43"/><line x1="100" y1="90" x2="53" y2="43"/>
+<line x1="120" y1="110" x2="167" y2="157"/><line x1="100" y1="110" x2="53" y2="157"/>
+<line x1="364" y1="100" x2="430" y2="100" marker-end="none" marker-start="url(#ah1)"/>
+</g>
+<g class="s-line">
+<line x1="236" y1="100" x2="304" y2="100" marker-start="url(#ah1)"/>
+<line x1="350" y1="86" x2="350" y2="20" marker-start="url(#ah1)"/>
+<line x1="350" y1="114" x2="350" y2="180" marker-start="url(#ah1)"/>
+<line x1="360" y1="90" x2="407" y2="43" marker-start="url(#ah1)"/>
+<line x1="340" y1="90" x2="293" y2="43" marker-start="url(#ah1)"/>
+<line x1="360" y1="110" x2="407" y2="157" marker-start="url(#ah1)"/>
+<line x1="340" y1="110" x2="293" y2="157" marker-start="url(#ah1)"/>
+</g>
+<g class="s-line" marker-end="url(#ah1)" fill="none">
+<path d="M620 92 C 650 40, 540 40, 560 92"/>
+<path d="M620 108 C 650 160, 540 160, 560 108"/>
+<path d="M626 100 L 690 100"/>
+<path d="M500 100 L 554 100"/>
+</g>
+<circle cx="110" cy="100" r="13" class="s-pos"/><text x="110" y="105" class="s-txt s-mid">+</text>
+<circle cx="350" cy="100" r="13" class="s-neg"/><text x="350" y="105" class="s-txt s-mid">−</text>
+<circle cx="626" cy="100" r="11" class="s-pos"/><text x="626" y="105" class="s-txt s-mid">+</text>
+<circle cx="554" cy="100" r="11" class="s-neg"/><text x="554" y="105" class="s-txt s-mid">−</text>
+<text x="110" y="196" class="s-txt s-mid">Positive</text><text x="350" y="196" class="s-txt s-mid">Negative</text><text x="590" y="196" class="s-txt s-mid">Dipole</text>
+</svg>
+<figcaption>Field lines: outward from +, inward to −, and from + to − for a dipole.</figcaption>
+</figure>
+
+<h4>Field along a line of two equal and opposite charges</h4>
+<p>Take \(+q\) at \((-a,0)\) and \(-q\) at \((a,0)\). Take the field positive along \(+x\) and negative along \(-x\).</p>
+<ul>
+<li>At the origin: \(E = \dfrac{Kq}{a^2} + \dfrac{Kq}{a^2} = \dfrac{2Kq}{a^2}\) (along \(+x\)).</li>
+<li>At \((2a,0)\): \(E = \dfrac{Kq}{9a^2} - \dfrac{Kq}{a^2} = -\dfrac{8Kq}{9a^2}\) (along \(-x\)).</li>
+<li><b>\(E\) versus \(x\):</b> between the charges \(E\) is positive, smallest at the middle, and rises steeply near each charge (a U-shaped curve that is <b>not a parabola</b>). Outside the charges \(E\) is negative and tends to zero for large \(|x|\).</li>
+<li><b>\(E\) versus \(y\)</b> (along the perpendicular bisector): a bell-shaped curve with its maximum at \(y=0\), falling to zero for large \(|y|\).</li>
+<li>For two equal like charges, \(E\) is zero at the midpoint and changes sign across it; the curves differ on either side of each charge.</li>
+</ul>
+
+<h3 id="continuous-charge-distribution">Continuous charge distribution</h3>
+<table class="compare">
+<tr><th>Distribution</th><th>Density</th><th>Small element</th></tr>
+<tr><td>Linear</td><td>\(\lambda = \dfrac{\text{charge}}{\text{length}}\) (C/m)</td><td>\(dq = \lambda\,dL\)</td></tr>
+<tr><td>Surface</td><td>\(\sigma = \dfrac{\text{charge}}{\text{area}}\) (C/m²)</td><td>\(dq = \sigma\,dA\)</td></tr>
+<tr><td>Volume</td><td>\(\rho = \dfrac{\text{charge}}{\text{volume}}\) (C/m³)</td><td>\(dq = \rho\,dV\)</td></tr>
+</table>
+<p>The field of an extended body is found by breaking it into small elements \(dq\), treating each as a point charge and adding (integrating) the vectors.</p>
+
+<h3 id="field-of-line-charge">Electric field due to a uniform line charge</h3>
+<p>A line (rod) with uniform linear density \(\lambda\). We find the field at a point \(P\) at perpendicular distance \(d\) from the line in terms of \(\alpha\), \(\beta\), \(\lambda\) and \(d\). Here \(\alpha\) and \(\beta\) are the angles that the lines from \(P\) to the two ends make with the perpendicular from \(P\).</p>
+
+<figure class="fig">
+<svg viewBox="0 0 360 260" role="img" aria-label="Geometry of the field of a line charge">
+<line x1="60" y1="20" x2="60" y2="240" class="s-wire"/>
+<line x1="60" y1="130" x2="230" y2="130" class="s-dash"/>
+<line x1="230" y1="130" x2="60" y2="35" class="s-thin"/>
+<line x1="230" y1="130" x2="60" y2="225" class="s-thin"/>
+<circle cx="230" cy="130" r="3.5" class="s-fill"/>
+<text x="238" y="127" class="s-txt">P</text>
+<text x="140" y="148" class="s-txt">d</text>
+<text x="170" y="116" class="s-txt">α</text>
+<text x="170" y="154" class="s-txt">β</text>
+<text x="66" y="30" class="s-txt">A</text><text x="66" y="236" class="s-txt">B</text>
+<text x="40" y="82" class="s-txt">dy</text>
+</svg>
+<figcaption>Rod AB seen from point P; α (upper) and β (lower) are measured from the perpendicular.</figcaption>
+</figure>
+
+<div class="proof-box"><span class="box-label">Derivation</span>
+<p>An element \(dy\) carries \(dq = \lambda\,dy\) and gives \(dE = \dfrac{K\,dq}{r^2}\). Let \(\theta\) be the angle of the element's line from \(P\) with the perpendicular. Then \(y = d\tan\theta\), \(dy = d\sec^2\theta\,d\theta\), \(r^2 = d^2\sec^2\theta\). Components:</p>
+\[ dE_\perp = dE\cos\theta = \frac{K\lambda}{d}\cos\theta\,d\theta, \qquad dE_\parallel = dE\sin\theta = \frac{K\lambda}{d}\sin\theta\,d\theta \]
+<p>Integrate from \(\theta = -\beta\) to \(\theta = +\alpha\):</p>
+\[ E_\perp = \frac{K\lambda}{d}\left[\sin\alpha + \sin\beta\right], \qquad E_\parallel = \frac{K\lambda}{d}\left[\cos\beta - \cos\alpha\right] \]
+</div>
+<div class="formula-box"><span class="box-label">Result</span>
+\[ E_{net} = \sqrt{E_\perp^2 + E_\parallel^2}, \qquad \tan\phi = \frac{E_\parallel}{E_\perp} \]
+<p>\(\phi\) is the angle of the net field from the perpendicular direction.</p>
+</div>
+
+<h3 id="line-charge-special-cases">Special cases of a line charge</h3>
+<div class="result-box"><span class="box-label">Key results</span>
+<ul>
+<li><b>Point \(P\) opposite a point of the rod</b> (rod extends on both sides): \(E_\perp = \dfrac{K\lambda}{d}[\sin\alpha + \sin\beta]\), \(E_\parallel = \dfrac{K\lambda}{d}[\cos\beta - \cos\alpha]\).</li>
+<li><b>Point \(P\) beyond one side</b> (both ends on the same side of the perpendicular): \(E_\perp = \dfrac{K\lambda}{d}[\sin\alpha - \sin\beta]\), \(E_\parallel = \dfrac{K\lambda}{d}[\cos\beta - \cos\alpha]\).</li>
+<li><b>Symmetric point</b> (\(\alpha = \beta\)): \(E_\perp = \dfrac{2K\lambda\sin\alpha}{d}\), \(E_\parallel = 0\).</li>
+<li><b>Infinitely long wire</b> (\(\alpha = \beta = 90^\circ\)): \(E_\parallel = 0\) and \[ E = \frac{2K\lambda}{d}. \] The field is perpendicular to the wire, directed away for \(+\lambda\) and towards the wire for \(-\lambda\) (\(\vec E = \dfrac{2K\lambda}{d}\hat n\) in vector form).</li>
+<li><b>Semi-infinite wire, point on the perpendicular through its end</b> (\(\alpha = 90^\circ,\ \beta = 0\)): \(E_\perp = E_\parallel = \dfrac{K\lambda}{d}\), so \[ E_{net} = \frac{\sqrt2\,K\lambda}{d} \] at \(45^\circ\) to the wire.</li>
+</ul>
+</div>
+
+<h3 id="field-of-charged-arc">Field due to a charged arc at its centre</h3>
+<p>A circular arc of radius \(R\) and total charge \(Q\) subtends angle \(\theta\) at the centre. Then \(\lambda = \dfrac{Q}{R\theta}\) and \(dq = \lambda R\,d\alpha\), where \(\alpha\) is measured from the bisector.</p>
+<div class="proof-box"><span class="box-label">Derivation</span>
+<p>By symmetry about the bisector, the components \(dE\sin\alpha\) cancel. Only \(dE\cos\alpha\) survives:</p>
+\[ E = \int_{-\theta/2}^{\theta/2}\frac{K\lambda R\,d\alpha}{R^2}\cos\alpha = \frac{2K\lambda}{R}\sin\frac{\theta}{2} = \frac{KQ}{R^2}\cdot\frac{\sin(\theta/2)}{\theta/2} \]
+</div>
+<div class="formula-box"><span class="box-label">Formula</span>
+\[ E = \frac{2K\lambda}{R}\sin\frac{\theta}{2} \]
+<p>The field is directed along the angle bisector. If \(\theta \ll 1\), \(E \approx \dfrac{KQ}{R^2}\) (a point charge).</p>
+</div>
+<table class="compare">
+<tr><th>Arc angle \(\theta\)</th><th>Field at the centre</th></tr>
+<tr><td>\(360^\circ\) (full ring)</td><td>\(0\)</td></tr>
+<tr><td>\(180^\circ\) (semicircle)</td><td>\(\dfrac{2K\lambda}{R}\)</td></tr>
+<tr><td>\(90^\circ\) (quarter circle)</td><td>\(\dfrac{\sqrt2\,K\lambda}{R}\)</td></tr>
+</table>
+<p>Combinations (arcs with straight wires, rings of opposite charge) are solved by adding these standard fields as vectors. For a semicircle whose density varies as \(\lambda = \lambda_0\sin\theta\), the field at the centre is \(\dfrac{\pi K\lambda_0}{2R}\).</p>
+
+<h3 id="field-on-axis-of-ring">Field on the axis of a uniformly charged ring</h3>
+<p>A ring of radius \(R\) carries charge \(Q\) uniformly. We find the field on the axis at distance \(x\) from the centre.</p>
+<div class="proof-box"><span class="box-label">Derivation</span>
+<p>Each element gives \(dE = \dfrac{K\,dq}{R^2 + x^2}\). The components perpendicular to the axis cancel by symmetry; only \(dE\cos\theta\) with \(\cos\theta = \dfrac{x}{\sqrt{R^2 + x^2}}\) survives:</p>
+\[ E = \int dE\cos\theta = \frac{Kx}{(R^2+x^2)^{3/2}}\int dq = \frac{KQx}{(R^2 + x^2)^{3/2}} \]
+</div>
+<div class="formula-box"><span class="box-label">Formula</span>
+\[ E = \frac{KQx}{(R^2 + x^2)^{3/2}} \]
+</div>
+<ul>
+<li>The field is <b>zero at the centre</b> (\(x = 0\)) and as \(x \to \infty\).</li>
+<li>If \(x \gg R\): \(E \approx \dfrac{KQ}{x^2}\) (acts like a point charge).</li>
+<li><b>Maximum field:</b> set \(\dfrac{dE}{dx} = 0\), which gives \(R^2 + x^2 - 3x^2 = 0\), so \(x = \pm\dfrac{R}{\sqrt2}\). \[ E_{max} = \frac{2KQ}{3\sqrt3\,R^2} \]</li>
+</ul>
+
+<figure class="fig">
+<svg viewBox="0 0 420 270" role="img" aria-label="Field on the axis of a ring versus x">
+<line x1="20" y1="150" x2="405" y2="150" class="s-axis"/>
+<line x1="210" y1="15" x2="210" y2="262" class="s-axis"/>
+<path d="M210 150 C 225 70 245 52 270 52 C 310 52 350 110 390 128" class="s-curve"/>
+<path d="M210 150 C 195 230 175 248 150 248 C 110 248 70 190 30 172" class="s-curve"/>
+<line x1="270" y1="52" x2="270" y2="150" class="s-dash"/>
+<line x1="150" y1="248" x2="150" y2="150" class="s-dash"/>
+<text x="394" y="144" class="s-txt">x</text><text x="216" y="24" class="s-txt">E</text>
+<text x="276" y="68" class="s-txt">2KQ / 3√3R²</text>
+<text x="262" y="166" class="s-txt">R/√2</text>
+<text x="110" y="166" class="s-txt">−R/√2</text>
+</svg>
+<figcaption>Field on the axis of a ring: zero at the centre, extremes at ±R/√2.</figcaption>
+</figure>
+
+<h3 id="field-on-axis-of-disc">Field on the axis of a uniformly charged disc</h3>
+<p>A disc of radius \(R\) with uniform surface density \(\sigma = \dfrac{Q}{\pi R^2}\). Imagine it as many concentric rings with radii from \(0\) to \(R\). A ring of radius \(r\) and width \(dr\) has area \(2\pi r\,dr\) and charge \(dQ = \sigma\,2\pi r\,dr\).</p>
+<div class="proof-box"><span class="box-label">Derivation</span>
+\[ E = \int_0^R \frac{K\sigma\,2\pi r\,dr\;x}{(r^2 + x^2)^{3/2}} = \frac{\sigma x}{2\varepsilon_0}\int_0^R \frac{r\,dr}{(r^2+x^2)^{3/2}} \]
+<p>Put \(r^2 + x^2 = t\), \(r\,dr = dt/2\):</p>
+\[ E = \frac{\sigma x}{2\varepsilon_0}\left[\frac{1}{x} - \frac{1}{\sqrt{x^2 + R^2}}\right] \]
+</div>
+<div class="formula-box"><span class="box-label">Formula</span>
+\[ E = \frac{\sigma}{2\varepsilon_0}\left[1 - \frac{x}{\sqrt{x^2 + R^2}}\right] = \frac{\sigma}{2\varepsilon_0}\left[1 - \cos\theta\right] \]
+<p>\(\theta\) is the semi-conical angle of the cone with its apex at the point and the disc as base.</p>
+</div>
+<p><b>Graph:</b> the field has magnitude \(\dfrac{\sigma}{2\varepsilon_0}\) just next to the disc and falls smoothly to zero at large \(|x|\). It points away from the disc (positive on one side, negative on the other for \(+\sigma\)).</p>
+
+<h3 id="field-of-infinite-sheet">Field due to an infinitely large uniformly charged sheet</h3>
+<p>For an infinite sheet \(\theta \to 90^\circ\), so \(\cos\theta \to 0\):</p>
+<div class="formula-box"><span class="box-label">Formula</span>
+\[ E_{sheet} = \frac{\sigma}{2\varepsilon_0} \]
+<p>This is a <b>constant</b> quantity: it is not a function of \(x\), i.e. it does not depend on the distance from the sheet.</p>
+</div>
+<p>When two parallel layers each of density \(\sigma\) are combined (a thin sheet with \(\sigma\) on each face), each contributes \(\dfrac{\sigma}{2\varepsilon_0}\) and the net field outside is \(\dfrac{\sigma}{\varepsilon_0}\). The same result follows from <a class="xref" href="#gauss-line-sheet">Gauss's law</a>.</p>
+
+<h3 id="force-on-charge-in-field">Force on a charged particle in an external electric field</h3>
+<p>A point charge \(q\) placed where the electric field is \(\vec E\) experiences</p>
+<div class="formula-box"><span class="box-label">Formula</span>
+\[ \vec F = q\vec E \]
+</div>
+<ul>
+<li>If \(q\) is <b>positive</b>, the force is in the direction of the field.</li>
+<li>If \(q\) is <b>negative</b>, the force is opposite to the field.</li>
+<li>A <b>uniform field</b> is represented by parallel, equidistant lines pointing along the field.</li>
+</ul>
+<div class="result-box"><span class="box-label">Key results</span>
+<ul>
+<li><b>Orbit around an infinite line charge.</b> A charge (\(-q\), mass \(m\)) circles a line of density \(\lambda\) at radius \(R\): \(qE = \dfrac{mv^2}{R}\) with \(E = \dfrac{2K\lambda}{R}\) gives \[ v = \sqrt{\frac{2Kq\lambda}{m}} \] which is <b>independent of \(R\)</b>.</li>
+<li><b>Ball hanging near a large sheet.</b> A ball (\(q, m\)) on a string near a sheet of density \(\sigma\): \(\tan\theta = \dfrac{qE}{mg} = \dfrac{q\sigma}{2\varepsilon_0 mg}\), so \(\theta = \tan^{-1}\!\left(\dfrac{\sigma q}{2\varepsilon_0 mg}\right)\).</li>
+<li><b>Entering a uniform field perpendicular to its direction</b> (plate length \(L\), speed \(v_0\)): time in the field \(t = \dfrac{L}{v_0}\), \(v_y = \dfrac{qEL}{mv_0}\), and the deflection angle satisfies \[ \tan\delta = \frac{v_y}{v_x} = \frac{qEL}{mv_0^2}. \]</li>
+</ul>
+</div>
+</section>
+
+<!-- ===================== POTENTIAL ENERGY ===================== -->
+<section class="topic">
+<h2 id="electrostatic-potential-energy">Electrostatic Potential Energy</h2>
+<div class="def-box"><span class="box-label">Definition</span>
+<p>A very small change in electrostatic potential energy is defined as the <b>negative of the work done by the electrostatic force</b>.</p>
+\[ dU = -\,dW_{\text{electrostatic force}} \]
+</div>
+<p>Moving a charge from \(A\) (energy \(U_A\)) to \(B\) (energy \(U_B\)) along any path:</p>
+\[ \Delta U = \int_A^B dU = -\int_A^B dW_{el}, \qquad U_B - U_A = -\int_A^B \vec F_{el}\cdot d\vec r \]
+<div class="formula-box"><span class="box-label">Formula</span>
+\[ U_B - U_A = -(W_{el})_{A\to B} \]
+</div>
+
+<h3 id="work-energy-theorem">Work–energy theorem</h3>
+\[ W_c + W_{nc} + W_{ext} = \Delta K \]
+<p>If \(W_{nc} = 0\) and \(\Delta K = 0\) (the charge is moved very slowly), then \(W_c + W_{ext} = 0\), and since \(W_c = -\Delta U\):</p>
+<div class="formula-box"><span class="box-label">Formula</span>
+\[ \Delta U = W_{ext} \]
+</div>
+
+<h3 id="pe-two-charges">Potential energy of a system of two point charges</h3>
+<p>Two point charges \(q_1\) and \(q_2\) separated by distance \(r\).</p>
+<div class="proof-box"><span class="box-label">Derivation</span>
+<p>The work done by the electric force when \(q_2\) moves from distance \(r\) to infinity:</p>
+\[ W_{el} = \int_r^\infty \frac{Kq_1q_2}{x^2}\,dx = Kq_1q_2\left[-\frac1x\right]_r^\infty = \frac{Kq_1q_2}{r} \]
+<p>With \(\Delta U = -W_{el}\): \(U_\infty - U_r = -\dfrac{Kq_1q_2}{r}\). Taking the reference \(U_\infty = 0\), \(U_r = \dfrac{Kq_1q_2}{r}\).</p>
+</div>
+<div class="formula-box"><span class="box-label">Formula</span>
+\[ U = \frac{Kq_1q_2}{r} \]
+<p>Take \(q_1\) and \(q_2\) with their proper signs. Standard reference: \(r \to \infty\), \(U = 0\).</p>
+</div>
+
+<h3 id="pe-system-of-charges">Potential energy of a system of n point charges</h3>
+<p>For \(n\) point charges there are \({}^nC_2\) pairs. The energy of the system is the <b>sum of the energies of all \({}^nC_2\) pairs</b>:</p>
+<div class="formula-box"><span class="box-label">Formula</span>
+\[ U_{system} = \frac12\sum_{\substack{i,j=1\\ i\ne j}}^{n}\frac{Kq_iq_j}{r_{ij}} \]
+</div>
+<p>For three charges with separations \(x\) (between \(q_1,q_2\)), \(y\) (\(q_2,q_3\)) and \(z\) (\(q_3,q_1\)): \(U = \dfrac{Kq_1q_2}{x} + \dfrac{Kq_2q_3}{y} + \dfrac{Kq_3q_1}{z}\). Regular arrangements (square, hexagon) are handled by adding every pair, using the diagonal distances for non-adjacent pairs.</p>
+<p>The work done by an external agent in changing the configuration is \(W_{ext} = \Delta U = U_f - U_i\). For moving a point charge \(q_0\) from \(a\) to \(b\) in the field of a fixed charge \(Q\): \(W_{ext} = Kq_0Q\left(\dfrac1b - \dfrac1a\right)\).</p>
+</section>
+
+<!-- ===================== ELECTRIC POTENTIAL ===================== -->
+<section class="topic">
+<h2 id="electric-potential">Electric Potential (V)</h2>
+<div class="def-box"><span class="box-label">Definition</span>
+<p>With the reference at infinity, the electric potential at a point \(P\) is the <b>work done by an external agent in bringing a unit positive charge very slowly from infinity to \(P\)</b>.</p>
+</div>
+<div class="formula-box"><span class="box-label">Formula</span>
+\[ V_P = \frac{W_{ext}(\infty\to P)}{q} = -\frac{W_{el}(\infty\to P)}{q} = \frac{\Delta U}{q} = \frac{U_P}{q} \]
+\[ U_P = qV_P \qquad \text{(potential energy = charge} \times \text{potential)} \]
+</div>
+<p><b>SI unit:</b> \(\text{J C}^{-1}\) or <b>volt</b>. <b>Dimension:</b> \([V] = [\mathrm{M\,L^2\,T^{-3}\,A^{-1}}]\).</p>
+
+<h3 id="potential-point-charge">Potential due to a point charge</h3>
+<div class="formula-box"><span class="box-label">Formula</span>
+\[ V = \frac{Kq}{r} \]
+<p>Take \(q\) with its sign. As \(r \to \infty\), \(V \to 0\).</p>
+</div>
+<div class="note-box"><span class="box-label">Note</span>
+<p>In the direction of the electric field the potential decreases. A positive charge always moves (on its own) from higher to lower potential; a negative charge moves from lower to higher potential.</p>
+</div>
+
+<h3 id="potential-ring-axis">Potential on the axis of a charged ring</h3>
+<p>A charge \(Q\) is distributed on a ring of radius \(R\). All elements are at the same distance \(\sqrt{R^2 + x^2}\) from the axial point:</p>
+\[ dV = \frac{K\,dq}{\sqrt{R^2 + x^2}} \quad\Rightarrow\quad V = \frac{K}{\sqrt{R^2+x^2}}\int dq \]
+<div class="formula-box"><span class="box-label">Formula</span>
+\[ V = \frac{KQ}{\sqrt{R^2 + x^2}} \]
+</div>
+<ul>
+<li>At the centre (\(x = 0\)): \(V = \dfrac{KQ}{R}\) (maximum). At infinity (\(x \to \infty\)): \(V = 0\).</li>
+<li>This is valid for a uniform <b>and</b> for a non-uniform charge distribution on the ring.</li>
+<li><b>Graph:</b> a symmetric bell-shaped curve with peak \(\dfrac{KQ}{R}\) at the centre, falling to zero on both sides.</li>
+</ul>
+
+<h3 id="potential-results">Some important results</h3>
+<div class="result-box"><span class="box-label">Key results</span>
+<ul>
+<li>A point charge \(q\) at a point where the potential is \(V\) has potential energy \(U = qV\).</li>
+<li>Moving \(q\) from \(A\) to \(B\) by any path (potentials \(V_A, V_B\)):
+\[ (W_{el})_{A\to B} = -\Delta U = -q\,\Delta V = -q(V_B - V_A) \]
+\[ (W_{ext})_{A\to B} = \Delta U = q(V_B - V_A) \quad\text{(if } W_{nc}=0,\ \Delta K=0) \]</li>
+<li>Work in moving \(q\) from the centre of a ring (radius \(R\), charge \(Q\)): to infinity \(W_{ext} = -\dfrac{KQq}{R}\); to a point on the axis at \(R\sqrt3\) from the centre \(W_{ext} = -\dfrac{KQq}{2R}\).</li>
+<li><b>Minimum speed to escape a ring's field.</b> For a particle thrown from an axis point at \(R\sqrt3\) towards the centre so that it does not return, energy conservation gives \(V_0 = \sqrt{\dfrac{KQq}{mR}}\)-type results from \(KE_P + PE_P = KE_O + PE_O\).</li>
+<li>For two concentric rings or two charged bodies, the potential at a point is the <b>scalar sum</b> of the potentials of each.</li>
+</ul>
+</div>
+
+<h3 id="potential-disc-axis">Potential on the axis of a uniformly charged disc</h3>
+<p>Use a ring of radius \(r\), width \(dr\): \(dQ = 2\pi r\sigma\,dr\) and \(dV = \dfrac{K\,dQ}{\sqrt{r^2 + x^2}}\).</p>
+\[ V = K\sigma\,2\pi\int_0^R\frac{r\,dr}{\sqrt{r^2+x^2}} = \frac{\sigma}{2\varepsilon_0}\left(\sqrt{x^2 + R^2} - x\right) \]
+<div class="formula-box"><span class="box-label">Formula</span>
+\[ V = \frac{\sigma}{2\varepsilon_0}\left(\sqrt{x^2 + R^2} - x\right), \qquad V_{centre} = \frac{\sigma R}{2\varepsilon_0} \]
+</div>
+<p>Differentiating, \(E = -\dfrac{dV}{dx} = \dfrac{\sigma}{2\varepsilon_0}\left(1 - \dfrac{x}{\sqrt{x^2+R^2}}\right)\), the same as the field found earlier.</p>
+
+<h3 id="potential-line-charge">Potential difference due to an infinite line charge</h3>
+<p>The field is \(E = \dfrac{2K\lambda}{x}\) at distance \(x\). For points \(A\) and \(B\) at distances \(r_A\) and \(r_B\):</p>
+\[ dV = -E\,dx = -\frac{2K\lambda}{x}\,dx \quad\Rightarrow\quad \int_{V_A}^{V_B}dV = -2K\lambda\int_{r_A}^{r_B}\frac{dx}{x} \]
+<div class="formula-box"><span class="box-label">Formula</span>
+\[ V_B - V_A = -2K\lambda\ln\!\left(\frac{r_B}{r_A}\right) \]
+</div>
+</section>
+
+<!-- ===================== FIELD-POTENTIAL RELATION ===================== -->
+<section class="topic">
+<h2 id="field-potential-relation">Relation Between Field and Potential</h2>
+<p>For a small displacement \(d\vec l\) of a charge \(q\) by the electric force, \(dW_{el} = q\vec E\cdot d\vec l\), and also \(dW_{el} = -q\,dV\). Hence</p>
+<div class="formula-box"><span class="box-label">Formula</span>
+\[ dV = -\vec E\cdot d\vec l, \qquad dV = -|E||dl|\cos\theta \]
+</div>
+<p>\(\theta\) is the angle between \(\vec E\) and \(d\vec l\).</p>
+<ul>
+<li><b>\(\theta = 90^\circ\)</b> (\(\vec E \perp d\vec l\)): \(dV = 0\), the potential is constant (the charge moves along an equipotential).</li>
+<li><b>\(E = 0\):</b> \(dV = 0\), the potential is constant.</li>
+<li><b>\(\theta = 0^\circ\):</b> \(dV = -E\,dl\), the potential <b>decreases</b> when moving along the field.</li>
+<li><b>\(\theta = 180^\circ\):</b> \(dV = +E\,dl\), the potential <b>increases</b> when moving against the field.</li>
+</ul>
+<p>Integrating, \(V_B - V_A = -\int_A^B\vec E\cdot d\vec l\). In a closed loop the integral of the electric field is <b>zero</b> (\(\oint\vec E\cdot d\vec l = 0\)): the integral of the electric field is <b>path independent</b>.</p>
+
+<h3 id="potential-difference-from-field">Change in potential when the field is given</h3>
+<p>If \(\vec E = E_x\hat i + E_y\hat j + E_z\hat k\) and \(d\vec l = dx\,\hat i + dy\,\hat j + dz\,\hat k\):</p>
+<div class="formula-box"><span class="box-label">Formula</span>
+\[ dV = -\left[E_x\,dx + E_y\,dy + E_z\,dz\right], \qquad \Delta V = V_B - V_A = -\int_{(x_1,y_1,z_1)}^{(x_2,y_2,z_2)}\left(E_x\,dx + E_y\,dy + E_z\,dz\right) \]
+</div>
+
+<h3 id="field-from-potential">Electric field vector when the potential is given</h3>
+<p>If the potential \(V(x,y,z)\) is known, \(dV = -\vec E\cdot d\vec l\) gives</p>
+<div class="formula-box"><span class="box-label">Formula</span>
+\[ \vec E = -\nabla V, \qquad \nabla = \hat i\frac{\partial}{\partial x} + \hat j\frac{\partial}{\partial y} + \hat k\frac{\partial}{\partial z} \]
+\[ \vec E = -\left[\frac{\partial V}{\partial x}\hat i + \frac{\partial V}{\partial y}\hat j + \frac{\partial V}{\partial z}\hat k\right] \]
+</div>
+<p>For a field that depends on one variable only, \(E = -\dfrac{dV}{dx}\) (or \(-\dfrac{dV}{dr}\) for a radial field).</p>
+
+<h3 id="uniform-field-relation">Relation in a uniform electric field</h3>
+<p>For a uniform field \(\vec E\), \(\vec E\) comes out of the integral: \(dV = -\vec E\cdot\!\int d\vec l\), and by the polygon law of vector addition \(\int_A^B d\vec l = \vec{AB}\):</p>
+<div class="formula-box"><span class="box-label">Formula</span>
+\[ V_B - V_A = -\vec E\cdot\vec{AB} = -E\,d \]
+<p>\(d\) is the distance between \(A\) and \(B\) measured <b>in the direction of the electric field</b> (the component of \(\vec{AB}\) along \(\vec E\)).</p>
+</div>
+</section>
+
+<!-- ===================== EQUIPOTENTIAL ===================== -->
+<section class="topic">
+<h2 id="equipotential-surfaces">Equipotential Surfaces</h2>
+<div class="def-box"><span class="box-label">Definition</span>
+<p>An equipotential surface is a surface on which the potential is the same at every point.</p>
+</div>
+<ul>
+<li>It is always <b>perpendicular to the direction of the electric field</b>.</li>
+<li>Shape: <b>spherical</b> for a point charge, <b>cylindrical</b> for an infinitely long line charge, and <b>parallel planes</b> for an infinite sheet of charge.</li>
+<li>Two equipotential surfaces never intersect each other (that would give two potentials at one point).</li>
+</ul>
+<div class="result-box"><span class="box-label">Potential difference between two equipotential surfaces</span>
+<ul>
+<li>Point charge: \(V_2 - V_1 = \dfrac{Kq}{r_2} - \dfrac{Kq}{r_1}\), with \(E = \dfrac{Kq}{r^2}\).</li>
+<li>Infinite line charge: \(V_2 - V_1 = -2K\lambda\ln\dfrac{r_2}{r_1}\), with \(E = \dfrac{2K\lambda}{d}\).</li>
+<li>Infinite sheet: \(\vec E = \dfrac{\sigma}{2\varepsilon_0}\hat n\) and \(V_2 - V_1 = -Ed\), where \(d\) is the separation along the field.</li>
+</ul>
+</div>
+<p><b>Reading the field from equipotentials:</b> the field is perpendicular to the surfaces, points from higher to lower potential, and its magnitude is \(E = \dfrac{|\Delta V|}{\Delta l}\) with \(\Delta l\) the perpendicular distance between the surfaces. For a point charge, the potential difference between two neighbouring spherical surfaces gives \(E\) and hence \(Kq\).</p>
+</section>
+
+<!-- ===================== DIPOLE ===================== -->
+<section class="topic">
+<h2 id="electric-dipole">Electric Dipole</h2>
+<div class="def-box"><span class="box-label">Definition</span>
+<p>A dipole is a system of two equal and opposite point charges separated by some distance (generally this distance is very small).</p>
+</div>
+
+<h3 id="dipole-moment">Electric dipole moment</h3>
+<ul>
+<li>It is a <b>vector</b> quantity whose magnitude equals the product of the magnitude of one point charge and the separation between the two.</li>
+<li>Its direction is from the <b>negative charge to the positive charge</b>.</li>
+<li>Unit: C·m.</li>
+</ul>
+<div class="formula-box"><span class="box-label">Formula</span>
+\[ \vec p = q \times \vec d, \qquad p = q(2l) \]
+</div>
+<p>For a system of several charges, the <b>net dipole moment</b> is the vector sum of the dipole moments of its pairs (for example, three charges \(+q, +q, -2q\) at the corners of an equilateral triangle of side \(a\): \(p_1 = p_2 = qa\), \(p_{net} = 2qa\cos 30^\circ = \sqrt3\,qa\)).</p>
+
+<figure class="fig">
+<svg viewBox="0 0 360 230" role="img" aria-label="Dipole with axial, equatorial and general position">
+<defs>
+<marker id="ah2" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0 0L10 5L0 10z" class="s-fill"/></marker>
+</defs>
+<line x1="20" y1="150" x2="340" y2="150" class="s-dash"/>
+<line x1="180" y1="20" x2="180" y2="215" class="s-dash"/>
+<line x1="180" y1="150" x2="285" y2="55" class="s-thin"/>
+<circle cx="140" cy="150" r="9" class="s-neg"/><text x="140" y="154" class="s-txt s-mid">−</text>
+<circle cx="220" cy="150" r="9" class="s-pos"/><text x="220" y="154" class="s-txt s-mid">+</text>
+<line x1="150" y1="170" x2="212" y2="170" class="s-line" marker-end="url(#ah2)"/>
+<text x="176" y="186" class="s-txt">p</text>
+<text x="290" y="52" class="s-txt">A (r, θ)</text>
+<text x="228" y="132" class="s-txt">θ</text>
+<text x="300" y="142" class="s-txt">axis</text>
+<text x="186" y="30" class="s-txt">equatorial line</text>
+</svg>
+<figcaption>θ is the angle between p and r. θ = 0°, 180° are axial points; θ = 90°, 270° are equatorial points.</figcaption>
+</figure>
+
+<h3 id="dipole-field-potential">Electric field and potential due to a dipole</h3>
+<p>Take a dipole with moment \(p\) whose charges \(\pm q\) are separated by \(2l\). We find the field and potential at distance \(r\) from the centre.</p>
+<div class="proof-box"><span class="box-label">Derivation (axial point)</span>
+<p>For a point on the axis, \(r_{+} = r - l\) from \(+q\) and \(r_{-} = r + l\) from \(-q\):</p>
+\[ E = \frac{Kq}{(r-l)^2} - \frac{Kq}{(r+l)^2} = \frac{4Kqrl}{(r^2 - l^2)^2} = \frac{2Kpr}{(r^2-l^2)^2} \]
+</div>
+<div class="formula-box"><span class="box-label">Axial point (\(\theta = 0^\circ\) or \(180^\circ\))</span>
+\[ E_{axial} = \frac{2Kpr}{(r^2 - l^2)^2} \ \xrightarrow{\,r\gg l\,}\ \frac{2Kp}{r^3} \quad(\text{along } \vec p) \]
+\[ V_{axial} = \frac{Kp}{r^2 - l^2} \ \xrightarrow{\,r\gg l\,}\ \frac{Kp}{r^2} \]
+</div>
+<div class="formula-box"><span class="box-label">Equatorial point (\(\theta = 90^\circ\))</span>
+\[ E_{eq} = \frac{Kp}{(r^2 + l^2)^{3/2}} \ \xrightarrow{\,r\gg l\,}\ \frac{Kp}{r^3} \quad(\text{opposite to } \vec p) \]
+\[ V_{eq} = 0 \quad(\text{the two potentials are equal and opposite}) \]
+<p>So for \(r \gg l\), \(E_{axial} = 2E_{equatorial}\).</p>
+</div>
+<div class="formula-box"><span class="box-label">General point \((r,\theta)\) for a short dipole</span>
+\[ E_r = \frac{2Kp\cos\theta}{r^3}, \qquad E_\perp = \frac{Kp\sin\theta}{r^3} \]
+\[ E_{net} = \frac{Kp}{r^3}\sqrt{1 + 3\cos^2\theta}, \qquad \tan\alpha = \frac{\tan\theta}{2} \]
+\[ V = \frac{Kp\cos\theta}{r^2} \]
+<p>\(E_r\) is the radial component, \(E_\perp\) the component perpendicular to \(\vec r\), and \(\alpha\) is the angle the net field makes with the radial direction.</p>
+</div>
+<p><b>Equatorial plane:</b> the potential is zero everywhere on it (the potential of the two charges is equal and opposite).</p>
+<p>Standard uses of these results: the work done in moving a charge \(q\) slowly from \(A\) to \(B\) is \(W_{ext} = q\,\Delta V = q\,Kp\left(\dfrac{\cos\theta_2}{r_2^2} - \dfrac{\cos\theta_1}{r_1^2}\right)\); points where the field is perpendicular to \(\vec p\) are found by setting \(\alpha + \theta = 90^\circ\), which gives \(\tan\theta = \pm\sqrt2\) (with four such locations in the four quadrants).</p>
+
+<h3 id="dipole-in-uniform-field">Behaviour of a dipole in a uniform electric field</h3>
+<p>A dipole of moment \(\vec p\) is placed in a uniform field \(\vec E\) with angle \(\theta\) between them.</p>
+<ul>
+<li>The <b>net force</b> on the dipole in a uniform field is always <b>zero</b>.</li>
+<li>The <b>torque</b> on the dipole is</li>
+</ul>
+<div class="formula-box"><span class="box-label">Formula</span>
+\[ \tau = pE\sin\theta, \qquad \vec\tau = \vec p\times\vec E \]
+<p>(Direction by the right-hand thumb rule for the vector product.)</p>
+</div>
+<ul>
+<li>The dipole is in <b>stable equilibrium</b> when \(\theta = 0^\circ\) (\(\vec p\) along \(\vec E\)).</li>
+<li>The equilibrium is <b>unstable</b> when \(\theta = 180^\circ\) (\(\vec p\) opposite to \(\vec E\)).</li>
+</ul>
+
+<h3 id="dipole-work-energy-oscillation">Work done, potential energy and oscillation</h3>
+<div class="proof-box"><span class="box-label">Work done in rotating a dipole</span>
+<p>The external torque equals the electric torque in magnitude, so \(W_{ext} = \int\tau\,d\theta = \int_{\theta_1}^{\theta_2}pE\sin\theta\,d\theta\).</p>
+</div>
+<div class="formula-box"><span class="box-label">Formulas</span>
+\[ (W_{ext})_{\theta_1\to\theta_2} = pE(\cos\theta_1 - \cos\theta_2), \qquad (W_{el})_{\theta_1\to\theta_2} = pE(\cos\theta_2 - \cos\theta_1) \]
+\[ (W_{ext})_{0\to\theta} = pE(1 - \cos\theta) \]
+</div>
+<p><b>Change in potential energy:</b> \(\Delta U = W_{ext}\), so \(U_{\theta_2} - U_{\theta_1} = pE(\cos\theta_1 - \cos\theta_2)\).</p>
+<p>If the reference of potential energy is taken at \(\theta = 90^\circ\) (\(U = 0\) there), then at angle \(\theta\):</p>
+<div class="formula-box"><span class="box-label">Formula</span>
+\[ U_\theta = -pE\cos\theta = -\vec p\cdot\vec E \]
+<p>Minimum at \(\theta = 0^\circ\) (\(-pE\)), maximum at \(\theta = 180^\circ\) (\(+pE\)).</p>
+</div>
+<p><b>Small oscillations.</b> For \(\theta \ll 1\), \(\tau = -pE\sin\theta \approx -pE\theta\). Since \(\tau \propto -\theta\), the motion is <b>angular SHM</b>:</p>
+<div class="formula-box"><span class="box-label">Formula</span>
+\[ \omega = \sqrt{\frac{pE}{I}}, \qquad T = 2\pi\sqrt{\frac{I}{pE}} \]
+<p>\(I\) is the moment of inertia of the dipole about the axis through its centre.</p>
+</div>
+
+<h3 id="dipole-nonuniform-field">Force on a dipole in a non-uniform electric field</h3>
+<p>Let a short dipole lie along the \(x\)-axis in a non-uniform field directed along \(x\); the field is \(E\) at \(-q\) and \(E + dE\) at \(+q\) (separation \(dx\)).</p>
+\[ F = \left|-Eq + (E + dE)q\right| = |q\,dE|, \qquad p = q\,dx \]
+<div class="formula-box"><span class="box-label">Formula</span>
+\[ F = \left|p\,\frac{dE}{dx}\right|, \qquad \text{or}\quad F = -\frac{dU}{dx},\ U = -\vec p\cdot\vec E \]
+</div>
+<div class="result-box"><span class="box-label">Key results</span>
+<ul>
+<li><b>Dipole near a point charge \(q\)</b> (dipole on the axis, \(\vec p\) along the field): \(E = \dfrac{Kq}{r^2}\), so \[ F = p\left|\frac{dE}{dr}\right| = \frac{2Kpq}{r^3}. \] The force is attractive (towards decreasing \(r\)) and \(F \propto \dfrac{1}{r^3}\).</li>
+<li><b>Two dipoles on a common axis</b> (\(p_1\) producing the field, \(p_2\) parallel to it at distance \(r\)): \(U = -\vec p_2\cdot\vec E = -\dfrac{2Kp_1p_2}{r^3}\), so \[ F = -\frac{dU}{dr} = -\frac{6Kp_1p_2}{r^4}, \] again attractive, with \(F \propto \dfrac{1}{r^4}\). If \(\vec p_2\) lies along the radial direction at angle \(\theta\) from the axis of \(p_1\), \(U = -\dfrac{2Kp_1p_2\cos\theta}{r^3}\) and \(F = -\dfrac{6Kp_1p_2\cos\theta}{r^4}\).</li>
+</ul>
+</div>
+</section>
+
+<!-- ===================== FIELD LINES ===================== -->
+<section class="topic">
+<h2 id="electric-field-lines">Electric Lines of Force (Electric Field Lines)</h2>
+<div class="def-box"><span class="box-label">Definition</span>
+<p>Electric lines of force (ELOF) are imaginary curves drawn in a region of electric field such that the <b>tangent</b> drawn at any point of these lines gives the direction of the electric field at that point.</p>
+</div>
+<h3 class="plain">Properties of ELOF</h3>
+<ol>
+<li>Two ELOF can <b>never intersect</b>. Otherwise there would be two directions of the electric field at one point.</li>
+<li>ELOF are always <b>perpendicular to equipotential curves</b>, and the potential decreases in the direction of the ELOF.</li>
+<li>ELOF <b>start (originate) from a positive charge</b> and <b>end (terminate) on a negative charge</b>.</li>
+<li>For a point charge the lines are radial (outward for positive, inward for negative). For a dipole they run from the positive to the negative charge in curves (see the figure in the <a class="xref" href="#field-of-point-charge">point charge</a> section).</li>
+<li>The <b>magnitude of the field is greater where the lines are closer</b>: if the lines near \(A\) are closer than near \(B\), then \(|\vec E_A| > |\vec E_B|\). Moving along the lines the field weakens where they spread apart.</li>
+<li>ELOF due to an electrostatic field <b>never form a closed loop</b>, because of the conservative nature of the electrostatic field (\(\oint\vec E\cdot d\vec l = 0\)). A closed loop would make the work done in a round trip non-zero.</li>
+<li>The <b>number of ELOF</b> originating or terminating on a point charge is directly proportional to the magnitude of the charge: \(N_{ELOF} \propto |q|\). For two charges, \(\dfrac{|q_1|}{|q_2|} = \dfrac{N_1}{N_2}\).</li>
+<li>For a <b>charged conductor in electrostatic condition</b>, all ELOF are always <b>perpendicular to the surface</b> of the conductor, because the surface is equipotential.</li>
+<li>In electrostatic condition, <b>inside the material of a conductor</b> the electric field is zero, so <b>no ELOF exist inside it</b>. The whole conductor is at constant potential.</li>
+<li>If the electric field in a region is <b>uniform</b>, the ELOF are <b>parallel and equidistant</b> straight lines.</li>
+</ol>
+</section>
+
+<!-- ===================== AREA VECTOR ===================== -->
+<section class="topic">
+<h2 id="area-vector">Area Vector</h2>
+<div class="def-box"><span class="box-label">Definition</span>
+<p>For a given surface, the area vector is a vector quantity whose magnitude equals the area of the surface and whose direction is perpendicular to the surface.</p>
+</div>
+\[ \vec S = S\,\hat n, \qquad d\vec S = dS\,\hat n \]
+<ul>
+<li>For a <b>closed surface</b> such as a sphere or a cube, the direction of the area vector is always taken along the <b>outward normal</b>.</li>
+<li>For a flat surface, either of the two normals can be used; fix one and keep it throughout the question.</li>
+</ul>
+</section>
+
+<!-- ===================== ELECTRIC FLUX ===================== -->
+<section class="topic">
+<h2 id="electric-flux">Electric Flux</h2>
+<ul>
+<li>It is a <b>scalar</b> quantity.</li>
+<li>It is a measure of how many electric lines of force pass perpendicularly through a given surface.</li>
+<li>For a surface present in an electric field, the flux passing through (or associated with, or linked with) the surface is defined as the <b>dot product of the electric field vector and the area vector</b>.</li>
+<li>Unit: \(\dfrac{\text{N m}^2}{\text{C}}\) or \(\text{V m}\).</li>
+</ul>
+<div class="formula-box"><span class="box-label">Uniform field</span>
+\[ \phi = \vec E\cdot\vec S = ES\cos\theta \]
+<p>\(\theta\) is the angle between \(\vec E\) and \(\vec S\).</p>
+</div>
+<div class="formula-box"><span class="box-label">Non-uniform field</span>
+\[ d\phi = d\vec S\cdot\vec E, \qquad \phi_{total} = \int_S d\vec S\cdot\vec E \]
+<p>A very small flux passes through a small area \(d\vec S\); add them over the whole surface.</p>
+</div>
+<p><b>Flux of a point charge through a sphere</b> (charge \(q\) at the centre, radius \(r\)): \(d\phi = \dfrac{q\,dS}{4\pi\varepsilon_0r^2}\), so \(\phi_{total} = \dfrac{q}{4\pi\varepsilon_0r^2}\times4\pi r^2 = \dfrac{q}{\varepsilon_0}\).</p>
+<p>For an infinite sheet with density \(\sigma\), the flux through a flat plate of area \(a^2\) held perpendicular to the field is \(\phi = \dfrac{\sigma}{2\varepsilon_0}a^2\).</p>
+
+<h3 id="flux-closed-surface-sign">Closed surfaces and sign of flux</h3>
+<p>Flux should be taken <b>with its sign</b>.</p>
+<ol>
+<li>If the angle between \(\vec E\) and \(d\vec S\) is <b>acute</b>, lines come out of the surface and the flux is positive. If ELOF rise out from the surface of a closed shape, the net charge inside is positive: \(\phi = +\dfrac{q}{\varepsilon_0}\).</li>
+<li>If the angle between \(\vec E\) and \(d\vec S\) is <b>obtuse</b>, lines go inside and the flux is negative. If ELOF go inside a closed surface, the net charge inside is negative: \(\phi = -\dfrac{q}{\varepsilon_0}\).</li>
+<li>If a charge is <b>outside</b> a closed surface, the amount of flux entering equals the amount leaving, so the <b>net flux is zero</b>.</li>
+</ol>
+<p>If \(\phi_1\) and \(\phi_2\) are the fluxes entering and leaving a closed surface, the charge inside is \(q = \varepsilon_0(\phi_2 - \phi_1)\) (entering counted negative, leaving positive).</p>
+<div class="note-box"><span class="box-label">Note</span>
+<p>The flux associated with any closed surface is independent of the positions of the charges enclosed within the surface. However, on changing the positions of the enclosed charges, the flux linked with a <b>part</b> of the Gaussian surface may change.</p>
+</div>
+
+<h3 id="flux-cone-base">Electric flux through the base of a cone</h3>
+<p>A point charge \(q\) is at the vertex of a right circular cone of height \(H\) and base radius \(R\); the semi-conical angle is \(\theta\).</p>
+<div class="proof-box"><span class="box-label">Derivation</span>
+<p>Take a ring of radius \(r\) and width \(dr\) on the base. The field there is \(\dfrac{Kq}{H^2 + r^2}\) and the angle with the normal gives \(\cos\alpha = \dfrac{H}{\sqrt{H^2 + r^2}}\):</p>
+\[ d\phi = \frac{Kq}{H^2+r^2}\,2\pi r\,dr\cos\alpha = \frac{q}{2\varepsilon_0}\frac{H\,r\,dr}{(H^2 + r^2)^{3/2}} \]
+<p>Put \(H^2 + r^2 = t\), \(r\,dr = dt/2\) and integrate from \(r = 0\) to \(R\):</p>
+\[ \phi = \frac{qH}{2\varepsilon_0}\left[\frac1H - \frac{1}{\sqrt{H^2 + R^2}}\right] = \frac{q}{2\varepsilon_0}\left[1 - \frac{H}{\sqrt{H^2+R^2}}\right] \]
+</div>
+<div class="formula-box"><span class="box-label">Formula</span>
+\[ \phi_{base} = \frac{q}{2\varepsilon_0}\left[1 - \cos\theta\right] \]
+</div>
+<p><b>Result:</b> the flux through the cone's base equals the flux going out through the cone (any surface across the same cone). If two cones with the same vertex charges \(q_1\) (semi-angle \(\alpha\)) and \(q_2\) (semi-angle \(\beta\)) get equal fluxes, \(\dfrac{q_1}{2\varepsilon_0}(1 - \cos\alpha) = \dfrac{q_2}{2\varepsilon_0}(1 - \cos\beta)\), i.e. \(\dfrac{q_1}{q_2}\sin^2\dfrac\alpha2 = \sin^2\dfrac\beta2\):</p>
+\[ \beta = 2\sin^{-1}\!\left(\sqrt{\frac{q_1}{q_2}}\,\sin\frac\alpha2\right) \]
+
+<h3 id="flux-standard-cases">Standard cases</h3>
+<div class="result-box"><span class="box-label">Key results</span>
+<ul>
+<li><b>Charge \(q\) at the centre of a cube:</b> \(\phi_{cube} = \dfrac{q}{\varepsilon_0}\); through each face \(\phi_{face} = \dfrac{q}{6\varepsilon_0}\).</li>
+<li><b>Charge at a corner of a cube</b> (the centre of a small ball of charge coincides with a vertex): \(\dfrac18\) of the flux, \(\dfrac{q}{8\varepsilon_0}\), passes through the cube. The three faces touching the charge get zero flux (\(\vec S \perp \vec E\)); each of the other three faces gets \(\dfrac{q}{24\varepsilon_0}\).</li>
+<li><b>Charge at the centre of an edge:</b> \(\dfrac14\) of the charge's flux, \(\dfrac{q}{4\varepsilon_0}\), passes through that cube.</li>
+<li><b>Charge at the centre of a face:</b> \(\dfrac12\) of the flux, \(\dfrac{q}{2\varepsilon_0}\), passes through that cube.</li>
+<li><b>Square of side \(a\)</b> with a charge at height \(a/2\) above its centre: \(\phi = \dfrac{q}{6\varepsilon_0}\) (it is one face of an imagined cube with \(q\) at the centre). A square of side \(2a\) at distance \(a\): \(\dfrac{q}{6\varepsilon_0}\); each quarter of side \(a\) gets \(\dfrac{q}{24\varepsilon_0}\).</li>
+<li><b>Open hemisphere</b> with \(q\) at the centre of its flat face: make the sphere complete, \(\phi_{sphere} = \dfrac{q}{\varepsilon_0}\); the flux is shared equally, so \(\phi_{hemisphere} = \dfrac{q}{2\varepsilon_0}\).</li>
+<li><b>Uniform field through a closed surface:</b> the net flux is zero. When \(\vec E\) lies in the plane of a face (\(\vec S\perp\vec E\)) that face gets zero flux.</li>
+</ul>
+</div>
+</section>
+
+<!-- ===================== GAUSS'S LAW ===================== -->
+<section class="topic">
+<h2 id="gauss-law">Gauss's Law</h2>
+<div class="def-box"><span class="box-label">Statement</span>
+<p>According to this theorem, the total electric flux passing through any closed surface (called a <b>Gaussian surface</b>) is equal to \(\dfrac{1}{\varepsilon_0}\) times the total charge inside the closed surface.</p>
+</div>
+<div class="formula-box"><span class="box-label">Formula</span>
+\[ \phi_{total} = \oint\vec E\cdot d\vec S = \frac{q_{in}}{\varepsilon_0} \]
+<p>For charges \(+q_1, -q_2, +q_3\) inside: \(\phi = \dfrac{q_1 - q_2 + q_3}{\varepsilon_0}\).</p>
+</div>
+<ul>
+<li>The theorem is applicable <b>only for a closed surface</b>.</li>
+<li>It helps to find the magnitude of the electric field due to certain types of charge distribution: a point charge, an infinitely long line charge, an infinitely large sheet of charge and a spherical charge distribution.</li>
+<li>Only the enclosed charge \(q_{in}\) appears on the right side; the field \(\vec E\) on the left, however, is due to <b>all</b> charges, inside and outside.</li>
+</ul>
+<p>The law in <b>differential form</b> is given in <a class="xref" href="#charge-density-from-field">charge density from field</a>.</p>
+</section>
+
+<section class="topic">
+<h2 id="applications-of-gauss-law">Application of Gauss's Law</h2>
+<p>In certain types of charge distribution we can find the magnitude of the electric field if its direction is known. Suppose that at every point of the Gaussian surface the magnitude of the field is constant and the angle between the field and the area vector is zero everywhere (or the field is perpendicular to the area vector on the other parts of the surface). Then for the closed surface:</p>
+\[ E\,S = \frac{q_{in}}{\varepsilon_0} \quad\Rightarrow\quad E = \frac{q_{in}}{\varepsilon_0 S} \]
+
+<h3 id="gauss-line-sheet">Infinite line charge and infinite sheet</h3>
+<div class="proof-box"><span class="box-label">Infinitely long line charge</span>
+<p>Take a coaxial cylinder of radius \(r\) and length \(l\) as the Gaussian surface. The field is radial, so only the curved surface contributes: \(E\cdot 2\pi r l = \dfrac{\lambda l}{\varepsilon_0}\).</p>
+</div>
+<div class="formula-box"><span class="box-label">Result</span>
+\[ E = \frac{\lambda}{2\pi\varepsilon_0 r} = \frac{2K\lambda}{r} \]
+</div>
+<div class="proof-box"><span class="box-label">Infinitely large sheet</span>
+<p>Take a cylindrical pillbox crossing the sheet, with end area \(S\) on each side. Flux goes only through the two ends: \(E\cdot 2S = \dfrac{\sigma S}{\varepsilon_0}\).</p>
+</div>
+<div class="formula-box"><span class="box-label">Result</span>
+\[ E = \frac{\sigma}{2\varepsilon_0} \]
+</div>
+
+<h3 id="gauss-spherical-shell">Electric field due to a uniformly charged spherical shell</h3>
+<p>Charge \(Q\) is distributed uniformly on a spherical surface of radius \(R\). We find the field at distance \(r\) from the centre, with a concentric Gaussian sphere: \(E\,S = \dfrac{q_{in}}{\varepsilon_0}\).</p>
+<table class="compare">
+<tr><th>Region</th><th>Field</th></tr>
+<tr><td>Inside (\(r < R\)): \(q_{in} = 0\)</td><td>\(E = 0\)</td></tr>
+<tr><td>Outside (\(r > R\))</td><td>\(E = \dfrac{Q}{4\pi\varepsilon_0r^2} = \dfrac{KQ}{r^2}\), so \(E \propto \dfrac{1}{r^2}\)</td></tr>
+<tr><td>On the surface (\(r = R\), just outside)</td><td>\(E_{surf} = \dfrac{KQ}{R^2}\)</td></tr>
+</table>
+
+<h3 id="gauss-solid-sphere">Electric field due to a uniformly charged solid sphere</h3>
+<p>A charge \(Q\) is distributed uniformly in the volume of a sphere of radius \(R\) (non-conducting), with \(\rho = \dfrac{Q}{\frac43\pi R^3}\).</p>
+<table class="compare">
+<tr><th>Region</th><th>Field</th></tr>
+<tr><td>Inside (\(r < R\)): \(q_{in} = \rho\cdot\tfrac43\pi r^3\)</td><td>\(E_{in} = \dfrac{\rho}{3\varepsilon_0}r = \dfrac{KQ}{R^3}\,r\)  (\(E \propto r\))</td></tr>
+<tr><td>On the surface (\(r = R\))</td><td>\(E_{surf} = \dfrac{KQ}{R^2}\)</td></tr>
+<tr><td>Outside (\(r > R\))</td><td>\(E_{out} = \dfrac{KQ}{r^2}\)  (same as a spherical shell, \(E \propto 1/r^2\))</td></tr>
+</table>
+
+<figure class="fig">
+<svg viewBox="0 0 560 210" role="img" aria-label="Field versus distance for a spherical shell and a solid sphere">
+<line x1="30" y1="170" x2="260" y2="170" class="s-axis"/><line x1="30" y1="20" x2="30" y2="175" class="s-axis"/>
+<line x1="30" y1="170" x2="110" y2="170" class="s-curve"/>
+<line x1="110" y1="170" x2="110" y2="45" class="s-dash"/>
+<path d="M110 45 Q 150 120 250 155" class="s-curve"/>
+<text x="38" y="30" class="s-txt">E</text><text x="250" y="188" class="s-txt">r</text><text x="106" y="188" class="s-txt">R</text><text x="40" y="52" class="s-txt">KQ/R²</text>
+<text x="46" y="205" class="s-txt">Spherical shell</text>
+<line x1="310" y1="170" x2="540" y2="170" class="s-axis"/><line x1="310" y1="20" x2="310" y2="175" class="s-axis"/>
+<line x1="310" y1="170" x2="390" y2="45" class="s-curve"/>
+<line x1="390" y1="170" x2="390" y2="45" class="s-dash"/>
+<path d="M390 45 Q 430 120 530 155" class="s-curve"/>
+<text x="318" y="30" class="s-txt">E</text><text x="530" y="188" class="s-txt">r</text><text x="386" y="188" class="s-txt">R</text><text x="320" y="52" class="s-txt">KQ/R²</text>
+<text x="330" y="205" class="s-txt">Solid sphere</text>
+</svg>
+<figcaption>E versus r: zero inside a shell; linear inside a solid sphere; 1/r² outside both.</figcaption>
+</figure>
+
+<h3 id="potential-of-spheres">Potential due to a hollow charged sphere and a solid sphere</h3>
+<p>Charge \(Q\) distributed uniformly on the surface of a sphere of radius \(R\) (hollow). Using \(dV = -E\,dr\) with the reference at infinity:</p>
+<div class="formula-box"><span class="box-label">Hollow sphere (shell)</span>
+\[ V_{out} = \frac{KQ}{r}\ (r\ge R), \qquad V_{surface} = \frac{KQ}{R}, \qquad V_{inside} = \frac{KQ}{R}\ (\text{constant, since }E=0) \]
+</div>
+<div class="proof-box"><span class="box-label">Solid (uniformly charged) sphere</span>
+<p>Outside: \(V_\infty - V_r = -\int_r^\infty\dfrac{KQ}{x^2}dx\) gives \(V = \dfrac{KQ}{r}\). On the surface, \(V = \dfrac{KQ}{R}\). Inside, with \(E = \dfrac{KQx}{R^3}\):</p>
+\[ V_{in} - V_{surface} = -\int_R^{r}\frac{KQx}{R^3}\,dx = \frac{KQ}{2R^3}\left(R^2 - r^2\right) \]
+</div>
+<div class="formula-box"><span class="box-label">Result</span>
+\[ V_{in} = \frac{KQ}{R} + \frac{KQ}{2R^3}(R^2 - r^2) = \frac{3KQ}{2R} - \frac{KQr^2}{2R^3} \]
+<p>At the centre \(V = \dfrac{3KQ}{2R}\) (\(= 1.5\) times the surface potential).</p>
+</div>
+
+<h3 id="gauss-cylinders">Uniformly charged long cylinders</h3>
+<div class="proof-box"><span class="box-label">Solid cylinder (volume density \(\rho\), radius \(R\))</span>
+<p>Use a coaxial Gaussian cylinder of radius \(r\) and length \(l\). Inside: \(E\cdot2\pi rl = \dfrac{\rho\pi r^2l}{\varepsilon_0}\). Outside: \(E\cdot2\pi rl = \dfrac{\rho\pi R^2l}{\varepsilon_0}\).</p>
+</div>
+<table class="compare">
+<tr><th>Cylinder</th><th>Inside</th><th>Outside</th></tr>
+<tr><td>Solid (volume density \(\rho\))</td><td>\(E = \dfrac{\rho r}{2\varepsilon_0}\), \(E\propto r\); on the axis \(E = 0\)</td><td>\(E = \dfrac{\rho R^2}{2\varepsilon_0}\cdot\dfrac1r\), \(E\propto\dfrac1r\)</td></tr>
+<tr><td>Hollow (surface density \(\sigma\))</td><td>\(E = 0\)</td><td>\(E = \dfrac{\sigma R}{\varepsilon_0}\cdot\dfrac1r\), \(E\propto\dfrac1r\)</td></tr>
+</table>
+<p>Graphs: for the solid cylinder \(E\) rises linearly to \(\dfrac{\rho R}{2\varepsilon_0}\) at the surface, then falls as \(1/r\). For the hollow cylinder \(E\) is zero inside, jumps to \(\dfrac{\sigma}{\varepsilon_0}\) at the surface, then falls as \(1/r\).</p>
+
+<h3 id="gauss-thick-sheet">Very large thick non-conducting sheet of charge</h3>
+<p>Thickness \(2d\), volume density \(\rho\). Take the mid-plane as \(x = 0\) and use a cylindrical Gaussian surface symmetric about it.</p>
+<table class="compare">
+<tr><th>Region</th><th>Field</th></tr>
+<tr><td>Inside (distance \(x\) from the middle plane, \(x\le d\))</td><td>\(E = \dfrac{\rho x}{\varepsilon_0}\), \(E\propto x\)</td></tr>
+<tr><td>Outside (\(x \ge d\))</td><td>\(E = \dfrac{\rho d}{\varepsilon_0}\), a constant</td></tr>
+</table>
+<p>Graph: a straight line from the origin up to \(\dfrac{\rho d}{\varepsilon_0}\) at \(x = d\), then horizontal.</p>
+
+<h3 id="cavity-overlap">Cavity problem and overlapping spheres</h3>
+<p>A cavity inside a uniformly charged body is treated by <b>superposition</b>: the body without a cavity (density \(+\rho\)) plus a body of density \(-\rho\) filling the cavity.</p>
+<div class="formula-box"><span class="box-label">Spherical cavity</span>
+\[ \vec E_P = \vec E_1 - \vec E_2 = \frac{\rho\vec r_1}{3\varepsilon_0} - \frac{\rho\vec r_2}{3\varepsilon_0} = \frac{\rho}{3\varepsilon_0}(\vec r_1 - \vec r_2) = \frac{\rho\,\vec d}{3\varepsilon_0} \]
+</div>
+<div class="formula-box"><span class="box-label">Cylindrical cavity</span>
+\[ \vec E_P = \frac{\rho\,\vec d}{2\varepsilon_0} \]
+</div>
+<p>Here \(\vec d\) is the vector from the centre of the solid sphere (or cylinder axis) to the centre of the cavity. The field at <b>every point inside the cavity is the same</b> (uniform) in magnitude and direction.</p>
+<div class="formula-box"><span class="box-label">Two overlapping spheres (+ρ and −ρ)</span>
+\[ \vec E_P = \frac{\rho\vec r_1}{3\varepsilon_0} + \frac{(-\rho)\vec r_2}{3\varepsilon_0} = \frac{\rho\,\vec a}{3\varepsilon_0} \]
+<p>\(\vec a\) is the vector from the centre of the positive sphere to the centre of the negative sphere; the field in the overlapping region is uniform.</p>
+</div>
+
+<h3 id="charge-density-from-field">Charge density from a known field (differential form)</h3>
+<p>Take a thin slab of cross-section \(S\) and thickness \(dx\) where the field changes from \(E\) to \(E + dE\). The net outward flux is \((E + dE)S - ES = S\,dE\), and it equals \(\dfrac{\rho S\,dx}{\varepsilon_0}\). Hence for variation along one direction:</p>
+<div class="formula-box"><span class="box-label">Formula</span>
+\[ \rho = \varepsilon_0\frac{dE}{dx} \]
+<p>With a field \(E = -\dfrac{dV}{dx}\) known from a potential, \(\rho\) follows directly.</p>
+</div>
+<div class="formula-box"><span class="box-label">Divergence form of Gauss's law</span>
+\[ \nabla\cdot\vec E = \frac{\rho}{\varepsilon_0} \qquad\text{i.e.}\qquad \frac{\partial E_x}{\partial x} + \frac{\partial E_y}{\partial y} + \frac{\partial E_z}{\partial z} = \frac{\rho}{\varepsilon_0} \]
+</div>
+</section>
+
+<!-- ===================== CONDUCTORS IN ELECTROSTATICS ===================== -->
+<section class="topic">
+<h2 id="conductors-in-electrostatics">Conductors in Electrostatics</h2>
+
+<h3 id="conductor-properties">Properties of a conductor</h3>
+<ol>
+<li><b>Inside the material of a conducting body the electric field is zero.</b>
+<p><i>Reason:</i> a conductor has a large number of free electrons. If any field existed inside, the free electrons would experience an electric force and start moving, which is not possible in electrostatic condition. Even if a conductor has a cavity or lies in an external field, \(E = 0\) inside its material.</p></li>
+<li><b>Any excess charge given to a conductor resides on its outer surface.</b>
+<p><i>Reason:</i> take a Gaussian surface just inside the surface; \(\oint\vec E\cdot d\vec S = \dfrac{q_{in}}{\varepsilon_0}\) with \(E = 0\) gives \(q_{in} = 0\). For a charged particle \(+q\) placed inside a cavity of a neutral conductor, the Gaussian surface in the material has \(0 = q - q'\), so the cavity wall carries \(-q'\) with \(q' = q\).</p></li>
+<li><b>Electric potential is uniform everywhere on the surface and in the volume of a conductor.</b>
+<p><i>Reason:</i> if the potential were not uniform, charges would start moving from one place to another, which is not possible in an electrostatic situation.</p></li>
+<li><b>The electric field is always normal to the surface of a conductor.</b>
+<p><i>Reason:</i> the surface of a conductor is equipotential, and the field is always normal to an equipotential surface.</p></li>
+<li><b>The electric field intensity near the surface of a conductor is \(\dfrac{\sigma}{\varepsilon_0}\)</b>, where \(\sigalso\) is the local surface charge density.
+<p>Take a small pillbox across the surface: flux goes out only through the outer face (the inside has \(E=0\) and the sides contribute nothing): \(E\,dS = \dfrac{\sigma\,dS}{\varepsilon_0}\), so \(E = \dfrac{\sigma}{\varepsilon_0}\). Of this, the field due to the small local patch alone is \(\dfrac{\sigma}{2\varepsilon_0}\) on each side, and the rest of the conductor supplies the other \(\dfrac{\sigma}{2\varepsilon_0}\). The field acting on the charge element itself is therefore \(\dfrac{\sigma}{2\varepsilon_0}\).</p></li>
+</ol>
+
+<h3 id="electrostatic-pressure">Electrostatic pressure</h3>
+<p>The force on a small surface charge element \(\sigma\,dS\) is \(F = q\,E = \sigma\,dS\cdot\dfrac{\sigma}{2\varepsilon_0}\). The force per unit area is the electrostatic pressure:</p>
+<div class="formula-box"><span class="box-label">Formula</span>
+\[ P = \frac{F}{dS} = \frac{\sigma^2}{2\varepsilon_0} = \frac12\varepsilon_0\left(\frac{\sigma}{\varepsilon_0}\right)^2 = \frac12\varepsilon_0E^2 \]
+<p>Electrostatic pressure is equal to the electrostatic potential energy density near the surface; it acts outward.</p>
+</div>
+
+<h3 id="charge-density-curvature">Surface charge density and radius of curvature</h3>
+<p>The surface charge density at a point on a conductor is <b>inversely proportional to the radius of curvature</b> at that point.</p>
+<div class="proof-box"><span class="box-label">Two spheres joined by a long wire</span>
+<p>Spheres of radii \(R_1, R_2\) with charges \(q_1, q_2\). The wire is very long, so each sphere's potential is mostly its own; when the switch is closed, \(V_A = V_B\):</p>
+\[ \frac{Kq_1}{r_1} = \frac{Kq_2}{r_2} \quad\Rightarrow\quad \sigma_14\pi r_1^2/r_1 = \sigma_24\pi r_2^2/r_2 \quad\Rightarrow\quad \sigma_1r_1 = \sigma_2r_2 \]
+</div>
+<div class="formula-box"><span class="box-label">Result</span>
+\[ \sigma r = \text{constant}, \qquad \sigma \propto \frac1r, \qquad \frac{q_1}{q_2} = \frac{r_1}{r_2} \]
+</div>
+<p>Hence for a conductor of irregular shape, \(\sigma\) is largest at the sharpest points (smallest \(r\)): \(r_3 > r_2 > r_1\) gives \(\sigma_3 < \sigma_2 < \sigma_1\). This is an approximate result.</p>
+
+<h3 id="earthed-conductor">Earthed conductor and induced charges</h3>
+<ul>
+<li>The potential of an <b>earthed conductor is zero</b> (\(V_{conductor} = V_{earth} = 0\)).</li>
+<li>The charge of an <b>isolated conductor is constant</b>.</li>
+</ul>
+<p><b>Field and potential due to induced charges.</b> Inside a conductor \(E_{inside} = 0\) and \(V\) is constant everywhere. For an external point charge \(q\), the field due to the induced charges at an inner point is the negative of the field of \(q\):</p>
+\[ \vec E_{net} = 0 \Rightarrow \vec E_q + \vec E_{in} = 0 \Rightarrow \vec E_{induced} = -\vec E_q = -\frac{Kq}{x_2^2}\hat n \]
+<p>Potentials at the centre \(O\) and any inner point \(P\) are equal: \(V_{ind}(O) + \dfrac{Kq}{d} = V_{ind}(P) + \dfrac{Kq}{x_2}\). For a neutral spherical conductor \(V_{ind}(O) = 0\), so at an inner point at distance \(x_2\) from \(q\):</p>
+<div class="formula-box"><span class="box-label">Formula</span>
+\[ V_{induced}(P) = Kq\left[\frac1d - \frac1{x_2}\right] \]
+</div>
+<p>(\(d\) = distance of \(q\) from the centre.) The same method—equal total potential at two points of the conductor, adding the potentials of the external charges and the induced charges—gives the induced potential at different points (for example the ratio of induced potentials at two points \(A\) and \(B\)).</p>
+
+<div class="proof-box"><span class="box-label">Earthed sphere near a charge</span>
+<p>An earthed conducting sphere of radius \(R\) with a point charge \(q\) at distance \(x\) from the centre: the potential at the centre is zero, and all induced charge lies at distance \(R\) from the centre. So</p>
+\[ \frac{Kq}{x} + \frac{Kq_{ind}}{R} = 0 \quad\Rightarrow\quad q_{ind} = -\frac{qR}{x} \]
+</div>
+<ul>
+<li>If the external charge moves closer with speed \(v\) (\(-dx/dt = v\)), the induced charge changes and charge flows to or from the earth; the current is \[ I = \frac{dq_{ind}}{dt} = \frac{QR}{x^2}\,v. \] The direction of current is the direction of flow of positive charge (for a negative external charge, the +ve induced charge flows into the earth, i.e. the current goes from the conductor to the earth).</li>
+<li>For an initially charged conductor (charge \(Q\)) near an external charge \(q\), the potential at the centre is \(V_O = \dfrac{KQ}{R}\) (surface charge) plus the contribution of \(q\) at the centre and that of the induced charge.</li>
+</ul>
+
+<h3 id="cavity-in-conductor">Cavity within a conductor</h3>
+<p>\(S_1\) is the inner (cavity) surface and \(S_2\) the outer surface. The cavity wall \(S_1\) always carries a charge equal and opposite to the charge inside the cavity.</p>
+<table class="compare">
+<tr><th>Case</th><th>Charge \(q\) in the cavity</th><th>\(S_1\)</th><th>\(S_2\)</th></tr>
+<tr><td>1. Irregular conductor</td><td>Centrally located</td><td>Uniform</td><td>Non-uniform</td></tr>
+<tr><td>2. Irregular conductor</td><td>Not centrally located</td><td>Non-uniform</td><td>Non-uniform</td></tr>
+<tr><td>3. Spherical outer surface</td><td>Not centrally located (need not be at the centre of \(S_2\))</td><td>Non-uniform</td><td>Uniform</td></tr>
+<tr><td>4. Irregular conductor with its own extra charge \(q'\) (total \(q + q'\))</td><td>Centrally located</td><td>Uniform</td><td>Non-uniform</td></tr>
+<tr><td>5. Spherical \(S_1\) and \(S_2\)</td><td>Centrally located</td><td>Uniform</td><td>Uniform</td></tr>
+<tr><td>6. External charge \(Q\) outside</td><td>Centrally located</td><td>Uniform</td><td>Non-uniform</td></tr>
+</table>
+
+<h3 id="parallel-plates">Charge distribution on parallel plane sheets</h3>
+<p>For large parallel conducting plates (thickness \(t\) very small), the charge on each plate is the total of its two faces. Use these rules:</p>
+<div class="result-box"><span class="box-label">Rules</span>
+<ul>
+<li>The charge on the <b>two outermost surfaces is always equal</b>. For an isolated system its value is \(\dfrac{\text{total charge}}{2}\).</li>
+<li>The charge on two <b>facing surfaces</b> is always equal and opposite (Gaussian surface through the material of both plates: \(0 = q_{in}\), so \(q_1' = -q_2'\)).</li>
+<li>Using <b>conservation of charge</b> for each plate, the total charge on each surface can be calculated.</li>
+<li>For two plates carrying \(q_1\) and \(q_2\): the outer faces each carry \(\dfrac{q_1 + q_2}{2}\) and the inner facing faces carry \(\pm\dfrac{q_1 - q_2}{2}\).</li>
+<li>The field between two facing surfaces carrying \(\pm q'\) is \(E = \dfrac{q'}{A\varepsilon_0}\) and the potential difference is \(V = Ed = \dfrac{q'd}{A\varepsilon_0}\).</li>
+<li><b>Earthing a plate:</b> the potential of the earthed plate becomes zero; for an outermost plate, the free charge on its outer surface becomes zero. Then the remaining unknown charges are found from conservation of charge and the conditions on potentials/fields (for example connected plates are at the same potential).</li>
+</ul>
+</div>
+
+<h3 id="conductor-in-medium">Conductor in a medium or vacuum</h3>
+<ul>
+<li><b>In a medium:</b> when a conductor is given charge beyond a certain limit, electrical breakdown of the surrounding medium takes place, due to which charge of the conductor leaks to the surroundings.</li>
+<li><b>In vacuum:</b> on giving charge beyond a certain limit, i.e. when the electrostatic pressure exceeds the elastic strength of the material, the conductor explodes by its own state (it bursts due to its own charge).</li>
+</ul>
+</section>
+
+<!-- ===================== ENERGY ===================== -->
+<section class="topic">
+<h2 id="electrostatic-energy">Self Electrostatic Potential Energy</h2>
+<h3 id="self-energy">Self energy</h3>
+<p>The energy needed to assemble a charge distribution against its own repulsion. Standard values:</p>
+<table class="compare">
+<tr><th>Body</th><th>Self energy</th></tr>
+<tr><td>Uniformly charged disc (density \(\sigma\), radius \(R\))</td><td>\(U_S = \dfrac{2\sigma^2R^3}{3\varepsilon_0}\)</td></tr>
+<tr><td>Spherical shell</td><td>\(U_S = \dfrac{KQ^2}{2R}\)</td></tr>
+<tr><td>Uniform solid sphere</td><td>\(U_S = \dfrac{3KQ^2}{5R}\)</td></tr>
+</table>
+
+<h3 id="energy-density">Electrostatic potential energy density</h3>
+<p>Energy per unit volume is called <b>energy density</b>: \(u = \dfrac{U}{V}\) or \(u = \dfrac{dU}{dV}\), where \(dU\) is the energy associated with a small volume \(dV\).</p>
+<div class="formula-box"><span class="box-label">Formula</span>
+\[ u = \frac12\varepsilon_0E^2, \qquad U = \int\frac12\varepsilon_0E^2\,dV \]
+</div>
+<div class="proof-box"><span class="box-label">Spherical shell</span>
+<p>Outside, \(E = \dfrac{KQ}{r^2}\); use shells of volume \(dV = 4\pi r^2dr\):</p>
+\[ U = \int_R^\infty\frac12\varepsilon_0\left(\frac{KQ}{r^2}\right)^2 4\pi r^2dr = \frac{KQ^2}{2}\int_R^\infty\frac{dr}{r^2} = \frac{KQ^2}{2R} \]
+<p>The energy stored between \(R\) and \(2R\) is \(\dfrac{KQ^2}{4R}\), and between \(2R\) and \(\infty\) also \(\dfrac{KQ^2}{4R}\), so the ratio is \(1:1\).</p>
+</div>
+<div class="proof-box"><span class="box-label">Solid sphere</span>
+<p>Outside the field energy is \(\dfrac{KQ^2}{2R}\) (as for the shell). Inside, \(E = \dfrac{KQr}{R^3}\):</p>
+\[ U_{in} = \int_0^R\frac12\varepsilon_0\frac{K^2Q^2r^2}{R^6}\,4\pi r^2dr = \frac{KQ^2}{10R}, \qquad U_{total} = \frac{KQ^2}{2R} + \frac{KQ^2}{10R} = \frac{3KQ^2}{5R} \]
+</div>
+</section>
+
+<!-- ===================== CAPACITANCE ===================== -->
+<section class="topic">
+<h2 id="capacitance-of-conductor">Capacitance of a Conductor</h2>
+<div class="def-box"><span class="box-label">Definition</span>
+<p>The charge / energy storing capacity of a conductor is called its capacitance (or capacity).</p>
+</div>
+<div class="formula-box"><span class="box-label">Formula</span>
+\[ C = \frac{\text{charge of conductor}}{\text{potential of conductor}} = \frac{q}{V}, \qquad q = CV \quad(q\propto V) \]
+</div>
+<ul>
+<li>Capacitance is <b>independent</b> of the charge given to the conductor (\(q\)) and its potential (\(V\)); the ratio \(q/V\) stays fixed.</li>
+<li>It depends on the <b>shape and size</b> of the conductor and on the <b>nature of the surrounding medium</b>.</li>
+</ul>
+
+<h3 id="capacitance-isolated-sphere">Isolated spherical conductor, units and values</h3>
+<p>SI unit: <b>farad (F)</b>. Practical units: \(\mu\text{F}\ (10^{-6})\), \(\text{nF}\ (10^{-9})\), \(\text{pF}\ (10^{-12})\).</p>
+<div class="formula-box"><span class="box-label">Isolated spherical conductor of radius \(R\)</span>
+\[ V = \frac{q}{4\pi\varepsilon_0R}, \qquad C = \frac qV = 4\pi\varepsilon_0R \qquad(C\propto R) \]
+</div>
+<ul>
+<li>For the earth (\(R = 6.4\times10^6\) m): \(C = \dfrac{R}{9\times10^9} \approx 0.71\) mF (\(\approx 7.1\times10^{-4}\) F).</li>
+<li>For an <b>earthed conductor</b> \(V = 0\), so \(C = \dfrac{q}{0} = \infty\).</li>
+</ul>
+
+<h3 id="energy-of-charged-conductor">Energy of a charged conductor</h3>
+<p>To charge a conductor from \(0\) to \(Q\), work \(dW_{ext} = V\,dq\) is done in bringing a small charge \(dq\) when the conductor has charge \(q\) and potential \(V = \dfrac{q}{C}\):</p>
+\[ dW_{ext} = \frac{q\,dq}{C} \quad\Rightarrow\quad W_{ext} = \frac{Q^2}{2C} \]
+<div class="formula-box"><span class="box-label">Energy stored</span>
+\[ U = \frac{Q^2}{2C} = \frac12CV^2 = \frac12QV \]
+</div>
+
+<h3 id="sharing-of-charge">Sharing of charge</h3>
+<p>Two conductors with capacitances \(C_1, C_2\), charges \(q_1 = C_1V_1\) and \(q_2 = C_2V_2\) are joined by a wire (switch closed). Charge flows until both reach a <b>common potential \(V\)</b>, with new charges \(q_1'\) and \(q_2'\).</p>
+<div class="formula-box"><span class="box-label">From conservation of charge</span>
+\[ q_1 + q_2 = q_1' + q_2' \ \Rightarrow\ C_1V_1 + C_2V_2 = (C_1 + C_2)V \]
+\[ V = \frac{C_1V_1 + C_2V_2}{C_1 + C_2}, \qquad \frac{q_1'}{q_2'} = \frac{C_1}{C_2} \]
+\[ q_1' = \frac{C_1(q_1 + q_2)}{C_1 + C_2}, \qquad q_2' = \frac{C_2(q_1 + q_2)}{C_1 + C_2} \]
+</div>
+<div class="proof-box"><span class="box-label">Loss of energy</span>
+\[ U_{loss} = U_i - U_f = \tfrac12C_1V_1^2 + \tfrac12C_2V_2^2 - \tfrac12(C_1 + C_2)V^2 \]
+<p>Substituting \(V\) and simplifying:</p>
+</div>
+<div class="formula-box"><span class="box-label">Formula</span>
+\[ U_{loss} = \frac12\,\frac{C_1C_2}{C_1 + C_2}\,(V_1 - V_2)^2 \]
+</div>
+<p><b>Spherical conductors</b> of radii \(r_1, r_2\) (\(C_1 = 4\pi\varepsilon_0r_1\), \(C_2 = 4\pi\varepsilon_0r_2\)):</p>
+<div class="formula-box"><span class="box-label">Formulas</span>
+\[ V = \frac{r_1V_1 + r_2V_2}{r_1 + r_2}, \qquad \frac{q_1'}{q_2'} = \frac{r_1}{r_2} \]
+\[ q_1' = \frac{r_1(q_1 + q_2)}{r_1 + r_2}, \quad q_2' = \frac{r_2(q_1 + q_2)}{r_1 + r_2}, \qquad U_{loss} = \frac12\,\frac{4\pi\varepsilon_0r_1r_2}{r_1 + r_2}(V_1 - V_2)^2 \]
+</div>
+</section>
+
+</main>
+</div>
+
+<script>
+(function () {
+  var toc = document.getElementById('toc');
+  var toggle = document.querySelector('.toc-toggle');
+  var links = [].slice.call(toc.querySelectorAll('a[href^="#"]'));
+  var byId = {};
+  links.forEach(function (a) { byId[a.getAttribute('href').slice(1)] = a; });
+  var heads = [].slice.call(document.querySelectorAll('main [id]')).filter(function (el) { return byId[el.id]; });
+  var current = null;
+
+  function setActive(id) {
+    if (current === id) return;
+    current = id;
+    links.forEach(function (a) { a.classList.remove('active'); });
+    var a = byId[id];
+    if (!a) return;
+    a.classList.add('active');
+    var li = a.parentElement;
+    while (li && li !== toc) {
+      if (li.tagName === 'LI') li.classList.add('open');
+      li = li.parentElement;
+    }
+    var box = toc.getBoundingClientRect(), r = a.getBoundingClientRect();
+    if (r.top < box.top + 60 || r.bottom > box.bottom - 20) {
+      toc.scrollTop += r.top - box.top - box.height / 2;
+    }
+  }
+
+  function onScroll() {
+    var y = 120, best = heads[0];
+    for (var i = 0; i < heads.length; i++) {
+      if (heads[i].getBoundingClientRect().top - y <= 0) best = heads[i]; else break;
+    }
+    if (best) setActive(best.id);
+  }
+
+  var ticking = false;
+  window.addEventListener('scroll', function () {
+    if (!ticking) {
+      ticking = true;
+      window.requestAnimationFrame(function () { onScroll(); ticking = false; });
+    }
+  }, { passive: true });
+  window.addEventListener('resize', onScroll);
+  window.addEventListener('load', onScroll);
+
+  toggle.addEventListener('click', function () {
+    var open = toc.classList.toggle('is-open');
+    toggle.setAttribute('aria-expanded', open ? 'true' : 'false');
+  });
+  links.forEach(function (a) {
+    a.addEventListener('click', function () {
+      toc.classList.remove('is-open');
+      toggle.setAttribute('aria-expanded', 'false');
+    });
+  });
+  onScroll();
+})();
+</script>
+</body>
+</html>
