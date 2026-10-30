@@ -3,8 +3,9 @@
 // Everything about a test (title, session, duration, marking) is DERIVED from
 // its key, so questions-data.js never repeats it.
 //
-//   JEE paper (one sitting):  jm-2026-04-02-m   = JEE Main, 2 April 2026, morning
-//                             jm-2025-01-29-e   = JEE Main, 29 January 2025, evening
+//   JEE paper (one sitting):  jm-2026-04-08-evening = JEE Main, 8 April 2026, evening
+//                             jm-2026-04-02-morning = JEE Main, 2 April 2026, morning
+//                             (short forms -m / -e are accepted too)
 //   Chapter test:             c11-phy-03        = Class 11, Physics, chapter 03
 
 const JEE_CLASSES = [12, 11];
@@ -16,8 +17,8 @@ const SUBJECTS = [
 ];
 
 const SHIFTS = [
-  { value: "m", label: "Morning", number: 1 },
-  { value: "e", label: "Evening", number: 2 }
+  { value: "morning", label: "Morning", number: 1 },
+  { value: "evening", label: "Evening", number: 2 }
 ];
 
 const MARKING_JEE = {
@@ -37,7 +38,7 @@ const MONTHS = ["January", "February", "March", "April", "May", "June",
 
 const pad2 = n => String(n).padStart(2, "0");
 
-// Paper:   buildTestKey({ exam: "jm", year: 2026, month: 4, day: 2, shift: "m" })
+// Paper:   buildTestKey({ exam: "jm", year: 2026, month: 4, day: 2, shift: "morning" })
 // Chapter: buildTestKey({ classNum: 11, subject: "phy", chapter: 3 })
 function buildTestKey(o) {
   if (o.classNum) return `c${o.classNum}-${o.subject}-${pad2(o.chapter || 1)}`;
@@ -48,11 +49,11 @@ function buildTestKey(o) {
 function parseTestKey(key) {
   key = String(key || "").toLowerCase();
 
-  let m = key.match(/^([a-z]+)-(\d{4})-(\d{2})-(\d{2})-([me])$/);
+  let m = key.match(/^([a-z]+)-(\d{4})-(\d{2})-(\d{2})-(morning|evening|m|e)$/);
   if (m && EXAMS[m[1]]) {
     const exam = EXAMS[m[1]];
     const year = +m[2], month = +m[3], day = +m[4];
-    const shift = SHIFTS.find(s => s.value === m[5]);
+    const shift = SHIFTS.find(s => s.value === m[5] || s.value[0] === m[5]);
     const dateLabel = `${day} ${MONTHS[month - 1]} ${year}`;
     return {
       kind: "paper", key, examCode: m[1], examName: exam.name,
