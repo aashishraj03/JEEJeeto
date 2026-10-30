@@ -46,3 +46,24 @@ document.addEventListener('DOMContentLoaded', async () => {
     });
   });
 });
+
+function isMobile() {
+  return /Android|iPhone|iPad|iPod/i.test(navigator.userAgent) ||
+         (navigator.maxTouchPoints > 1 && /Mac/i.test(navigator.platform));
+}
+
+function mailLink(to, subject = "", body = "") {
+  if (isMobile()) {
+    return "mailto:" + to + "?subject=" + encodeURIComponent(subject) +
+           "&body=" + encodeURIComponent(body);
+  }
+  return "https://mail.google.com/mail/?" +
+         new URLSearchParams({ view: "cm", fs: "1", to, su: subject, body });
+}
+
+document.addEventListener("DOMContentLoaded", () => {
+  document.querySelectorAll("a[data-mail-to]").forEach(a => {
+    a.href = mailLink(a.dataset.mailTo, a.dataset.mailSubject || "", a.dataset.mailBody || "");
+    if (!isMobile()) { a.target = "_blank"; a.rel = "noopener noreferrer"; }
+  });
+});
