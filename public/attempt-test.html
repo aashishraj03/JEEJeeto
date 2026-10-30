@@ -1,134 +1,203 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-  <title>JEE Main CBT Simulator - LaunchITJEE</title>
-  
-  <!-- Cache-busted stylesheet -->
-  <link rel="stylesheet" href="css/attempt-test.css?v=2">
-  <script defer src="/_vercel/speed-insights/script.js"></script>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover">
+<title>Attempt Test - LaunchIt JEE</title>
+<script src="/error-reporter.js"></script>
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+html,body{height:100%}
+body{display:flex;flex-direction:column;font:14px/1.45 Arial,Helvetica,sans-serif;color:#222;background:#fff;overflow:hidden;-webkit-tap-highlight-color:transparent}
+button{font:inherit;cursor:pointer}
+
+/* ---------- top bar ---------- */
+.topbar{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:6px 14px;background:#fff;border-bottom:1px solid #cfd8dc;flex:none}
+.brand{display:flex;align-items:center;gap:14px;min-width:0}
+.logo{font-weight:800;font-size:20px;color:#0F172A;white-space:nowrap}
+.logo span{color:#F59E0B}
+.exam-title{font-weight:700;font-size:15px;color:#37474f;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.cand{display:flex;align-items:center;gap:12px}
+.cand-info{font-size:12.5px;line-height:1.5;text-align:right}
+.cand-info b{color:#111}
+.timer{display:inline-block;min-width:78px;text-align:center;background:#1b6ec2;color:#fff;font-weight:700;padding:1px 8px;border-radius:3px;font-size:14px}
+.timer.low{background:#d32f2f}
+.avatar{width:42px;height:42px;border-radius:4px;background:#cfd8dc;color:#455a64;font-weight:700;font-size:20px;display:flex;align-items:center;justify-content:center;flex:none}
+.pal-toggle{display:none;border:1px solid #1b6ec2;background:#fff;color:#1b6ec2;border-radius:3px;padding:5px 10px;font-weight:700}
+
+/* ---------- subject tabs ---------- */
+.subject-bar{display:flex;align-items:center;gap:6px;padding:6px 14px;background:#eceff1;border-bottom:1px solid #cfd8dc;flex:none;overflow-x:auto}
+.subject-bar .lbl{font-weight:700;font-size:12.5px;color:#455a64;margin-right:4px}
+.tab{border:1px solid #b0bec5;background:#fff;color:#37474f;padding:6px 18px;border-radius:3px;font-weight:700;white-space:nowrap}
+.tab.active{background:#1b6ec2;border-color:#1b6ec2;color:#fff}
+
+/* ---------- layout ---------- */
+.layout{flex:1;min-height:0;display:flex}
+.q-panel{flex:1;min-width:0;display:flex;flex-direction:column;border-right:1px solid #cfd8dc}
+.q-head{display:flex;justify-content:space-between;flex-wrap:wrap;gap:4px 16px;padding:7px 14px;background:#fff;border-bottom:1px solid #cfd8dc;font-size:13px}
+.q-head .marks{color:#455a64}
+.q-head .pos{color:#2e7d32;font-weight:700}.q-head .neg{color:#c62828;font-weight:700}
+.q-no{padding:8px 14px;font-weight:700;font-size:15px;border-bottom:1px solid #eceff1;flex:none}
+.q-scroll{flex:1;overflow:auto;padding:14px 16px}
+.q-text{font-size:16px;line-height:1.65}
+.q-figure img{max-width:100%;max-height:300px;margin:12px 0;display:block}
+.opt{display:flex;align-items:flex-start;gap:10px;padding:9px 10px;margin-top:8px;border:1px solid #cfd8dc;border-radius:3px;cursor:pointer;font-size:15.5px;line-height:1.55}
+.opt:hover{background:#f5f9fc}.opt.sel{background:#e3f0fb;border-color:#1b6ec2}
+.opt input{margin-top:5px;accent-color:#1b6ec2;flex:none}
+.opt .n{font-weight:700;color:#455a64;flex:none}
+
+/* numerical keypad */
+.num-wrap{max-width:290px;margin-top:14px}
+.num-display{height:40px;border:1px solid #90a4ae;background:#fff;padding:0 10px;font-size:20px;line-height:38px;font-family:Consolas,monospace;overflow:hidden;white-space:pre}
+.caret{display:inline-block;width:1px;height:22px;background:#111;vertical-align:middle;animation:bl 1s steps(1) infinite}
+@keyframes bl{50%{opacity:0}}
+.keypad{display:grid;grid-template-columns:repeat(3,1fr);gap:4px;margin-top:6px}
+.keypad button{height:40px;border:1px solid #90a4ae;background:#eceff1;border-radius:3px;font-size:16px;font-weight:700}
+.keypad button:active{background:#cfd8dc}
+.keypad .wide{grid-column:span 3;display:grid;grid-template-columns:repeat(3,1fr);gap:4px}
+.keypad .wide button{font-size:13px}
+
+/* ---------- action bar ---------- */
+.actions{flex:none;padding:8px 14px;background:#fff;border-top:1px solid #cfd8dc}
+.row{display:flex;flex-wrap:wrap;gap:8px}
+.row+.row{margin-top:8px;justify-content:space-between}
+.btn{padding:8px 14px;border-radius:3px;border:1px solid #b0bec5;background:#fff;color:#263238;font-weight:700;font-size:13px}
+.btn.save{background:#43a047;border-color:#388e3c;color:#fff}
+.btn.savemark{background:#ef6c00;border-color:#e65100;color:#fff}
+.btn.mark{background:#1b6ec2;border-color:#1a5fa6;color:#fff}
+.btn.submit{background:#2e7d32;border-color:#1b5e20;color:#fff;padding:8px 26px}
+.btn:disabled{opacity:.5}
+
+/* ---------- palette ---------- */
+.palette{width:300px;flex:none;display:flex;flex-direction:column;background:#e3f2fd;min-height:0}
+.p-user{display:flex;align-items:center;gap:10px;padding:10px 12px;background:#fff;border-bottom:1px solid #cfd8dc;font-weight:700}
+.legend{display:grid;grid-template-columns:1fr 1fr;gap:8px 6px;padding:10px 12px;font-size:12px}
+.lg{display:flex;align-items:center;gap:6px}.lg .c{font-weight:700}
+.p-sec{padding:6px 12px;background:#1b6ec2;color:#fff;font-weight:700;font-size:13px}
+.p-sub{padding:6px 12px 0;font-weight:700;font-size:12.5px;color:#37474f}
+.grid{flex:1;overflow:auto;padding:10px 12px;display:grid;grid-template-columns:repeat(5,1fr);gap:8px;align-content:start}
+.p-foot{padding:10px 12px;border-top:1px solid #b6d4ea;background:#e3f2fd}
+.p-foot .btn{width:100%}
+.submit-m{display:none}
+
+/* palette shapes (same set used in the legend and the grid) */
+.q{width:38px;height:36px;border:0;background:#e0e0e0;color:#222;font-weight:700;font-size:13px;display:flex;align-items:center;justify-content:center;position:relative}
+.q.cur{outline:2px solid #1b6ec2;outline-offset:1px}
+.lg .q{width:28px;height:26px;font-size:11px;cursor:default}
+.q-not-visited{background:#e0e0e0;border:1px solid #b0b0b0;border-radius:3px}
+.q-not-answered{background:#e53935;color:#fff;clip-path:polygon(0 0,100% 0,100% 62%,50% 100%,0 62%)}
+.q-answered{background:#43a047;color:#fff;clip-path:polygon(50% 0,100% 38%,100% 100%,0 100%,0 38%)}
+.q-marked{background:#7b1fa2;color:#fff;border-radius:50%}
+.q-answered-marked{background:#7b1fa2;color:#fff;border-radius:50%}
+.q-answered-marked::after{content:"";position:absolute;right:-1px;bottom:-1px;width:11px;height:11px;border-radius:50%;background:#43a047;border:2px solid #fff}
+
+/* ---------- modals / result ---------- */
+.overlay{position:fixed;inset:0;background:rgba(0,0,0,.5);display:flex;align-items:center;justify-content:center;padding:16px;z-index:50}
+.modal{background:#fff;border-radius:4px;max-width:640px;width:100%;max-height:90vh;overflow:auto;padding:18px}
+.modal h3{font-size:17px;margin-bottom:10px}
+table.sum{width:100%;border-collapse:collapse;font-size:13px;margin:8px 0 14px}
+table.sum th,table.sum td{border:1px solid #cfd8dc;padding:6px 8px;text-align:center}
+table.sum th{background:#eceff1}table.sum td:first-child{text-align:left;font-weight:700}
+.modal .btns{display:flex;gap:10px;justify-content:flex-end}
+.msg{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:40px 20px;overflow:auto;width:100%}
+.msg h2{margin-bottom:10px;color:#263238}.msg p{max-width:520px;color:#546e7a;margin-bottom:20px;line-height:1.6}
+.msg a{text-decoration:none}
+.score{font-size:34px;font-weight:800;color:#1b6ec2}.score small{font-size:16px;color:#78909c}
+
+/* ---------- phone ---------- */
+@media (max-width:820px){
+  .topbar{padding:6px 10px}.exam-title{font-size:12.5px}.logo{font-size:17px}
+  .cand-info .hide-m,.avatar{display:none}
+  .cand-info{font-size:12px}
+  .pal-toggle{display:block}
+  .subject-bar{padding:6px 10px}.subject-bar .lbl{display:none}.tab{padding:6px 14px}
+  .palette{position:fixed;top:0;right:0;bottom:0;width:min(86vw,320px);z-index:40;transform:translateX(100%);transition:transform .2s;box-shadow:-4px 0 14px rgba(0,0,0,.25)}
+  .palette.open{transform:none}
+  .q-panel{border-right:0}
+  .q-text{font-size:15.5px}.opt{font-size:15px}
+  .actions{padding:6px 8px calc(6px + env(safe-area-inset-bottom))}
+  .row{display:grid;grid-template-columns:repeat(3,1fr);gap:6px}
+  .row+.row{display:none}
+  .btn{padding:9px 4px;font-size:12px;text-align:center}
+  .submit-d{display:none}.submit-m{display:block}
+}
+</style>
 </head>
 <body>
 
-  <!-- Top NTA Header -->
-  <header class="nta-header">
-    <div class="nta-exam-title" id="exam-title">JEE (Main) Computer Based Test (CBT)</div>
-    <div class="nta-header-right">
-      <div class="nta-timer-badge">
-        <span>⏱ Time Left:</span>
-        <strong id="timer">03:00:00</strong>
+<header class="topbar">
+  <div class="brand">
+    <div class="logo">LaunchIt<span> JEE</span></div>
+    <span id="exam-title" class="exam-title">Loading…</span>
+  </div>
+  <div class="cand">
+    <div class="cand-info">
+      <div class="hide-m">Candidate Name: <b id="candidate-name">Student</b></div>
+      <div class="hide-m">Exam Name: <b id="exam-name">JEE Main</b></div>
+      <div>Remaining Time: <span id="timer" class="timer">--:--:--</span></div>
+    </div>
+    <div class="avatar" id="candidate-avatar">S</div>
+    <button type="button" class="pal-toggle" id="palToggle">Palette</button>
+  </div>
+</header>
+
+<nav class="subject-bar" id="subject-bar"></nav>
+
+<main class="layout" id="layout">
+  <section class="q-panel">
+    <div class="q-head">
+      <div>Question Type: <b id="q-type">MCQ</b></div>
+      <div class="marks">Marks for correct answer <span class="pos" id="q-pos">4</span> | Negative Marks <span class="neg" id="q-neg">1</span></div>
+    </div>
+    <div class="q-no" id="q-number">Question No. 1</div>
+    <div class="q-scroll" id="q-scroll">
+      <div id="q-text" class="q-text"></div>
+      <div id="q-figure" class="q-figure"></div>
+      <div id="q-answer"></div>
+    </div>
+    <div class="actions">
+      <div class="row">
+        <button type="button" class="btn save" id="saveNextBtn">Save &amp; Next</button>
+        <button type="button" class="btn savemark" id="saveMarkBtn">Save &amp; Mark for Review</button>
+        <button type="button" class="btn" id="clearBtn">Clear Response</button>
+        <button type="button" class="btn mark" id="markBtn">Mark for Review &amp; Next</button>
+      </div>
+      <div class="row">
+        <div class="row">
+          <button type="button" class="btn" id="prevBtn">&laquo; Back</button>
+          <button type="button" class="btn" id="nextBtn">Next &raquo;</button>
+        </div>
+        <button type="button" class="btn submit submit-d" id="submitBtn">Submit</button>
       </div>
     </div>
-  </header>
+  </section>
 
-  <!-- Subject Selector Tabs (Physics 1-25, Chemistry 26-50, Mathematics 51-75) -->
-  <nav class="subject-nav-bar">
-    <button class="sub-tab-btn active" id="tab-phy" onclick="switchSubject('Physics')">Physics (25)</button>
-    <button class="sub-tab-btn" id="tab-chem" onclick="switchSubject('Chemistry')">Chemistry (25)</button>
-    <button class="sub-tab-btn" id="tab-math" onclick="switchSubject('Mathematics')">Mathematics (25)</button>
-  </nav>
+  <aside class="palette" id="palette">
+    <div class="p-user"><div class="avatar" id="p-avatar">S</div><span id="p-name">Student</span></div>
+    <div class="legend">
+      <div class="lg"><span class="q q-answered c" id="c-ans">0</span>Answered</div>
+      <div class="lg"><span class="q q-not-answered c" id="c-notans">0</span>Not Answered</div>
+      <div class="lg"><span class="q q-not-visited c" id="c-notvis">0</span>Not Visited</div>
+      <div class="lg"><span class="q q-marked c" id="c-mark">0</span>Marked for Review</div>
+      <div class="lg" style="grid-column:span 2"><span class="q q-answered-marked c" id="c-ansmark">0</span>Answered &amp; Marked for Review (will be considered for evaluation)</div>
+    </div>
+    <div class="p-sec" id="p-sec">Physics</div>
+    <div class="p-sub">Choose a Question</div>
+    <div class="grid" id="palette-grid"></div>
+    <div class="p-foot submit-m"><button type="button" class="btn submit" id="submitBtnM">Submit</button></div>
+  </aside>
+</main>
 
-  <!-- Main Exam Split View -->
-  <main class="nta-main-layout">
-
-    <!-- Left: Question & Options Section -->
-    <section class="nta-question-container">
-      <div class="question-meta-bar">
-        <div id="q-number">Question No. 1</div>
-        <div class="question-marking-scheme">
-          Marks: <span>+4.00</span> &nbsp;|&nbsp; Negative: <span class="negative">-1.00</span>
-        </div>
-      </div>
-
-      <div class="question-content-scroll">
-        <div class="question-text-area" id="q-text">
-          Loading question text...
-        </div>
-
-        <div id="q-figure"></div>
-
-        <div class="options-list" id="q-options">
-          <!-- Populated by test-engine.js -->
-        </div>
-      </div>
-
-      <!-- Bottom Action Controls -->
-      <footer class="nta-bottom-actions">
-        <div class="action-btn-group">
-          <button class="nta-btn btn-save-next" id="saveNextBtn">Save &amp; Next</button>
-          <button class="nta-btn btn-clear" id="clearBtn">Clear Response</button>
-          <button class="nta-btn btn-mark-review" id="markBtn">Mark for Review &amp; Next</button>
-        </div>
-        <div class="action-btn-group">
-          <button class="nta-btn btn-clear" id="prevBtn">Previous</button>
-        </div>
-      </footer>
-    </section>
-
-    <!-- Right: Candidate Palette & Status Box -->
-    <aside class="nta-palette-container">
-      <div class="candidate-profile-box">
-        <div class="candidate-photo" id="candidate-avatar">A</div>
-        <div class="candidate-info-text">
-          <span style="color:#64748b; font-size:11px;">Candidate Name:</span><br>
-          <strong id="candidate-name">Aashish Raj</strong>
-        </div>
-      </div>
-
-      <!-- Status Indicators Legend -->
-      <div class="nta-legend-grid">
-        <div class="legend-item">
-          <span class="legend-badge badge-answered" id="count-answered">0</span> Answered
-        </div>
-        <div class="legend-item">
-          <span class="legend-badge badge-not-answered" id="count-not-answered">0</span> Not Answered
-        </div>
-        <div class="legend-item">
-          <span class="legend-badge badge-not-visited" id="count-not-visited">75</span> Not Visited
-        </div>
-        <div class="legend-item">
-          <span class="legend-badge badge-marked" id="count-marked">0</span> Marked for Review
-        </div>
-        <div class="legend-item" style="grid-column: span 2;">
-          <span class="legend-badge badge-ans-marked" id="count-ans-marked">0</span> Answered &amp; Marked for Review
-        </div>
-      </div>
-
-      <!-- 75 Question Palette Grid -->
-      <div class="palette-scroll-area">
-        <div class="palette-heading">Choose a Question:</div>
-        <div class="palette-buttons-grid" id="palette-grid">
-          <!-- 75 Buttons dynamically rendered by test-engine.js -->
-        </div>
-      </div>
-
-      <!-- Submit Test Trigger -->
-      <div class="palette-submit-bar">
-        <button class="btn-submit-exam" id="submitBtn">Submit Test</button>
-      </div>
-    </aside>
-
-  </main>
-
-  <!-- MathJax Configuration -->
-  <script>
-    window.MathJax = {
-      tex: { inlineMath: [['$', '$'], ['\\(', '\\)']] }
-    };
-  </script>
-  <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js" id="MathJax-script" async></script>
-
-  <!-- Session Protection Check -->
-  <script>
-    if (sessionStorage.getItem('jee_session_active') !== 'true') {
-      window.location.href = "login.html?redirect=" + encodeURIComponent(window.location.pathname + window.location.search);
-    }
-  </script>
-
-  <!-- Cache-busted Scripts -->
-  <script src="js/test-key.js?v=2"></script>
-  <script src="js/questions-data.js?v=2"></script>
-  <script src="js/test-engine.js?v=2"></script>
+<!-- MathJax config must come before the library. $...$ is turned on. -->
+<script>
+window.MathJax = {
+  tex: { inlineMath: [['$', '$'], ['\\(', '\\)']], displayMath: [['$$', '$$'], ['\\[', '\\]']] },
+  options: { skipHtmlTags: ['script', 'noscript', 'style', 'textarea', 'pre'] }
+};
+</script>
+<script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+<script src="js/test-key.js"></script>
+<script src="js/questions-data.js"></script>
+<script src="js/test-engine.js"></script>
 </body>
 </html>
