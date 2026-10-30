@@ -408,7 +408,9 @@ function renderQuestion() {
     });
   }
 
-  if (window.MathJax && window.MathJax.typesetPromise) {
+  const MATH_RE = /\$|\\\(|\\\[/;
+  const hasMath = MATH_RE.test(q.text || "") || (q.options || []).some(o => MATH_RE.test(String(o)));
+  if (hasMath && window.MathJax && window.MathJax.typesetPromise) {
     MathJax.typesetPromise([qTextEl, optionsDiv]).catch(() => {});
   }
 
@@ -419,20 +421,44 @@ function renderQuestion() {
 function renderPalette() {
   const grid = document.getElementById("palette-grid");
   if (!grid) return;
-  grid.innerHTML = "";
-
+  if (grid.children.length !== totalQuestions) {
+    grid.innerHTML = "";
+    for (let i = 1; i <= totalQuestions; i++) {
+      const btn = document.createElement("button");
+      btn.type = "button";
+      btn.textContent = i;
+      btn.dataset.q = i;
+      grid.appendChild(btn);
+    }
+    // one delegated listener instead of 75 separate ones
+    grid.addEventListener("click", e => {
+      const b = e.target.closest("button[data-q]");
+      if (b) goToQuestion(parseInt(b.dataset.q, 10));
+    });
+  }
   for (let i = 1; i <= totalQuestions; i++) {
-    const btn = document.createElement("button");
-    btn.type = "button";
-    btn.className = `q-btn q-${questionStatus[i]}`;
-    btn.textContent = i;
-    bindFastClick(btn, () => goToQuestion(i));
-    grid.appendChild(btn);
+    grid.children[i - 1].className = `q-btn q-${questionStatus[i]}`;
   }
 
   // renderPalette runs after every status change (save, mark, clear, navigate),
   // so this keeps the saved copy of a Full Syllabus test up to date.
   persistProgress();
+}
+
+// On phones (<=768px, same breakpoint as the CSS) the palette sits ABOVE the
+// question and the whole page scrolls. After Save & Next the scroll position
+// stayed down at the buttons, so the new question was off-screen and it looked
+// like nothing happened. Bring the question card back into view.
+// NOTE: the CSS gives both <html> and <body> overflow:auto + height:100%, which
+// makes <body> the scroller, so window.scrollTo() would do nothing here;
+// scrollIntoView() scrolls whichever ancestor is actually scrolling.
+// Desktop is a fixed, non-scrolling layout and is deliberately left untouched.
+function scrollQuestionToTop() {
+  if (!window.matchMedia("(max-width: 768px)").matches) return;
+  const content = document.querySelector(".question-content-scroll");
+  if (content) content.scrollTop = 0;
+  const card = document.querySelector(".nta-question-container");
+  if (card && card.scrollIntoView) card.scrollIntoView({ block: "start", inline: "nearest" });
 }
 
 function goToQuestion(num) {
@@ -442,6 +468,7 @@ function goToQuestion(num) {
   }
   renderQuestion();
   renderPalette();
+  scrollQuestionToTop();
 }
 
 function goToPrevQuestion() {
@@ -481,7 +508,16 @@ function updateTimer() {
 let progressKey = null;
 let persistEnabled = false;
 
+// Debounced: the old version serialised the whole 75-question paper into
+// localStorage synchronously on every tap, which freezes phones for a moment.
+let persistTimer = null;
 function persistProgress() {
+  if (!persistEnabled || testIsSubmitted) return;
+  clearTimeout(persistTimer);
+  persistTimer = setTimeout(persistNow, 400);
+}
+
+function persistNow() {
   if (!persistEnabled || testIsSubmitted || !progressKey) return;
   try {
     localStorage.setItem(progressKey, JSON.stringify({
@@ -852,10 +888,10 @@ async function loadCandidateProfile() {
   timerHandle = setInterval(updateTimer, 1000);
 
   if (persistEnabled) {
-    setInterval(persistProgress, 15000); // also captures time spent per question
-    window.addEventListener("pagehide", persistProgress);
+    setInterval(persistNow, 15000); // also captures time spent per question
+    window.addEventListener("pagehide", persistNow);
     document.addEventListener("visibilitychange", () => {
-      if (document.visibilityState === "hidden") persistProgress();
+      if (document.visibilityState === "hidden") persistNow();
     });
   }
 })();
