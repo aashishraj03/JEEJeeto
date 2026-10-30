@@ -112,12 +112,33 @@ async function loadQuestionSet(key) {
   return b ? (Array.isArray(b) ? b : (b.questions || [])) : [];
 }
 
+// ===== Sample paper (used only when a test has no questions yet) =====
+// 75 questions: Physics, Chemistry, Mathematics, each 20 MCQ + 5 numerical.
+// Every MCQ shows its number and options labelled "Option 1".."Option 4".
+function makeSampleQuestions() {
+  const out = [];
+  SUBJECT_ORDER.forEach(subject => {
+    for (let n = 1; n <= 25; n++) {
+      const base = { subject, class: 11, chapter: "Sample Chapter", topic: "Sample Topic" };
+      if (n <= 20) {
+        out.push({ ...base, type: "mcq", text: `${subject} \u2014 Question ${n}`,
+          options: ["Option 1", "Option 2", "Option 3", "Option 4"], correctIndex: (n - 1) % 4 });
+      } else {
+        out.push({ ...base, type: "numerical", text: `${subject} \u2014 Question ${n} (numerical). Enter ${n}.`,
+          min: n, max: n });
+      }
+    }
+  });
+  return out;
+}
+let isSample = false;
+
 // ===== Saved progress (refresh / crash safe) =====
 function persist() {
   if (!persistEnabled || submitted || !progressKey) return;
   try {
     localStorage.setItem(progressKey, JSON.stringify({
-      v: 1, testKey: setKey, endsAt, cur,
+      v: 1, testKey: setKey, endsAt, cur, sample: isSample,
       questions: questions.map(({ explanation, ...rest }) => rest),
       answers, status, markedHistory, changed, timeSpent
     }));
@@ -332,6 +353,7 @@ async function submitTest() {
       <a class="btn mark" id="analysisBtn" href="profile.html#recent-tests">View Detailed Analysis</a>
       <a class="btn save" href="tests.html">Back to Tests</a></div>`);
 
+  if (isSample) { const a = $("analysisBtn"); if (a) a.style.display = "none"; return; } // sample paper is never saved
   try {
     const res = await fetch("/api/attempts", {
       method: "POST", headers: { "Content-Type": "application/json" }, credentials: "include",
@@ -387,14 +409,11 @@ async function loadCandidate() {
 
   let fresh = false;
   if (saved) {
-    questions = saved.questions; buildGroups();
+    questions = saved.questions; isSample = !!saved.sample; buildGroups();
   } else {
-    const rows = await loadQuestionSet(setKey);
+    let rows = await loadQuestionSet(setKey);
     if (rows === null) return;
-    if (!rows.length) {
-      showPanel(`<h2>No questions found</h2><p>There are no questions for this test yet.</p><a class="btn save" href="tests.html">Back to Tests</a>`);
-      return;
-    }
+    if (!rows.length) { rows = makeSampleQuestions(); isSample = true; }
     prepare(rows); fresh = true;
   }
 
@@ -410,6 +429,7 @@ async function loadCandidate() {
     endsAt = Date.now() + meta.durationMin * 60 * 1000;
   }
 
+  if (isSample) $("exam-title").textContent = meta.title + " (SAMPLE PAPER \u2014 no questions added yet)";
   persistEnabled = true;
   renderTabs(); render(); renderPalette(); updateTimer();
   timerHandle = setInterval(updateTimer, 1000);
