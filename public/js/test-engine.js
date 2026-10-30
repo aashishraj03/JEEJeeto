@@ -1,897 +1,420 @@
-// ===== Parse Test Key from URL =====
-const urlParams = new URLSearchParams(window.location.search);
-const testParam = urlParams.get("test");
-const paperParam = urlParams.get("paper");
-const typeParam = urlParams.get("type") || "mock";
+// ===== JEE portal test engine =====
+// Needs test-key.js (parseTestKey) and, as an offline fallback, questions-data.js.
+//
+// Question format (questions-data.js / API rows). Paper-wise: one entry per sitting,
+// e.g. questionBank["jm-2026-04-02-m"] = [ ...questions ]  (or { questions: [...] })
+//   { subject, class, chapter, topic, type, text, image, options, correctIndex, min, max, explanation }
+//   type "mcq"       -> options: [4 strings], correctIndex: 0-3
+//   type "numerical" -> min / max: accepted answer window (max may be left out for one exact value)
+// Exam, date, shift, session, title, duration and marking all come from the paper key.
+(() => {
+"use strict";
 
-let setKey = testParam || paperParam || typeParam;
+const params = new URLSearchParams(location.search);
+const setKey = (params.get("test") || params.get("paper") || "").toLowerCase();
+const meta = parseTestKey(setKey);
+const $ = id => document.getElementById(id);
+const esc = s => String(s).replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
+const SUBJECT_ORDER = ["Physics", "Chemistry", "Mathematics"];
 
-// ===== Test duration =====
-// Full Syllabus tests ("c11-phy-full", "c12-math-full", ...) run for 3 hours.
-// Every other test keeps the 60-minute limit it has always had.
-const FULL_TEST_RE = /^c(\d+)-(phy|chem|math)-full$/i;
-const isFullTest = FULL_TEST_RE.test(setKey || "");
-const DEFAULT_TEST_MINUTES = 60;
-const FULL_TEST_MINUTES = 180;
+// ===== State =====
+let questions = [], groups = [];
+let cur = 0, draft = null, caret = 0;
+let endsAt = 0, timerHandle = null, submitted = false;
+let progressKey = null, persistEnabled = false;
+const answers = {}, status = {}, markedHistory = {}, changed = {}, timeSpent = {};
 
-// Unit Test / Mid-term Revision ("c11-phy-revision"): the student builds it on
-// tests.html, and the choices travel in the page address:
-//   ?test=c11-phy-revision&chapters=1,3,5&basic=15&moderate=15&advanced=10&mins=75
-const REVISION_TEST_RE = /^c(\d+)-(phy|chem|math)-revision$/i;
-const isRevisionTest = REVISION_TEST_RE.test(setKey || "");
-const REVISION_MIN_MINUTES = 30;
-const REVISION_MAX_MINUTES = 180;
+setInterval(() => { if (!submitted && questions.length) timeSpent[cur] = (timeSpent[cur] || 0) + 1; }, 1000);
 
-// A full exam sitting (one paper): "jm-2026-04-02-morning" (JEE Main) or
-// "ja-2025-p1" (JEE Advanced). Runs for 3 hours with the real paper's order.
-const JM_PAPER_RE = /^jm-(\d{4})-(\d{2})-(\d{2})-(morning|evening)$/i;
-const JA_PAPER_RE = /^ja-(\d{4})-p([12])$/i;
-const isPaperTest = JM_PAPER_RE.test(setKey || "") || JA_PAPER_RE.test(setKey || "");
-const PAPER_TEST_MINUTES = 180;
-
-const SUBJECT_NAMES = { phy: "Physics", chem: "Chemistry", math: "Mathematics" };
-const MONTH_NAMES = ["January", "February", "March", "April", "May", "June",
-  "July", "August", "September", "October", "November", "December"];
-
-// Title of a paper, worked out from its key alone.
-function getPaperTitle(key) {
-  const k = String(key || "").toLowerCase();
-  let m = k.match(JM_PAPER_RE);
-  if (m) {
-    const shift = m[4] === "morning" ? "Morning" : "Evening";
-    return `JEE Main ${m[1]} \u00b7 ${parseInt(m[3], 10)} ${MONTH_NAMES[parseInt(m[2], 10) - 1] || ""} \u00b7 ${shift} Shift`;
-  }
-  m = k.match(JA_PAPER_RE);
-  if (m) return `JEE Advanced ${m[1]} \u00b7 Paper ${m[2]}`;
-  return null;
+// ===== Helpers =====
+function showPanel(html) {
+  $("subject-bar").style.display = "none";
+  $("palette").style.display = "none";
+  $("palToggle").style.display = "none";
+  $("layout").innerHTML = `<div class="msg">${html}</div>`;
 }
 
-// Both kinds span several chapters: fixed title, and the paper is saved so a
-// refresh or crash can be resumed.
-const isMultiChapterTest = isFullTest || isRevisionTest || isPaperTest;
-
-function getRevisionMinutes() {
-  const mins = parseInt(urlParams.get("mins"), 10);
-  if (!Number.isFinite(mins)) return DEFAULT_TEST_MINUTES;
-  return Math.min(Math.max(mins, REVISION_MIN_MINUTES), REVISION_MAX_MINUTES);
+function canonSubject(s) {
+  const t = String(s || "").toLowerCase();
+  if (t.startsWith("phy")) return "Physics";
+  if (t.startsWith("chem")) return "Chemistry";
+  if (t.startsWith("math")) return "Mathematics";
+  return s || "General";
 }
 
-// Only the known builder fields are passed on to the server.
-function getRevisionQuery() {
-  if (!isRevisionTest) return "";
-  const out = new URLSearchParams();
-  ["chapters", "basic", "moderate", "advanced"].forEach(k => {
-    const v = urlParams.get(k);
-    if (v !== null) out.set(k, v);
+function normalize(r) {
+  const type = String(r.type || "mcq").toLowerCase().startsWith("num") ? "numerical" : "mcq";
+  return {
+    id: r.id ?? null, subject: canonSubject(r.subject), classNum: r.class ?? null,
+    chapter: r.chapter || "", topic: r.topic || "", type,
+    text: r.text || "", image: r.image || null,
+    options: type === "mcq" ? (r.options || []) : [],
+    correctIndex: r.correctIndex, min: r.min, max: r.max,
+    explanation: r.explanation || null
+  };
+}
+
+function prepare(rows) {
+  const subjOrder = s => { const i = SUBJECT_ORDER.indexOf(s); return i < 0 ? 99 : i; };
+  questions = rows.map((r, i) => ({ ...normalize(r), _o: i }));
+  questions.sort((a, b) =>
+    subjOrder(a.subject) - subjOrder(b.subject) ||
+    (a.type === "numerical") - (b.type === "numerical") || a._o - b._o);
+  buildGroups();
+}
+
+function buildGroups() {
+  groups = [];
+  questions.forEach((q, i) => {
+    let g = groups.find(x => x.subject === q.subject);
+    if (!g) groups.push(g = { subject: q.subject, idx: [] });
+    g.idx.push(i);
   });
-  const q = out.toString();
-  return q ? `?${q}` : "";
+}
+const groupOf = i => groups.find(g => g.idx.includes(i));
+
+function isCorrect(q, a) {
+  if (a === undefined) return false;
+  if (q.type === "mcq") return a === q.correctIndex;
+  const v = parseFloat(a), lo = parseFloat(q.min);
+  if (!isFinite(v) || !isFinite(lo)) return false;
+  const hi = q.max === undefined || q.max === null ? lo : parseFloat(q.max);
+  return v >= Math.min(lo, hi) - 1e-9 && v <= Math.max(lo, hi) + 1e-9;
 }
 
-// Identifies one specific paper: the test plus (for revision) the chosen setup,
-// so two different custom setups never share a saved copy.
-const progressId = setKey + getRevisionQuery();
-
-function getTestDurationSeconds() {
-  if (isRevisionTest) return getRevisionMinutes() * 60;
-  if (isPaperTest) return PAPER_TEST_MINUTES * 60;
-  return (isFullTest ? FULL_TEST_MINUTES : DEFAULT_TEST_MINUTES) * 60;
-}
-
-// ===== Fast Click & Touch Handler Helper =====
-function bindFastClick(element, handler) {
-  if (!element) return;
-  element.addEventListener('click', handler);
-}
-
-// ===== Dynamically Update Exam Header & Page Title =====
-function setDynamicExamTitle(key) {
-  const examTitleEl = document.getElementById("exam-title");
-  const normalizedKey = (key || "").toLowerCase();
-
-  // Full Syllabus test: the title is known from the key alone, and must not be
-  // replaced later by the name of whichever chapter the first question is from.
-  const paperTitle = getPaperTitle(normalizedKey);
-  if (paperTitle) {
-    if (examTitleEl) examTitleEl.textContent = paperTitle;
-    document.title = `${paperTitle} - JEE Portal`;
-    return;
-  }
-
-  const fullMatch = normalizedKey.match(FULL_TEST_RE);
-  if (fullMatch) {
-    const subjectName = SUBJECT_NAMES[fullMatch[2]] || "";
-    const fullTitle = `Class ${fullMatch[1]} ${subjectName} \u2014 Full Syllabus Test`;
-    if (examTitleEl) examTitleEl.textContent = fullTitle;
-    document.title = `${fullTitle} - JEE Portal`;
-    return;
-  }
-
-  const revisionMatch = normalizedKey.match(REVISION_TEST_RE);
-  if (revisionMatch) {
-    const subjectName = SUBJECT_NAMES[revisionMatch[2]] || "";
-    const revisionTitle = `Class ${revisionMatch[1]} ${subjectName} \u2014 Unit Test / Revision`;
-    if (examTitleEl) examTitleEl.textContent = revisionTitle;
-    document.title = `${revisionTitle} - JEE Portal`;
-    return;
-  }
-
-  let examName = "JEE Practice Arena";
-  if (normalizedKey.includes("c12")) examName = "Class 12 JEE Test";
-  else if (normalizedKey.includes("c11")) examName = "Class 11 JEE Test";
-
-  // Deliberately NOT guessing a chapter name from the raw key here — that
-  // guess is what used to flash on screen before the real chapter name
-  // (loaded from the DB a moment later) replaced it. A plain "loading"
-  // state has nothing wrong-looking to flash.
-  if (examTitleEl) {
-    examTitleEl.textContent = `${examName} — loading…`;
-  }
-
-  document.title = `${examName} - JEE Portal`;
-}
-
-// ===== 75-Question JEE Blueprint Generator =====
-function generateFoundationQuestions(loadedQuestions = []) {
-  if (loadedQuestions.length > 0) {
-    return loadedQuestions;
-  }
-
-  // Fallback generator: 75 demo questions (Physics, Chemistry, Mathematics)
-  const fullSet = [];
-  const subjects = [
-    { name: "Physics", start: 1, end: 25 },
-    { name: "Chemistry", start: 26, end: 50 },
-    { name: "Mathematics", start: 51, end: 75 }
-  ];
-
-  subjects.forEach(subj => {
-    for (let i = subj.start; i <= subj.end; i++) {
-      fullSet.push({
-        subject: subj.name,
-        chapter: `${subj.name} Basics`,
-        num: i,
-        text: `[${subj.name} Q${i}] Evaluate the basic concept and select the correct option for this problem.`,
-        options: [
-          `Option A: Basic Concept Solution 1`,
-          `Option B: Basic Concept Solution 2`,
-          `Option C: Basic Concept Solution 3`,
-          `Option D: None of these`
-        ],
-        correctIndex: 0
-      });
-    }
-  });
-
-  return fullSet;
-}
-
-// ===== Load Question Set from Server or Question Bank =====
+// ===== Loading =====
 async function loadQuestionSet(key) {
   try {
-    const res = await fetch("/api/questions/" + encodeURIComponent(key) + getRevisionQuery(), { credentials: "include" });
-
+    const res = await fetch("/api/questions/" + encodeURIComponent(key), { credentials: "include" });
     if (res.status === 401) {
-      // Not logged in (or session expired) — no test content should ever
-      // reach the page. Send them to log in, then straight back here.
-      const returnTo = encodeURIComponent(window.location.pathname + window.location.search);
-      window.location.href = `login.html?redirect=${returnTo}`;
-      return new Promise(() => {}); // halt here — navigation is in flight, nothing after this should run
+      location.href = "login.html?redirect=" + encodeURIComponent(location.pathname + location.search);
+      return new Promise(() => {});
     }
-
     if (res.status === 403) {
-      document.querySelector(".nta-main-layout").innerHTML = `
-        <div style="flex:1; padding: 60px 20px; text-align: center; background:#fff;">
-          <h2 style="color:#E11D48; font-size:26px; margin-bottom:12px;">🔒 Paper Locked</h2>
-          <p style="font-size:15px; color:#555; max-width:480px; margin:0 auto 24px;">
-            This paper requires an active subscription. If your 3-day free trial has ended, subscribe to keep practising.
-          </p>
-          <a href="subscription.html" class="nta-btn btn-save-next" style="display:inline-block; line-height:34px; padding:0 20px; text-decoration:none; background:#F59E0B; color:#0F172A; border-radius:4px;">View Subscription Plans</a>
-        </div>
-      `;
-      return null; // nothing to run: the page below must not start a timer
-    }
-
-    // A custom paper that cannot be built (bad setup, or not enough questions yet)
-    if (res.status === 400 || res.status === 422) {
-      let message = "This test could not be created with those settings.";
-      try { message = (await res.json()).message || message; } catch (e) {}
-      const safeMessage = message.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
-      document.querySelector(".nta-main-layout").innerHTML = `
-        <div style="flex:1; padding: 60px 20px; text-align: center; background:#fff;">
-          <h2 style="color:#E11D48; font-size:24px; margin-bottom:12px;">Couldn't build this test</h2>
-          <p style="font-size:15px; color:#555; max-width:520px; margin:0 auto 24px; line-height:1.6;">${safeMessage}</p>
-          <a href="tests.html" class="nta-btn btn-save-next" style="display:inline-block; line-height:34px; padding:0 20px; text-decoration:none; background:#F59E0B; color:#0F172A; border-radius:4px;">Back to Tests</a>
-        </div>
-      `;
+      showPanel(`<h2>Paper Locked</h2><p>This paper needs an active subscription. Free tests are available on the tests page.</p>
+        <a class="btn save" href="tests.html">Browse Available Tests</a>`);
       return null;
     }
-
+    if (res.status === 400 || res.status === 422) {
+      let m = "This test could not be created.";
+      try { m = (await res.json()).message || m; } catch (e) {}
+      showPanel(`<h2>Couldn't build this test</h2><p>${esc(m)}</p><a class="btn save" href="tests.html">Back to Tests</a>`);
+      return null;
+    }
     if (res.ok) {
-      const rows = await res.json();
-      if (rows.length > 0) {
-        return rows.map((r, idx) => ({
-          id: r.id,
-          subject: r.subject,
-          chapter: r.chapter || `${r.subject} Unit`,
-          text: r.question_text,
-          image: r.image_path || undefined,
-          type: r.question_type === "numerical" ? "numerical" : "mcq",
-          options: [r.option_a, r.option_b, r.option_c, r.option_d],
-          correctIndex: r.correct_index,
-          correctValue: (r.correct_value !== null && r.correct_value !== undefined) ? Number(r.correct_value) : undefined,
-          correctRange: (r.correct_min !== null && r.correct_min !== undefined && r.correct_max !== null && r.correct_max !== undefined)
-            ? [Number(r.correct_min), Number(r.correct_max)] : undefined,
-          explanation: r.explanation || null,
-          num: idx + 1
-        }));
-      }
+      const d = await res.json();
+      const rows = Array.isArray(d) ? d : (d.questions || []);
+      if (rows.length) return rows;
     }
-  } catch (e) {
-    console.warn("Couldn't reach server, falling back to static questions.", e);
-  }
+  } catch (e) { console.warn("Server unreachable, using static question bank.", e); }
 
-  const fallback = (typeof questionBank !== "undefined" && questionBank[key]) ? questionBank[key] : [];
-  return fallback;
+  const b = typeof questionBank !== "undefined" ? questionBank[key] : null;
+  return b ? (Array.isArray(b) ? b : (b.questions || [])) : [];
 }
 
-// ===== State Management & Telemetry Trackers =====
-let questions = [];
-let totalQuestions = 75;
-let currentQuestion = 1;
-const questionStatus = {};             
-const answers = {};            
-const timeSpent = {};          
-const answerChangedFlags = {}; 
-const markedHistory = {};      
-let testIsSubmitted = false;
-
-// Active per-question time ticker
-setInterval(() => {
-  if (!testIsSubmitted && currentQuestion) {
-    timeSpent[currentQuestion] = (timeSpent[currentQuestion] || 0) + 1;
-  }
-}, 1000);
-
-// Helper: Format seconds to M:SS or H:MM:SS
-function formatDuration(totalSec) {
-  const m = Math.floor(totalSec / 60);
-  const s = totalSec % 60;
-  if (m >= 60) {
-    const h = Math.floor(m / 60);
-    const remM = m % 60;
-    return `${h}h ${remM}m ${s}s`;
-  }
-  return `${m}m ${s < 10 ? '0' : ''}${s}s`;
-}
-
-// ===== Subject Switching =====
-// Jumps to the first question of a subject (works for any subject in the paper).
-function switchSubject(subjectName) {
-  const idx = questions.findIndex(q => (q.subject || "").toLowerCase() === String(subjectName).toLowerCase());
-  if (idx >= 0) goToQuestion(idx + 1);
-}
-
-// Builds one tab per subject that is actually in this test, in paper order.
-function buildSubjectTabs() {
-  const bar = document.querySelector(".subject-nav-bar");
-  if (!bar) return;
-  bar.innerHTML = "";
-  const seen = [];
-  questions.forEach(q => {
-    const name = (q.subject || "").trim();
-    if (name && !seen.includes(name)) seen.push(name);
-  });
-  seen.forEach(name => {
-    const btn = document.createElement("button");
-    btn.type = "button";
-    btn.className = "sub-tab-btn";
-    btn.dataset.subject = name;
-    btn.textContent = name;
-    btn.addEventListener("click", () => switchSubject(name));
-    bar.appendChild(btn);
-  });
-  bar.style.display = seen.length > 1 ? "" : "none";
-}
-
-// ===== Update Live Legend Counts =====
-function updateLegendCounts() {
-  let answered = 0, notAnswered = 0, notVisited = 0, marked = 0, ansMarked = 0;
-
-  for (let i = 1; i <= totalQuestions; i++) {
-    const st = questionStatus[i];
-    if (st === "answered") answered++;
-    else if (st === "not-answered") notAnswered++;
-    else if (st === "marked") marked++;
-    else if (st === "answered-marked") ansMarked++;
-    else notVisited++;
-  }
-
-  const elAns = document.getElementById("count-answered");
-  const elNotAns = document.getElementById("count-not-answered");
-  const elNotVis = document.getElementById("count-not-visited");
-  const elMarked = document.getElementById("count-marked");
-  const elAnsMarked = document.getElementById("count-ans-marked");
-
-  if (elAns) elAns.textContent = answered;
-  if (elNotAns) elNotAns.textContent = notAnswered;
-  if (elNotVis) elNotVis.textContent = notVisited;
-  if (elMarked) elMarked.textContent = marked;
-  if (elAnsMarked) elAnsMarked.textContent = ansMarked;
-}
-
-// ===== Render Current Question =====
-function renderQuestion() {
-  if (questions.length === 0) return;
-  const q = questions[currentQuestion - 1];
-
-  const qNumEl = document.getElementById("q-number");
-  if (qNumEl) qNumEl.textContent = `Question No. ${currentQuestion} (${q.subject})`;
-
-  document.querySelectorAll(".sub-tab-btn").forEach(b => {
-    b.classList.toggle("active", (b.dataset.subject || "").toLowerCase() === (q.subject || "").toLowerCase());
-  });
-
-  const qTextEl = document.getElementById("q-text");
-  if (qTextEl) qTextEl.innerHTML = q.text;
-
-  const figureDiv = document.getElementById("q-figure");
-  if (figureDiv) {
-    figureDiv.innerHTML = "";
-    if (q.image) {
-      const img = document.createElement("img");
-      img.src = q.image;
-      img.alt = "Question Diagram";
-      img.className = "question-figure";
-      figureDiv.appendChild(img);
-    }
-  }
-
-  const optionsDiv = document.getElementById("q-options");
-  if (optionsDiv && q.type === "numerical") {
-    // Numerical-answer question: a typed answer instead of options
-    optionsDiv.innerHTML = "";
-    const wrap = document.createElement("div");
-    wrap.className = "numerical-answer";
-    const label = document.createElement("label");
-    label.htmlFor = "numerical-input";
-    label.textContent = "Enter your answer (numerical value)";
-    const input = document.createElement("input");
-    input.type = "text";
-    input.id = "numerical-input";
-    input.inputMode = "decimal";
-    input.autocomplete = "off";
-    input.placeholder = "Type your answer";
-    if (answers[currentQuestion] !== undefined) input.value = answers[currentQuestion];
-    input.oninput = () => {
-      const cleaned = input.value.replace(/[^0-9.\-]/g, "");
-      if (cleaned !== input.value) input.value = cleaned;
-      if (cleaned === "") {
-        delete answers[currentQuestion];
-      } else {
-        if (answers[currentQuestion] !== undefined && answers[currentQuestion] !== cleaned) {
-          answerChangedFlags[currentQuestion] = true;
-        }
-        answers[currentQuestion] = cleaned;
-      }
-      persistProgress();
-    };
-    wrap.appendChild(label);
-    wrap.appendChild(input);
-    optionsDiv.appendChild(wrap);
-  } else if (optionsDiv) {
-    optionsDiv.innerHTML = "";
-    q.options.forEach((optText, i) => {
-      const label = document.createElement("label");
-      label.className = "option-item";
-
-      const input = document.createElement("input");
-      input.type = "radio";
-      input.name = "nta_option";
-      input.value = i;
-      if (answers[currentQuestion] === i) input.checked = true;
-
-      input.onchange = () => {
-        if (answers[currentQuestion] !== undefined && answers[currentQuestion] !== i) {
-          answerChangedFlags[currentQuestion] = true;
-        }
-        answers[currentQuestion] = i;
-        persistProgress();
-      };
-
-      const span = document.createElement("span");
-      span.innerHTML = optText;
-
-      label.appendChild(input);
-      label.appendChild(span);
-      optionsDiv.appendChild(label);
-    });
-  }
-
-  const MATH_RE = /\$|\\\(|\\\[/;
-  const hasMath = MATH_RE.test(q.text || "") || (q.options || []).some(o => MATH_RE.test(String(o)));
-  if (hasMath && window.MathJax && window.MathJax.typesetPromise) {
-    MathJax.typesetPromise([qTextEl, optionsDiv]).catch(() => {});
-  }
-
-  updateLegendCounts();
-}
-
-// ===== Render Palette Buttons =====
-function renderPalette() {
-  const grid = document.getElementById("palette-grid");
-  if (!grid) return;
-  if (grid.children.length !== totalQuestions) {
-    grid.innerHTML = "";
-    for (let i = 1; i <= totalQuestions; i++) {
-      const btn = document.createElement("button");
-      btn.type = "button";
-      btn.textContent = i;
-      btn.dataset.q = i;
-      grid.appendChild(btn);
-    }
-    // one delegated listener instead of 75 separate ones
-    grid.addEventListener("click", e => {
-      const b = e.target.closest("button[data-q]");
-      if (b) goToQuestion(parseInt(b.dataset.q, 10));
-    });
-  }
-  for (let i = 1; i <= totalQuestions; i++) {
-    grid.children[i - 1].className = `q-btn q-${questionStatus[i]}`;
-  }
-
-  // renderPalette runs after every status change (save, mark, clear, navigate),
-  // so this keeps the saved copy of a Full Syllabus test up to date.
-  persistProgress();
-}
-
-// On phones (<=768px, same breakpoint as the CSS) the palette sits ABOVE the
-// question and the whole page scrolls. After Save & Next the scroll position
-// stayed down at the buttons, so the new question was off-screen and it looked
-// like nothing happened. Bring the question card back into view.
-// NOTE: the CSS gives both <html> and <body> overflow:auto + height:100%, which
-// makes <body> the scroller, so window.scrollTo() would do nothing here;
-// scrollIntoView() scrolls whichever ancestor is actually scrolling.
-// Desktop is a fixed, non-scrolling layout and is deliberately left untouched.
-function scrollQuestionToTop() {
-  if (!window.matchMedia("(max-width: 768px)").matches) return;
-  const content = document.querySelector(".question-content-scroll");
-  if (content) content.scrollTop = 0;
-  const card = document.querySelector(".nta-question-container");
-  if (card && card.scrollIntoView) card.scrollIntoView({ block: "start", inline: "nearest" });
-}
-
-function goToQuestion(num) {
-  currentQuestion = num;
-  if (questionStatus[num] === "not-visited") {
-    questionStatus[num] = "not-answered";
-  }
-  renderQuestion();
-  renderPalette();
-  scrollQuestionToTop();
-}
-
-function goToPrevQuestion() {
-  if (currentQuestion > 1) {
-    goToQuestion(currentQuestion - 1);
-  }
-}
-
-// ===== Countdown Timer =====
-// The clock is based on a fixed END TIME rather than counting down once per
-// tick. Browsers slow timers in background tabs, so a tick-counting timer
-// would drift badly over a 3-hour test; an end time is always correct.
-let endsAt = 0;
-let timerHandle = null;
-
-function updateTimer() {
-  const secondsLeft = Math.max(0, Math.round((endsAt - Date.now()) / 1000));
-
-  const h = String(Math.floor(secondsLeft / 3600)).padStart(2, "0");
-  const m = String(Math.floor((secondsLeft % 3600) / 60)).padStart(2, "0");
-  const s = String(secondsLeft % 60).padStart(2, "0");
-
-  const timerEl = document.getElementById("timer");
-  if (timerEl) {
-    timerEl.textContent = `${h}:${m}:${s}`;
-  }
-
-  if (secondsLeft <= 0) {
-    clearInterval(timerHandle);
-    if (!testIsSubmitted) submitTest();
-  }
-}
-
-// ===== Saved progress for the Full Syllabus test =====
-// A 3-hour paper must survive a refresh, a dropped connection or a closed tab:
-// same questions, same end time, same answers. Only used for "-full" tests.
-let progressKey = null;
-let persistEnabled = false;
-
-// Debounced: the old version serialised the whole 75-question paper into
-// localStorage synchronously on every tap, which freezes phones for a moment.
-let persistTimer = null;
-function persistProgress() {
-  if (!persistEnabled || testIsSubmitted) return;
-  clearTimeout(persistTimer);
-  persistTimer = setTimeout(persistNow, 400);
-}
-
-function persistNow() {
-  if (!persistEnabled || testIsSubmitted || !progressKey) return;
+// ===== Saved progress (refresh / crash safe) =====
+function persist() {
+  if (!persistEnabled || submitted || !progressKey) return;
   try {
     localStorage.setItem(progressKey, JSON.stringify({
-      v: 1,
-      testKey: progressId,
-      endsAt,
-      currentQuestion,
-      // explanations are not needed during the test and can be large
+      v: 1, testKey: setKey, endsAt, cur,
       questions: questions.map(({ explanation, ...rest }) => rest),
-      answers,
-      questionStatus,
-      markedHistory,
-      answerChangedFlags,
-      timeSpent
+      answers, status, markedHistory, changed, timeSpent
     }));
-  } catch (e) {
-    persistEnabled = false; // storage full or blocked: carry on without resume
-  }
+  } catch (e) { persistEnabled = false; }
 }
-
-function loadSavedProgress() {
+function loadSaved() {
   try {
-    const raw = localStorage.getItem(progressKey);
-    if (!raw) return null;
-    const saved = JSON.parse(raw);
-    if (saved && saved.v === 1 && saved.testKey === progressId &&
-        Array.isArray(saved.questions) && saved.questions.length > 0 &&
-        typeof saved.endsAt === "number") {
-      return saved;
-    }
-  } catch (e) { /* corrupted entry: ignore it */ }
+    const s = JSON.parse(localStorage.getItem(progressKey) || "null");
+    if (s && s.v === 1 && s.testKey === setKey && Array.isArray(s.questions) && s.questions.length && typeof s.endsAt === "number") return s;
+  } catch (e) {}
   return null;
 }
+function clearSaved() { try { if (progressKey) localStorage.removeItem(progressKey); } catch (e) {} }
 
-function clearSavedProgress() {
-  try { if (progressKey) localStorage.removeItem(progressKey); } catch (e) {}
+// ===== Rendering =====
+function renderTabs() {
+  const bar = $("subject-bar");
+  if (groups.length < 2) { bar.style.display = "none"; return; }
+  bar.style.display = "";
+  bar.innerHTML = '<span class="lbl">Sections</span>';
+  groups.forEach(g => {
+    const b = document.createElement("button");
+    b.type = "button"; b.className = "tab"; b.textContent = g.subject; b.dataset.s = g.subject;
+    b.onclick = () => goTo(g.idx[0]);
+    bar.appendChild(b);
+  });
 }
 
-// ===== Current answer on screen =====
-// MCQ: the chosen option index. Numerical: the typed text. undefined = nothing entered.
-function readCurrentSelection() {
-  const q = questions[currentQuestion - 1];
-  if (q && q.type === "numerical") {
-    const el = document.getElementById("numerical-input");
-    const v = el ? el.value.trim() : "";
-    return v === "" ? undefined : v;
+function render() {
+  const q = questions[cur], g = groupOf(cur), mk = meta.marking[q.type];
+  document.querySelectorAll(".tab").forEach(t => t.classList.toggle("active", t.dataset.s === g.subject));
+  $("q-number").textContent = `Question No. ${g.idx.indexOf(cur) + 1}`;
+  $("q-type").textContent = q.type === "mcq" ? "MCQ" : "Numerical Value";
+  $("q-pos").textContent = mk.correct;
+  $("q-neg").textContent = Math.abs(mk.wrong);
+  $("q-text").innerHTML = q.text;
+
+  const fig = $("q-figure");
+  fig.innerHTML = "";
+  if (q.image) { const im = document.createElement("img"); im.src = q.image; im.alt = "Question diagram"; fig.appendChild(im); }
+
+  draft = answers[cur] !== undefined ? answers[cur] : null;
+  const box = $("q-answer");
+  box.innerHTML = "";
+
+  if (q.type === "mcq") {
+    q.options.forEach((t, i) => {
+      const l = document.createElement("label");
+      l.className = "opt" + (draft === i ? " sel" : "");
+      l.innerHTML = `<input type="radio" name="opt" ${draft === i ? "checked" : ""}><span class="n">(${i + 1})</span><span>${t}</span>`;
+      l.querySelector("input").onchange = () => {
+        draft = i;
+        box.querySelectorAll(".opt").forEach((o, k) => o.classList.toggle("sel", k === i));
+      };
+      box.appendChild(l);
+    });
+  } else {
+    caret = draft ? String(draft).length : 0;
+    const keys = ["7", "8", "9", "4", "5", "6", "1", "2", "3", "0", ".", "-"];
+    box.innerHTML = `<div class="num-wrap"><div class="num-display" id="numd"></div>
+      <div class="keypad">${keys.map(k => `<button type="button" data-k="${k}">${k}</button>`).join("")}
+      <div class="wide"><button type="button" data-k="bs">Backspace</button><button type="button" data-k="L">&larr;</button><button type="button" data-k="R">&rarr;</button></div>
+      <button type="button" data-k="clr" style="grid-column:span 3">Clear All</button></div></div>`;
+    box.querySelector(".keypad").onclick = e => { const k = e.target.dataset && e.target.dataset.k; if (k) pressKey(k); };
+    renderNum();
   }
-  const selected = document.querySelector('input[name="nta_option"]:checked');
-  return selected ? parseInt(selected.value, 10) : undefined;
+
+  $("q-scroll").scrollTop = 0;
+  if (window.MathJax && MathJax.typesetPromise) MathJax.typesetPromise([$("q-text"), box]).catch(() => {});
 }
 
-// Is a typed numerical answer correct? A window (correctRange) is used when the
-// question has one, otherwise the single exact value.
-function isNumericalCorrect(q, typed) {
-  const n = Number(typed);
-  if (typed === undefined || typed === "" || !Number.isFinite(n)) return false;
-  if (Array.isArray(q.correctRange) && q.correctRange.length === 2) {
-    return n >= q.correctRange[0] && n <= q.correctRange[1];
+function renderNum() {
+  const v = draft ? String(draft) : "";
+  $("numd").innerHTML = esc(v.slice(0, caret)) + '<span class="caret"></span>' + esc(v.slice(caret));
+}
+
+function pressKey(k) {
+  let s = draft ? String(draft) : "";
+  if (k === "bs") { if (caret > 0) { s = s.slice(0, caret - 1) + s.slice(caret); caret--; } }
+  else if (k === "clr") { s = ""; caret = 0; }
+  else if (k === "L") caret = Math.max(0, caret - 1);
+  else if (k === "R") caret = Math.min(s.length, caret + 1);
+  else {
+    if (s.length >= 12) return;
+    if (k === "-" && (caret !== 0 || s.startsWith("-"))) return;
+    if (k === "." && s.includes(".")) return;
+    s = s.slice(0, caret) + k + s.slice(caret); caret++;
   }
-  if (typeof q.correctValue === "number" && Number.isFinite(q.correctValue)) {
-    return Math.abs(n - q.correctValue) <= 1e-9 * Math.max(1, Math.abs(q.correctValue));
+  draft = s === "" ? null : s;
+  renderNum();
+}
+
+function renderPalette() {
+  const g = groupOf(cur), grid = $("palette-grid");
+  $("p-sec").textContent = g.subject;
+  grid.innerHTML = "";
+  const n = { answered: 0, "not-answered": 0, "not-visited": 0, marked: 0, "answered-marked": 0 };
+  g.idx.forEach((gi, k) => {
+    n[status[gi]]++;
+    const b = document.createElement("button");
+    b.type = "button"; b.className = `q q-${status[gi]}${gi === cur ? " cur" : ""}`; b.textContent = k + 1;
+    b.onclick = () => goTo(gi);
+    grid.appendChild(b);
+  });
+  $("c-ans").textContent = n.answered;
+  $("c-notans").textContent = n["not-answered"];
+  $("c-notvis").textContent = n["not-visited"];
+  $("c-mark").textContent = n.marked;
+  $("c-ansmark").textContent = n["answered-marked"];
+  persist();
+}
+
+// ===== Navigation & actions =====
+function goTo(i) {
+  cur = i;
+  if (status[i] === "not-visited") status[i] = "not-answered";
+  $("palette").classList.remove("open");
+  render(); renderPalette();
+}
+const next = () => { if (cur < questions.length - 1) goTo(cur + 1); else renderPalette(); };
+
+// save: store the on-screen response. mark: flag for review.
+function commit(save, mark) {
+  if (save && draft !== null) {
+    if (answers[cur] !== undefined && answers[cur] !== draft) changed[cur] = true;
+    answers[cur] = draft;
   }
-  return false;
+  const has = answers[cur] !== undefined;
+  if (mark) { markedHistory[cur] = true; status[cur] = has ? "answered-marked" : "marked"; }
+  else status[cur] = has ? "answered" : "not-answered";
+  next();
 }
 
-// ===== Direct Action Handlers with Fast-Click =====
-function initActionHandlers() {
-  const saveBtn = document.getElementById("saveNextBtn");
-  const markBtn = document.getElementById("markBtn");
-  const clearBtn = document.getElementById("clearBtn");
-  const prevBtn = document.getElementById("prevBtn");
-  const submitBtn = document.getElementById("submitBtn");
-
-  bindFastClick(saveBtn, () => {
-    const selected = readCurrentSelection();
-    if (selected !== undefined) {
-      if (answers[currentQuestion] !== undefined && answers[currentQuestion] !== selected) {
-        answerChangedFlags[currentQuestion] = true;
-      }
-      answers[currentQuestion] = selected;
-      questionStatus[currentQuestion] = "answered";
-    } else if (answers[currentQuestion] !== undefined) {
-      questionStatus[currentQuestion] = "answered";
-    } else {
-      questionStatus[currentQuestion] = "not-answered";
-    }
-
-    if (currentQuestion < totalQuestions) {
-      goToQuestion(currentQuestion + 1);
-    } else {
-      renderPalette();
-      updateLegendCounts();
-    }
-  });
-
-  bindFastClick(markBtn, () => {
-    markedHistory[currentQuestion] = true;
-    const selected = readCurrentSelection();
-    if (selected !== undefined) {
-      if (answers[currentQuestion] !== undefined && answers[currentQuestion] !== selected) {
-        answerChangedFlags[currentQuestion] = true;
-      }
-      answers[currentQuestion] = selected;
-      questionStatus[currentQuestion] = "answered-marked";
-    } else if (answers[currentQuestion] !== undefined) {
-      questionStatus[currentQuestion] = "answered-marked";
-    } else {
-      questionStatus[currentQuestion] = "marked";
-    }
-
-    if (currentQuestion < totalQuestions) {
-      goToQuestion(currentQuestion + 1);
-    } else {
-      renderPalette();
-      updateLegendCounts();
-    }
-  });
-
-  bindFastClick(clearBtn, () => {
-    delete answers[currentQuestion];
-    questionStatus[currentQuestion] = "not-answered";
-    document.querySelectorAll('input[name="nta_option"]').forEach(el => (el.checked = false));
-    const numInput = document.getElementById("numerical-input");
-    if (numInput) numInput.value = "";
-    renderPalette();
-    updateLegendCounts();
-  });
-
-  bindFastClick(prevBtn, () => {
-    goToPrevQuestion();
-  });
-
-  bindFastClick(submitBtn, () => {
-    const confirmSubmit = confirm("Are you sure you want to submit the test?");
-    if (confirmSubmit) {
-      submitTest();
-    }
-  });
+function initActions() {
+  $("saveNextBtn").onclick = () => commit(true, false);
+  $("saveMarkBtn").onclick = () => commit(true, true);
+  $("markBtn").onclick = () => commit(false, true);
+  $("clearBtn").onclick = () => {
+    delete answers[cur]; status[cur] = "not-answered";
+    render(); renderPalette();
+  };
+  $("prevBtn").onclick = () => { if (cur > 0) goTo(cur - 1); };
+  $("nextBtn").onclick = next;
+  $("submitBtn").onclick = openSummary;
+  $("submitBtnM").onclick = () => { $("palette").classList.remove("open"); openSummary(); };
+  $("palToggle").onclick = () => $("palette").classList.toggle("open");
 }
 
-// ===== Submit Test Logic =====
+// ===== Timer =====
+// Based on a fixed end time, so background-tab throttling can't make it drift.
+function updateTimer() {
+  const left = Math.max(0, Math.round((endsAt - Date.now()) / 1000));
+  const p = n => String(n).padStart(2, "0");
+  const t = $("timer");
+  t.textContent = `${p(Math.floor(left / 3600))}:${p(Math.floor(left % 3600 / 60))}:${p(left % 60)}`;
+  t.classList.toggle("low", left <= 300);
+  if (left <= 0) { clearInterval(timerHandle); if (!submitted) submitTest(); }
+}
+
+// ===== Submit =====
+function openSummary() {
+  const rows = groups.map(g => {
+    const c = s => g.idx.filter(i => status[i] === s).length;
+    return `<tr><td>${esc(g.subject)}</td><td>${g.idx.length}</td><td>${c("answered")}</td><td>${c("not-answered")}</td><td>${c("marked")}</td><td>${c("answered-marked")}</td><td>${c("not-visited")}</td></tr>`;
+  }).join("");
+  const ov = document.createElement("div");
+  ov.className = "overlay";
+  ov.innerHTML = `<div class="modal"><h3>Test summary</h3>
+    <table class="sum"><tr><th>Section</th><th>No. of Questions</th><th>Answered</th><th>Not Answered</th><th>Marked for Review</th><th>Answered &amp; Marked for Review</th><th>Not Visited</th></tr>${rows}</table>
+    <p style="margin-bottom:14px">Are you sure you want to submit this test? You will not be able to change your answers after submitting.</p>
+    <div class="btns"><button type="button" class="btn" id="subNo">No</button><button type="button" class="btn submit" id="subYes">Yes</button></div></div>`;
+  document.body.appendChild(ov);
+  ov.querySelector("#subNo").onclick = () => ov.remove();
+  ov.querySelector("#subYes").onclick = () => { ov.remove(); submitTest(); };
+}
+
 async function submitTest() {
-  testIsSubmitted = true;
-  if (timerHandle) clearInterval(timerHandle);
+  if (submitted) return;
+  submitted = true;
+  clearInterval(timerHandle);
 
-  // Marking: MCQ +4 / -1, numerical +4 / 0
-  let correct = 0, wrong = 0, unattempted = 0, mcqWrong = 0;
-  const responsesPayload = [];
-
+  let correct = 0, wrong = 0, unattempted = 0, score = 0, maxScore = 0;
+  const bySubject = {}, responses = [];
   questions.forEach((q, i) => {
-    const qNum = i + 1;
-    const userChoice = answers[qNum];
-    const qTime = timeSpent[qNum] || 0;
-    const isNum = q.type === "numerical";
-    const isAtt = userChoice !== undefined;
-    const isCorr = isAtt && (isNum ? isNumericalCorrect(q, userChoice) : userChoice === q.correctIndex);
-
-    if (!isAtt) unattempted++;
-    else if (isCorr) correct++;
-    else { wrong++; if (!isNum) mcqWrong++; }
-
-    responsesPayload.push({
-      questionId: q.id || null,
-      questionNum: qNum,
-      questionType: isNum ? "numerical" : "mcq",
-      subject: q.subject,
-      chapter: q.chapter || `${q.subject} General`,
-      selectedOption: (!isNum && userChoice !== undefined) ? userChoice : null,
-      correctOption: isNum ? null : q.correctIndex,
-      selectedValue: (isNum && userChoice !== undefined) ? String(userChoice) : null,
-      correctValue: isNum && typeof q.correctValue === "number" ? q.correctValue : null,
-      correctRange: isNum && Array.isArray(q.correctRange) ? q.correctRange : null,
-      isCorrect: isCorr,
-      timeSpent: qTime,
-      markedForReview: !!markedHistory[qNum],
-      answerChanged: !!answerChangedFlags[qNum]
+    const a = answers[i], att = a !== undefined, ok = att && isCorrect(q, a);
+    const mk = meta.marking[q.type];
+    const pts = !att ? 0 : ok ? mk.correct : mk.wrong;
+    const s = bySubject[q.subject] || (bySubject[q.subject] = { correct: 0, wrong: 0, unattempted: 0, score: 0 });
+    if (!att) { unattempted++; s.unattempted++; } else if (ok) { correct++; s.correct++; } else { wrong++; s.wrong++; }
+    score += pts; s.score += pts; maxScore += mk.correct;
+    responses.push({
+      questionId: q.id, questionNum: i + 1, subject: q.subject, class: q.classNum,
+      chapter: q.chapter || `${q.subject} General`, topic: q.topic, type: q.type,
+      selectedOption: q.type === "mcq" && att ? a : null,
+      correctOption: q.type === "mcq" ? q.correctIndex : null,
+      answerGiven: q.type === "numerical" && att ? String(a) : null,
+      correctRange: q.type === "numerical" ? [q.min, q.max ?? q.min] : null,
+      isCorrect: ok, marks: pts, timeSpent: timeSpent[i] || 0,
+      markedForReview: !!markedHistory[i], answerChanged: !!changed[i]
     });
   });
 
-  const totalScore = (correct * 4) - (mcqWrong * 1);
-  const maxPossibleScore = totalQuestions * 4;
+  $("timer").parentElement.style.display = "none";
+  const subRows = Object.keys(bySubject).map(k => { const s = bySubject[k];
+    return `<tr><td>${esc(k)}</td><td>${s.correct}</td><td>${s.wrong}</td><td>${s.unattempted}</td><td>${s.score}</td></tr>`; }).join("");
+  showPanel(`<h2>Test Submitted Successfully</h2>
+    <p>Your attempt has been saved to your profile.</p>
+    <div class="score">${score} <small>/ ${maxScore}</small></div>
+    <table class="sum" style="max-width:480px;margin:18px 0 24px"><tr><th>Section</th><th>Correct</th><th>Incorrect</th><th>Unattempted</th><th>Score</th></tr>${subRows}
+    <tr><td>Total</td><td>${correct}</td><td>${wrong}</td><td>${unattempted}</td><td>${score}</td></tr></table>
+    <div style="display:flex;gap:12px;flex-wrap:wrap;justify-content:center">
+      <a class="btn mark" id="analysisBtn" href="profile.html#recent-tests">View Detailed Analysis</a>
+      <a class="btn save" href="tests.html">Back to Tests</a></div>`);
 
-  // 1. Hide Top Navigation Bars
-  const subNav = document.querySelector(".subject-nav-bar");
-  const timerBadge = document.querySelector(".nta-timer-badge");
-  if (subNav) subNav.style.display = "none";
-  if (timerBadge) timerBadge.style.display = "none";
-
-  // 2. Render Completion Screen
-  const container = document.getElementById("exam-scale-inner") || document.querySelector(".nta-main-layout");
-  if (container) {
-    container.innerHTML = `
-      <div style="width:100%; height:100%; padding: 60px 20px; text-align: center; background:#fff; overflow-y:auto; display:flex; flex-direction:column; align-items:center; justify-content:center;">
-        <div style="width:64px; height:64px; background:#FEF3C7; color:#D97706; border-radius:50%; display:flex; align-items:center; justify-content:center; font-size:30px; margin-bottom:16px;">✓</div>
-        <h2 style="color:#0F172A; font-size:26px; margin-bottom:6px;">Test Submitted Successfully</h2>
-        <p style="font-size:14px; color:#64748b; margin-bottom:24px;">Your attempt has been saved to your JEE Portal profile.</p>
-
-        <div style="width:100%; max-width:440px; margin: 0 auto 28px; background:#F8FAFC; border:1px solid #e2e8f0; border-radius:10px; padding:20px; text-align:left;">
-          <div style="font-size:20px; font-weight:800; color:#0f172a; margin-bottom:12px; display:flex; justify-content:space-between;">
-            <span>Total Score:</span>
-            <span style="color:#D97706;">${totalScore} <span style="font-size:13px; color:#64748b;">/ ${maxPossibleScore}</span></span>
-          </div>
-          <div style="display:flex; justify-content:space-between; margin-bottom:8px; font-size:13.5px;">
-            <span>Correct (+4):</span>
-            <strong style="color:#16a34a;">${correct}</strong>
-          </div>
-          <div style="display:flex; justify-content:space-between; margin-bottom:8px; font-size:13.5px;">
-            <span>Incorrect (-1 MCQ, 0 numerical):</span>
-            <strong style="color:#dc2626;">${wrong}</strong>
-          </div>
-          <div style="display:flex; justify-content:space-between; font-size:13.5px;">
-            <span>Unattempted (0):</span>
-            <strong>${unattempted}</strong>
-          </div>
-        </div>
-
-        <div style="display:flex; justify-content:center; gap:12px;" id="submissionActionButtons">
-          <a href="profile.html#recent-tests" id="viewProfileAnalysisBtn" class="nta-btn" style="background:#0F172A; color:#fff; display:inline-block; line-height:36px; padding:0 20px; text-decoration:none; border-radius:4px; font-size:13px; font-weight:700;">View Detailed Analysis</a>
-          <a href="tests.html" class="nta-btn btn-save-next" style="display:inline-block; line-height:36px; padding:0 20px; text-decoration:none; font-size:13px; font-weight:700; background:#F59E0B; color:#0F172A; border-radius:4px;">Back to Tests</a>
-        </div>
-      </div>
-    `;
-  }
-
-  // 3. Send Telemetry to Server
   try {
     const res = await fetch("/api/attempts", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      credentials: "include",
-      body: JSON.stringify({
-        testKey: setKey,
-        score: totalScore,
-        correct,
-        wrong,
-        unattempted,
-        responses: responsesPayload
-      })
+      method: "POST", headers: { "Content-Type": "application/json" }, credentials: "include",
+      body: JSON.stringify({ testKey: setKey, score, correct, wrong, unattempted, responses })
     });
-    
     if (res.ok) {
-      clearSavedProgress();
-      const data = await res.json();
-      const analysisLink = document.getElementById("viewProfileAnalysisBtn");
-      if (analysisLink && data.attemptId) {
-        analysisLink.href = `profile.html?viewAttempt=${data.attemptId}`;
-      }
+      clearSaved();
+      const d = await res.json();
+      if (d.attemptId) $("analysisBtn").href = `profile.html?viewAttempt=${d.attemptId}`;
     }
-  } catch (e) {
-    console.warn("Couldn't save attempt to server:", e);
-  }
+  } catch (e) { console.warn("Couldn't save attempt to server:", e); }
 }
 
-// ===== Fetch & Display Logged-in Candidate Info =====
-async function loadCandidateProfile() {
-  const nameEl = document.getElementById("candidate-name");
-  const avatarEl = document.getElementById("candidate-avatar");
-
+// ===== Candidate =====
+async function loadCandidate() {
+  let name = "Student", owner = "";
   try {
     const res = await fetch("/api/auth/me", { credentials: "include" });
     if (res.ok) {
-      const data = await res.json();
-      if (data.authenticated && data.user) {
-        const fullName = data.user.fullName || data.user.name || "Student";
-        if (nameEl) nameEl.textContent = fullName;
-        if (avatarEl) avatarEl.textContent = fullName.charAt(0).toUpperCase();
-        // Used to keep one student's saved test separate from another's
-        return String(data.user.id ?? data.user.userId ?? data.user.email ?? fullName);
+      const d = await res.json();
+      if (d.authenticated && d.user) {
+        name = d.user.fullName || d.user.name || "Student";
+        owner = String(d.user.id ?? d.user.userId ?? d.user.email ?? name);
       }
     }
-  } catch (err) {
-    console.warn("Could not load candidate profile:", err);
-  }
-
-  if (nameEl) nameEl.textContent = "Student";
-  if (avatarEl) avatarEl.textContent = "S";
-  return "";
+  } catch (e) { console.warn("Could not load candidate profile:", e); }
+  $("candidate-name").textContent = $("p-name").textContent = name;
+  $("candidate-avatar").textContent = $("p-avatar").textContent = name.charAt(0).toUpperCase();
+  return owner;
 }
 
-// ===== Initialization =====
+// ===== Start =====
 (async () => {
-  initActionHandlers();
-  setDynamicExamTitle(setKey);
-  const profilePromise = loadCandidateProfile();
+  if (!meta) {
+    showPanel(`<h2>Invalid test link</h2><p>This test link isn't recognised. Please start the test again from the tests page.</p><a class="btn save" href="tests.html">Back to Tests</a>`);
+    return;
+  }
+  $("exam-title").textContent = meta.title;
+  $("exam-name").textContent = meta.examName;
+  document.title = `${meta.title} - LaunchIt JEE`;
+  initActions();
 
-  const timerEl = document.getElementById("timer");
-  if (timerEl) timerEl.textContent = "--:--:--";
+  const owner = await loadCandidate();
+  progressKey = `jeeportal:test:v1:${owner || "anon"}:${setKey}`;
 
-  // Full Syllabus test: pick up an unfinished paper if there is one.
-  let resumed = null;
-  if (isMultiChapterTest) {
-    const ownerId = await profilePromise;
-    progressKey = `jeeportal:fulltest:v1:${ownerId || "anon"}:${progressId}`;
-    resumed = loadSavedProgress();
-
-    if (resumed && resumed.endsAt > Date.now()) {
-      const minsLeft = Math.max(1, Math.ceil((resumed.endsAt - Date.now()) / 60000));
-      const keepGoing = confirm(
-        `You have an unfinished test with about ${minsLeft} minute(s) left.\n\n` +
-        `OK = resume it\nCancel = discard it and start a new paper`
-      );
-      if (!keepGoing) {
-        clearSavedProgress();
-        resumed = null;
-      }
+  let saved = loadSaved();
+  if (saved && saved.endsAt > Date.now()) {
+    const mins = Math.max(1, Math.ceil((saved.endsAt - Date.now()) / 60000));
+    if (!confirm(`You have an unfinished test with about ${mins} minute(s) left.\n\nOK = resume it\nCancel = discard it and start again`)) {
+      clearSaved(); saved = null;
     }
-    // If the saved paper's time ran out while the student was away, it is
-    // restored as-is and the timer below submits it straight away.
   }
 
-  let rawQuestions = [];
-  if (resumed) {
-    questions = resumed.questions;
+  let fresh = false;
+  if (saved) {
+    questions = saved.questions; buildGroups();
   } else {
-    rawQuestions = await loadQuestionSet(setKey);
-    if (rawQuestions === null) return; // locked / could not be built: error panel is already showing
-    questions = generateFoundationQuestions(rawQuestions);
-  }
-  totalQuestions = questions.length;
-
-  // Once real questions are in, prefer the actual chapter name (from the
-  // DB's `chapter` column, same source the profile analysis views use)
-  // over the guessed title setDynamicExamTitle() built from the raw key.
-  // (Full Syllabus tests keep their own title: they span every chapter.)
-  const examTitleEl = document.getElementById("exam-title");
-  if (!isMultiChapterTest) {
-    const realChapterName = rawQuestions.find(q => q.chapter)?.chapter;
-    if (realChapterName) {
-      if (examTitleEl) examTitleEl.textContent = realChapterName;
-      document.title = `${realChapterName} - JEE Portal`;
-    } else if (examTitleEl) {
-      // No chapter data came back at all (e.g. fallback demo questions) —
-      // don't leave the header stuck on "loading...".
-      examTitleEl.textContent = "Practice Test";
+    const rows = await loadQuestionSet(setKey);
+    if (rows === null) return;
+    if (!rows.length) {
+      showPanel(`<h2>No questions found</h2><p>There are no questions for this test yet.</p><a class="btn save" href="tests.html">Back to Tests</a>`);
+      return;
     }
+    prepare(rows); fresh = true;
   }
 
-  // A chapter (or subject-wide) test only ever has ONE subject throughout —
-  // the tab bar would let you "switch" to a subject with no questions in
-  // it, which is meaningless. Only real mixed tests (mocks) show it.
-  // The tabs are built from the subjects actually in this paper (Physics,
-  // Chemistry, Mathematics); the bar stays hidden when there is only one.
-  buildSubjectTabs();
-
-  if (resumed) {
-    Object.assign(answers, resumed.answers);
-    Object.assign(questionStatus, resumed.questionStatus);
-    Object.assign(markedHistory, resumed.markedHistory);
-    Object.assign(answerChangedFlags, resumed.answerChangedFlags);
-    Object.assign(timeSpent, resumed.timeSpent);
-    currentQuestion = Math.min(Math.max(parseInt(resumed.currentQuestion, 10) || 1, 1), totalQuestions);
-    endsAt = resumed.endsAt;
+  if (saved) {
+    Object.assign(answers, saved.answers); Object.assign(status, saved.status);
+    Object.assign(markedHistory, saved.markedHistory); Object.assign(changed, saved.changed);
+    Object.assign(timeSpent, saved.timeSpent);
+    cur = Math.min(Math.max(parseInt(saved.cur, 10) || 0, 0), questions.length - 1);
+    endsAt = saved.endsAt;
   } else {
-    for (let i = 1; i <= totalQuestions; i++) {
-      questionStatus[i] = "not-visited";
-      timeSpent[i] = 0;
-    }
-    questionStatus[1] = "not-answered";
-    endsAt = Date.now() + getTestDurationSeconds() * 1000;
+    questions.forEach((_, i) => { status[i] = "not-visited"; timeSpent[i] = 0; });
+    status[0] = "not-answered";
+    endsAt = Date.now() + meta.durationMin * 60 * 1000;
   }
 
-  // Only a real, server-built paper is worth saving (not the demo fallback).
-  persistEnabled = isMultiChapterTest && !!progressKey && (!!resumed || rawQuestions.length > 0);
-
-  renderQuestion();
-  renderPalette();
-  updateTimer();
+  persistEnabled = true;
+  renderTabs(); render(); renderPalette(); updateTimer();
   timerHandle = setInterval(updateTimer, 1000);
-
-  if (persistEnabled) {
-    setInterval(persistNow, 15000); // also captures time spent per question
-    window.addEventListener("pagehide", persistNow);
-    document.addEventListener("visibilitychange", () => {
-      if (document.visibilityState === "hidden") persistNow();
-    });
-  }
+  setInterval(persist, 15000);
+  window.addEventListener("pagehide", persist);
+  document.addEventListener("visibilitychange", () => { if (document.visibilityState === "hidden") persist(); });
+})();
 })();
