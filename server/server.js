@@ -131,9 +131,29 @@ app.get('/', (req, res) => {
   res.sendFile(path.join(publicPath, 'index.html'));
 });
 
+// TEMPORARY, LOCAL TESTING ONLY: open /error-test to see error.html. Active only when ENABLE_ERROR_TEST=1 is set; remove after testing.
+if (process.env.ENABLE_ERROR_TEST === '1') {
+  app.get('/error-test', (req, res, next) => next(new Error('Test error')));
+}
+
+// 404 fallback for anything that reaches Express (static pages are handled by Vercel routes)
+app.use((req, res) => {
+  if (req.path.startsWith('/api')) {
+    return res.status(404).json({ error: 'Not found' });
+  }
+  res.status(404).sendFile(path.join(publicPath, '404.html'));
+});
+
 // Centralized Error Handler (Prevents leakage of server stack traces)
 app.use((err, req, res, next) => {
   console.error('Unhandled Server Error:', err.message);
+  if (res.headersSent) return next(err);
+
+  // Page requests get the custom error page (with the "report this" options); API calls keep JSON
+  const isApi = req.path.startsWith('/api');
+  if (!isApi && req.accepts(['html', 'json']) === 'html') {
+    return res.status(500).sendFile(path.join(publicPath, 'error.html'));
+  }
   res.status(500).json({ error: 'Internal Server Error' });
 });
 
